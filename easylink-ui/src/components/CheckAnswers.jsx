@@ -1,18 +1,29 @@
 import { useState } from "react";
 
-function CheckAnswers() {
-  const [answers, setAnswers] = useState(
-    '[{"entryId":"uuid-здесь","answer":"твой ответ"}]'
-  );
+function CheckAnswers({ questions }) {
+  const [rawAnswers, setRawAnswers] = useState("");
   const [authResult, setAuthResult] = useState("");
 
   const handleCheckAnswers = async () => {
     try {
-      const res = await fetch("http://localhost:8080/check", {
+      const splitted = rawAnswers.split(/[,;]/).map((s) => s.trim());
+
+      if (splitted.length !== questions.length) {
+        setAuthResult(`Ожидалось ${questions.length} ответов, введено ${splitted.length}`);
+        return;
+      }
+
+      const answers = questions.map((q, i) => ({
+        entryId: q.entryId,
+        answer: splitted[i],
+      }));
+
+      const res = await fetch("http://localhost:8080/api/v3/auth/check", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ answers: JSON.parse(answers) }),
+        body: JSON.stringify({ answers }),
       });
+
       const text = await res.text();
       setAuthResult(text);
     } catch (err) {
@@ -23,10 +34,12 @@ function CheckAnswers() {
   return (
     <section>
       <h2>Check Answers</h2>
+      <p><strong>Введите ответы через запятую:</strong></p>
       <textarea
-        value={answers}
-        onChange={(e) => setAnswers(e.target.value)}
+        value={rawAnswers}
+        onChange={(e) => setRawAnswers(e.target.value)}
         style={{ width: "100%", height: "100px" }}
+        placeholder="пример: кот, дом, школа"
       />
       <button
         onClick={handleCheckAnswers}

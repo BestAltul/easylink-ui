@@ -6,13 +6,13 @@ function StartAuth() {
 
   const handleStartAuth = async () => {
     try {
-      const res = await fetch("http://localhost:8080/start", {
+      const res = await fetch("http://localhost:8080/api/v3/auth/start", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
       });
 
-      const result = await res.json();
+      const result = await res.json();      
       setQuestions(result);
     } catch (err) {
       alert("Ошибка при получении вопросов");
@@ -36,10 +36,13 @@ function StartAuth() {
         Start Auth
       </button>
 
-      <p>Questions:</p>
-      <pre style={{ background: "#f4f4f4", padding: "1rem" }}>
-        {JSON.stringify(questions, null, 2)}
-      </pre>
+      <p>Associative Questions:</p>
+      <ul style={{ background: "#f4f4f4", padding: "1rem" }}>
+        {questions.map((q, i) => (
+          <li key={i}>{q.question}</li>
+        ))}
+      </ul>
+
     </section>
   );
 }
