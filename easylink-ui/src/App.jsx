@@ -6,6 +6,7 @@ import CheckAnswers from "./components/CheckAnswers";
 
 function App() {
   const [page, setPage] = useState("home");
+  const [questions, setQuestions] = useState([]);
 
   return (
     <div
@@ -37,8 +38,9 @@ function App() {
       {page === "signup" && <SignUp onBack={() => setPage("home")} />}
       {page === "signin" && (
         <>
-          <StartAuth />
-          <CheckAnswers />
+          //
+          <StartAuth questions={questions} setQuestions={setQuestions} />
+          <CheckAnswers questions={questions} />
           <button
             onClick={() => setPage("home")}
             style={{ marginTop: "1rem", padding: "0.5rem" }}

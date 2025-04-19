@@ -1,8 +1,8 @@
 import { useState } from "react";
 
-function StartAuth() {
+function StartAuth({ questions, setQuestions }) {
   const [email, setEmail] = useState("");
-  const [questions, setQuestions] = useState([]);
+  //const [questions, setQuestions] = useState([]); // 👈 храним локально
 
   const handleStartAuth = async () => {
     try {
@@ -12,8 +12,11 @@ function StartAuth() {
         body: JSON.stringify({ email }),
       });
 
-      const result = await res.json();      
-      setQuestions(result);
+      const result = await res.json();
+
+      console.log("Получены вопросы:", result);
+
+      setQuestions(result); // 👈 сохраняем локально
     } catch (err) {
       alert("Ошибка при получении вопросов");
       setQuestions([]);
@@ -23,6 +26,7 @@ function StartAuth() {
   return (
     <section>
       <h2>Start Authentication</h2>
+
       <input
         value={email}
         onChange={(e) => setEmail(e.target.value)}
@@ -36,13 +40,19 @@ function StartAuth() {
         Start Auth
       </button>
 
-      <p>Associative Questions:</p>
-      <ul style={{ background: "#f4f4f4", padding: "1rem" }}>
-        {questions.map((q, i) => (
-          <li key={i}>{q.question}</li>
-        ))}
-      </ul>
-
+      {/* 👇 Вот тут показываем полученные вопросы */}
+      {Array.isArray(questions) && questions.length > 0 && (
+        <div
+          style={{ marginTop: "1rem", background: "#f0f0f0", padding: "1rem" }}
+        >
+          <strong>Полученные вопросы:</strong>
+          <ul>
+            {questions.map((q, i) => (
+              <li key={i}>{q.question}</li>
+            ))}
+          </ul>
+        </div>
+      )}
     </section>
   );
 }
