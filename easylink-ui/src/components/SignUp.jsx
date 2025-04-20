@@ -156,17 +156,19 @@ function SignUp() {
           />
         )}
 
-        <input
-          type="text"
-          value={associativeQuestion}
-          onChange={(e) => setAssociativeQuestion(e.target.value)}
-          placeholder="Associative hint"
-          style={{
-            width: "100%",
-            padding: "0.5rem",
-            marginBottom: "0.5rem",
-          }}
-        />
+      <input
+        type="text"
+        value={associativeQuestion}
+        onChange={(e) => setAssociativeQuestion(e.target.value)}
+        placeholder="Associative hint"
+        style={{
+          width: "100%",
+          maxWidth: "300px",
+          padding: "0.5rem",
+          marginBottom: "0.5rem",
+        }}
+      />
+
 
         <div style={{ display: "flex", marginBottom: "0.5rem" }}>
           <input

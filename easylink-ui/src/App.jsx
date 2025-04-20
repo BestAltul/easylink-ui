@@ -1,55 +1,73 @@
 import { useState } from "react";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import "./App.css";
+import Profile from "./components/Profile";
 import SignUp from "./components/SignUp";
 import StartAuth from "./components/StartAuth";
 import CheckAnswers from "./components/CheckAnswers";
+import Header from "./components/Header";
+import Review from "./components/Review";
+import Footer from "./components/Footer";
+import About from "./components/About";
+
 
 function App() {
-  const [page, setPage] = useState("home");
   const [questions, setQuestions] = useState([]);
+  const navigate = useNavigate();
+  console.log("questions:", questions);
+
 
   return (
-    <div
-      style={{
-        maxWidth: "600px",
-        margin: "2rem auto",
-        fontFamily: "sans-serif",
-      }}
-    >
-      <h1>EasyLink Auth</h1>
+    <>
+      <Header />
+      <div
+        style={{
+          maxWidth: "600px",
+          margin: "2rem auto",
+          fontFamily: "sans-serif",
+        }}
+      >
+        <Routes>
+          {/* Path for Profile */}
+          <Route path="/profile" element={<Profile />} /> 
 
-      {page === "home" && (
-        <div>
-          <button
-            onClick={() => setPage("signup")}
-            style={{ padding: "1rem", margin: "1rem", width: "100%" }}
-          >
-            Sign Up
-          </button>
-          <button
-            onClick={() => setPage("signin")}
-            style={{ padding: "1rem", margin: "1rem", width: "100%" }}
-          >
-            Sign In
-          </button>
-        </div>
-      )}
+          <Route
+            path="/"
+            element={
+              <>
+                <h1>EasyLink Auth</h1>
+                <button
+                  onClick={() => navigate("/signup")}
+                  style={{ padding: "1rem", margin: "1rem", width: "100%" }}
+                >
+                  Sign Up
+                </button>
+                <button
+                  onClick={() => navigate("/signin")}
+                  style={{ padding: "1rem", margin: "1rem", width: "100%" }}
+                >
+                  Sign In
+                </button>
+              </>
+            }
+          />
 
-      {page === "signup" && <SignUp onBack={() => setPage("home")} />}
-      {page === "signin" && (
-        <>
-          //
-          <StartAuth questions={questions} setQuestions={setQuestions} />
-          <CheckAnswers questions={questions} />
-          <button
-            onClick={() => setPage("home")}
-            style={{ marginTop: "1rem", padding: "0.5rem" }}
-          >
-            Back
-          </button>
-        </>
-      )}
-    </div>
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/about" element={<About />} />
+          <Route
+            path="/signin"
+            element={
+              <>
+                <StartAuth questions={questions} setQuestions={setQuestions} />
+                <CheckAnswers questions={questions} />
+              </>
+            }
+          />
+          <Route path="/review" element={<Review />} />
+        </Routes>
+      </div>
+      <Footer />
+    </>
   );
 }
 
