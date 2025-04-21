@@ -1,7 +1,11 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
+
+import AuthContext from "../js/AuthContext";
 
 function StartAuth({ questions, setQuestions }) {
   const [email, setEmail] = useState("");
+  const { login } = useContext(AuthContext);
+
   //const [questions, setQuestions] = useState([]); // 👈 храним локально
 
   const handleStartAuth = async () => {
@@ -17,6 +21,9 @@ function StartAuth({ questions, setQuestions }) {
       console.log("Получены вопросы:", result);
 
       setQuestions(result); // 👈 сохраняем локально
+ 
+      login({ username: email });
+
     } catch (err) {
       alert("Ошибка при получении вопросов");
       setQuestions([]);

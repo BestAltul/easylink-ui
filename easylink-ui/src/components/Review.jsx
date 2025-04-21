@@ -1,21 +1,67 @@
-import React, { useState } from "react";
+import React, { useState, useEffect,useRef } from "react";
+import { useContext } from "react";
+import AuthContext from "../js/AuthContext";
 
 function Review() {
   const [text, setText] = useState("");
   const [submitted, setSubmitted] = useState(false);
-  const [reviews, setReviews] = useState([
-    { user: "Anna", message: "Great concept! Super easy to share my details." },
-    { user: "Mark", message: "Perfect for networking at events." },
-    { user: "Sophia", message: "Love the clean design and simplicity!" },
-  ]);
+  const [reviews, setReviews] = useState([]);
+  const { user, isAuthenticated } = useContext(AuthContext);
+  const reviewsEndRef = useRef(null);
+
+  const scrollToBottom = (smooth = false) => {
+    reviewsEndRef.current?.scrollIntoView({ behavior: smooth ? "smooth" : "auto" });
+  };
+  
+  
+  useEffect(() => {
+    scrollToBottom(false);
+  }, [reviews]);
+
+  const API_URL = "http://localhost:8080/api/v3/reviews";
+
+  // Универсальная функция загрузки отзывов
+  const loadReviews = () => {
+    fetch(API_URL)
+      .then((res) => res.json())
+      .then((data) => setReviews(data))
+      .catch((err) => console.error("Error fetching reviews:", err));
+  };
+
+  // Загрузка при монтировании компонента
+  useEffect(() => {
+    loadReviews();
+  }, []);
 
   const handleSubmit = (e) => {
+    if (!isAuthenticated) {
+      alert("You must be logged in to post a review.");
+      return;
+    }
     e.preventDefault();
     if (text.trim()) {
-      setReviews([{ user: "You", message: text }, ...reviews]);
-      setSubmitted(true);
-      setText("");
-      setTimeout(() => setSubmitted(false), 3000);
+      const newReview = {
+        username: user.username,
+        content: text,
+        createdAt: new Date().toISOString(),
+      };
+
+      fetch(API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newReview),
+      })
+        .then((res) => res.json())
+        .then(() => {
+          loadReviews(); // подгружаем свежие отзывы
+          setSubmitted(true);
+          setText("");
+          setTimeout(() => setSubmitted(false), 3000);
+          scrollToBottom(true);
+        })
+        .catch((err) => console.error("Error posting review:", err));
     }
   };
 
@@ -43,7 +89,10 @@ function Review() {
                   marginBottom: "0.2rem",
                 }}
               >
-                {review.user}
+                {review.username || "Anonymous"}
+              </div>
+              <div style={{ fontSize: "0.75rem", color: "#999", textAlign: "left" }}>
+                {new Date(review.createdAt).toLocaleString()}
               </div>
               <div
                 style={{
@@ -55,9 +104,10 @@ function Review() {
                 }}
               >
                 <span style={{ fontSize: "0.95rem", color: "#333" }}>
-                  {review.message}
+                  {review.content}
                 </span>
               </div>
+              <div ref={reviewsEndRef} />
             </div>
           ))}
         </div>

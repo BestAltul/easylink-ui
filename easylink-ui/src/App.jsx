@@ -9,15 +9,23 @@ import Header from "./components/Header";
 import Review from "./components/Review";
 import Footer from "./components/Footer";
 import About from "./components/About";
+import AuthContext from "./js/AuthContext";
 
 
 function App() {
+  const[user,setUser] = useState(null);
   const [questions, setQuestions] = useState([]);
   const navigate = useNavigate();
   console.log("questions:", questions);
 
+  const login = (userData) => setUser(userData);
+  const logout = () => setUser(null);
+
 
   return (
+    <AuthContext.Provider
+      value={{ user, isAuthenticated: !!user, login, logout }}
+    >
     <>
       <Header />
       <div
@@ -68,6 +76,7 @@ function App() {
       </div>
       <Footer />
     </>
+    </AuthContext.Provider>
   );
 }
 
