@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap-icons/font/bootstrap-icons.css";
 
 function SignUp() {
   const [email, setEmail] = useState("");
@@ -97,100 +99,98 @@ function SignUp() {
   };
 
   return (
-    <section>
-      <h2>Sign Up</h2>
+    <section className="container mt-4">
+      <h2 className="mb-4">Sign Up</h2>
 
-      <div style={{ marginBottom: "1.5rem" }}>
-        <label style={{ display: "block", marginBottom: "0.5rem" }}>
+      <div className="mb-4">
+        <label htmlFor="emailInput" className="form-label">
           Email:
         </label>
         <input
           type="email"
+          id="emailInput"
+          className="form-control rounded shadow-sm"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Enter your email"
-          style={{ width: "100%", padding: "0.5rem" }}
         />
       </div>
 
       <div
-        style={{
-          border: "1px solid #ccc",
-          padding: "1rem",
-          borderRadius: "8px",
-          marginBottom: "1rem",
-          backgroundColor: "#f9f9f9",
-        }}
+        className="p-4 rounded shadow mb-4"
+        style={{ backgroundColor: "#e1f3e0" }}
       >
-        <h4>{getPairTitle(entriesList.length)}</h4>
+        <h4 className="mb-3">{getPairTitle(entriesList.length)}</h4>
 
-        <select
-          onChange={handleSelectQuestion}
-          value={selectedQuestion}
-          style={{
-            width: "100%",
-            padding: "0.5rem",
-            marginBottom: "0.5rem",
-          }}
-        >
-          <option value="">-- Select a question --</option>
-          <option value="custom">Enter your own question</option>
-          {questions.map((q, i) => (
-            <option key={i} value={q.question}>
-              {q.question}
-            </option>
-          ))}
-        </select>
+        <div className="mb-3">
+          <label htmlFor="questionSelect" className="form-label">
+            Choose a question
+          </label>
+          <select
+            className="form-select rounded shadow-sm"
+            id="questionSelect"
+            onChange={handleSelectQuestion}
+            value={selectedQuestion}
+          >
+            <option value="">-- Select a question --</option>
+            <option value="custom">Enter your own question</option>
+            {questions.map((q, i) => (
+              <option key={i} value={q.question}>
+                {q.question}
+              </option>
+            ))}
+          </select>
+        </div>
 
         {customQuestionVisible && (
-          <input
-            type="text"
-            value={realQuestion}
-            onChange={(e) => setRealQuestion(e.target.value)}
-            placeholder="Enter your own question"
-            style={{
-              width: "100%",
-              padding: "0.5rem",
-              marginBottom: "0.5rem",
-            }}
-          />
+          <div className="mb-3">
+            <label htmlFor="customQuestion" className="form-label">
+              Your custom question
+            </label>
+            <input
+              type="text"
+              className="form-control rounded shadow-sm"
+              id="customQuestion"
+              value={realQuestion}
+              onChange={(e) => setRealQuestion(e.target.value)}
+              placeholder="Enter your own question"
+            />
+          </div>
         )}
 
-      <input
-        type="text"
-        value={associativeQuestion}
-        onChange={(e) => setAssociativeQuestion(e.target.value)}
-        placeholder="Associative hint"
-        style={{
-          width: "100%",
-          maxWidth: "300px",
-          padding: "0.5rem",
-          marginBottom: "0.5rem",
-        }}
-      />
+        <div className="mb-3">
+          <label htmlFor="associativeHint" className="form-label">
+            Associative hint
+          </label>
+          <input
+            type="text"
+            className="form-control rounded shadow-sm"
+            id="associativeHint"
+            value={associativeQuestion}
+            onChange={(e) => setAssociativeQuestion(e.target.value)}
+            placeholder="Enter associative hint"
+          />
+        </div>
 
-
-        <div style={{ display: "flex", marginBottom: "0.5rem" }}>
+        <div className="d-flex align-items-center mb-3">
           <input
             type={showAnswer ? "text" : "password"}
+            className="form-control rounded shadow-sm"
             value={answerText}
             onChange={(e) => setAnswerText(e.target.value)}
             placeholder="Answer"
-            style={{ flex: 1, padding: "0.5rem" }}
           />
           <button
             type="button"
             onClick={() => setShowAnswer(!showAnswer)}
-            style={{ marginLeft: "0.5rem", padding: "0.5rem" }}
+            className="btn btn-outline-secondary ms-2"
+            title={showAnswer ? "Hide answer" : "Show answer"}
           >
-            {showAnswer ? "Hide" : "Show"}
+            <i className={`bi ${showAnswer ? "bi-eye-slash" : "bi-eye"}`}></i>
           </button>
         </div>
 
-        <button
-          onClick={handleAdd}
-          style={{ width: "100%", padding: "0.5rem" }}
-        >
+        <button className="btn btn-primary w-100" onClick={handleAdd}>
           Add entry
         </button>
       </div>
@@ -198,26 +198,18 @@ function SignUp() {
       {entriesList.length > 0 && (
         <button
           onClick={() => setShowEntries(!showEntries)}
-          style={{
-            marginBottom: "1rem",
-            padding: "0.5rem",
-            width: "100%",
-            backgroundColor: "#eee",
-            border: "1px solid #ccc",
-            borderRadius: "4px",
-            cursor: "pointer",
-          }}
+          className="btn btn-light border-dark w-100 mb-3"
         >
           {showEntries ? "Hide entries" : "Show entries"}
         </button>
       )}
 
       {showEntries && entriesList.length > 0 && (
-        <div style={{ marginBottom: "1rem" }}>
+        <div className="mb-3">
           <h4>Your entries:</h4>
-          <ul>
+          <ul className="list-group">
             {entriesList.map((entry, i) => (
-              <li key={i} style={{ marginBottom: "0.5rem" }}>
+              <li key={i} className="list-group-item">
                 <div>
                   <strong>Question:</strong> {entry.realQuestion} <br />
                   <strong>Hint:</strong> {entry.associativeQuestion} <br />
@@ -225,15 +217,7 @@ function SignUp() {
                 </div>
                 <button
                   onClick={() => handleRemove(i)}
-                  style={{
-                    marginTop: "0.3rem",
-                    padding: "0.2rem 0.5rem",
-                    color: "white",
-                    backgroundColor: "red",
-                    border: "none",
-                    borderRadius: "4px",
-                    cursor: "pointer",
-                  }}
+                  className="btn btn-sm btn-danger mt-2"
                 >
                   ✕ Remove
                 </button>
@@ -243,10 +227,7 @@ function SignUp() {
         </div>
       )}
 
-      <button
-        onClick={handleSignup}
-        style={{ marginTop: "1rem", padding: "0.5rem", width: "100%" }}
-      >
+      <button className="btn btn-success w-100" onClick={handleSignup}>
         Sign Up
       </button>
     </section>
