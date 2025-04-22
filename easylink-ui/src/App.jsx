@@ -9,23 +9,13 @@ import Header from "./components/Header";
 import Review from "./components/Review";
 import Footer from "./components/Footer";
 import About from "./components/About";
-import AuthContext from "./js/AuthContext";
-
+import Home from "./components/Home"; 
 
 function App() {
-  const[user,setUser] = useState(null);
   const [questions, setQuestions] = useState([]);
   const navigate = useNavigate();
-  console.log("questions:", questions);
-
-  const login = (userData) => setUser(userData);
-  const logout = () => setUser(null);
-
 
   return (
-    <AuthContext.Provider
-      value={{ user, isAuthenticated: !!user, login, logout }}
-    >
     <>
       <Header />
       <div
@@ -36,30 +26,8 @@ function App() {
         }}
       >
         <Routes>
-          {/* Path for Profile */}
-          <Route path="/profile" element={<Profile />} /> 
-
-          <Route
-            path="/"
-            element={
-              <>
-                <h1>EasyLink Auth</h1>
-                <button
-                  onClick={() => navigate("/signup")}
-                  style={{ padding: "1rem", margin: "1rem", width: "100%" }}
-                >
-                  Sign Up
-                </button>
-                <button
-                  onClick={() => navigate("/signin")}
-                  style={{ padding: "1rem", margin: "1rem", width: "100%" }}
-                >
-                  Sign In
-                </button>
-              </>
-            }
-          />
-
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/" element={<Home />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/about" element={<About />} />
           <Route
@@ -76,7 +44,6 @@ function App() {
       </div>
       <Footer />
     </>
-    </AuthContext.Provider>
   );
 }
 

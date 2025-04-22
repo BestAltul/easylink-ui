@@ -1,12 +1,12 @@
 import React, { useState, useEffect,useRef } from "react";
-import { useContext } from "react";
-import AuthContext from "../js/AuthContext";
+import { useAuth } from "../js/AuthContext";
+
 
 function Review() {
   const [text, setText] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [reviews, setReviews] = useState([]);
-  const { user, isAuthenticated } = useContext(AuthContext);
+  const { user, isAuthenticated } = useAuth();
   const reviewsEndRef = useRef(null);
 
   const scrollToBottom = (smooth = false) => {

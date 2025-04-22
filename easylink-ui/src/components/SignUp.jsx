@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
+import { useNavigate } from "react-router-dom";
 
 function SignUp() {
   const [email, setEmail] = useState("");
   const [questions, setQuestions] = useState([]);
   const [selectedQuestion, setSelectedQuestion] = useState("");
   const [customQuestionVisible, setCustomQuestionVisible] = useState(false);
+  const navigate = useNavigate();
 
   const [realQuestion, setRealQuestion] = useState("");
   const [associativeQuestion, setAssociativeQuestion] = useState("");
@@ -81,7 +83,10 @@ function SignUp() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, entries: entriesList }),
       });
-      alert(await res.text());
+
+      const message = await res.text();
+      alert(message);
+      navigate("/signin"); // 👈 переход после регистрации
     } catch (err) {
       alert("Registration failed");
     }
@@ -118,7 +123,7 @@ function SignUp() {
 
       <div
         className="p-4 rounded shadow mb-4"
-        style={{ backgroundColor: "#e1f3e0" }}
+        style={{ backgroundColor: "#f5f5f5" }}
       >
         <h4 className="mb-3">{getPairTitle(entriesList.length)}</h4>
 
@@ -230,6 +235,17 @@ function SignUp() {
       <button className="btn btn-success w-100" onClick={handleSignup}>
         Sign Up
       </button>
+
+      <p className="text-center mt-3">
+        Already have an account?{" "}
+        <button
+          onClick={() => navigate("/signin")}
+          className="btn btn-link p-0"
+          style={{ textDecoration: "underline", fontWeight: "500" }}
+        >
+          Log in
+        </button>
+      </p>
     </section>
   );
 }

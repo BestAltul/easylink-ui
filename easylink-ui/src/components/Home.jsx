@@ -1,23 +1,29 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../js/AuthContext";
 
 export default function Home() {
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
+
+  const handleClick = () => {
+    if (isAuthenticated) {
+      navigate("/profile");
+    } else {
+      navigate("/signup");
+    }
+  };
 
   return (
-    <div style={{ textAlign: "center" }}>
-      <h1>EasyLink Auth</h1>
+    <div style={{ textAlign: "center", padding: "2rem" }}>
+      <h1>Welcome to EasyLink</h1>
+      <p>Your smart way to manage secure login and identity.</p>
       <button
-        onClick={() => navigate("/signup")}
-        style={{ padding: "1rem", margin: "1rem", width: "100%" }}
+        onClick={handleClick}
+        className="btn btn-primary"
+        style={{ padding: "1rem 2rem", marginTop: "1rem", fontSize: "1.2rem" }}
       >
-        Sign Up
-      </button>
-      <button
-        onClick={() => navigate("/signin")}
-        style={{ padding: "1rem", margin: "1rem", width: "100%" }}
-      >
-        Sign In
+        Get Started
       </button>
     </div>
   );

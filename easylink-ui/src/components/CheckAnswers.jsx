@@ -1,10 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../js/AuthContext"; // <- added
 
 function CheckAnswers({ questions }) {
   const [rawAnswers, setRawAnswers] = useState("");
   const [authResult, setAuthResult] = useState("");
   const navigate = useNavigate();
+  const { login } = useAuth(); // getting login
 
   const handleCheckAnswers = async () => {
     try {
@@ -24,11 +26,10 @@ function CheckAnswers({ questions }) {
       const text = await res.text();
       setAuthResult(text);
 
-      // if OK, redirecting
       if (text.toLowerCase().includes("success")) {
+        login({ email: "user@email.com" }); 
         navigate("/profile");
       }
-
     } catch (err) {
       setAuthResult("Error while checking");
     }
@@ -52,7 +53,22 @@ function CheckAnswers({ questions }) {
       >
         Check Answers
       </button>
-      <pre style={{ background: "#f4f4f4", padding: "1rem" }}>{authResult}</pre>
+      {authResult && (
+        <div
+          style={{
+            marginTop: "15px",
+            padding: "1rem",
+            backgroundColor: "#f5f5f5",
+            borderRadius: "12px",
+            fontFamily: "monospace",
+            whiteSpace: "pre-wrap",
+            boxShadow: "0 2px 4px rgba(0, 0, 0, 0.05)",
+            border: "1px solid #ddd",
+          }}
+        >
+          {authResult}
+        </div>
+      )}
     </section>
   );
 }

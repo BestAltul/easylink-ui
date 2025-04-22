@@ -1,4 +1,4 @@
-/* сбросим дефолтные отступы, если ещё не сделали */
+/* сбросим дефолтные отступы, COMMENTED NOW */
 /* * {
   margin: 0;
   padding: 0;
@@ -52,4 +52,18 @@
 }
 .nav a:hover {
   color: #007bff;
+}
+
+.logout-btn {
+  background: none;
+  border: none;
+  color: #333;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0;
+}
+
+.logout-btn:hover {
+  color: #007bff;
+  text-decoration: underline;
 }

@@ -1,12 +1,13 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
+import { useAuth } from "../js/AuthContext.jsx";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap-icons/font/bootstrap-icons.css";
 
-import AuthContext from "../js/AuthContext";
+
 
 function StartAuth({ questions, setQuestions }) {
   const [email, setEmail] = useState("");
-  const { login } = useContext(AuthContext);
-
-  //const [questions, setQuestions] = useState([]); // 👈 храним локально
+  const { login } = useAuth();
 
   const handleStartAuth = async () => {
     try {
@@ -17,13 +18,8 @@ function StartAuth({ questions, setQuestions }) {
       });
 
       const result = await res.json();
-
-      console.log("Получены вопросы:", result);
-
-      setQuestions(result); // 👈 сохраняем локально
- 
+      setQuestions(result);
       login({ username: email });
-
     } catch (err) {
       alert("Ошибка при получении вопросов");
       setQuestions([]);
@@ -31,29 +27,34 @@ function StartAuth({ questions, setQuestions }) {
   };
 
   return (
-    <section>
-      <h2>Start Authentication</h2>
+    <section className="container mt-4">
+      <h2 className="mb-4">Start Authentication</h2>
 
-      <input
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="Email"
-        style={{ width: "100%", padding: "0.5rem" }}
-      />
+      <div className="mb-3">
+        <label htmlFor="emailInput" className="form-label">
+          Email:
+        </label>
+        <input
+          id="emailInput"
+          type="email"
+          className="form-control rounded shadow-sm"
+          placeholder="Enter your email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+      </div>
+
       <button
+        className="btn btn-success w-100 mb-4"
         onClick={handleStartAuth}
-        style={{ marginTop: "0.5rem", padding: "0.5rem", width: "100%" }}
       >
         Start Auth
       </button>
 
-      {/* 👇 Вот тут показываем полученные вопросы */}
       {Array.isArray(questions) && questions.length > 0 && (
-        <div
-          style={{ marginTop: "1rem", background: "#f0f0f0", padding: "1rem" }}
-        >
-          <strong>Полученные вопросы:</strong>
-          <ul>
+        <div className="p-4 rounded shadow" style={{ backgroundColor: "#f8f9fa" }}>
+          <strong>Received questions:</strong>
+          <ul className="mt-2">
             {questions.map((q, i) => (
               <li key={i}>{q.question}</li>
             ))}
