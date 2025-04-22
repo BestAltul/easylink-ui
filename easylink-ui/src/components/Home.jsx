@@ -18,6 +18,9 @@ export default function Home() {
     <div style={{ textAlign: "center", padding: "2rem" }}>
       <h1>Welcome to EasyLink</h1>
       <p>Your smart way to manage secure login and identity.</p>
+      <p className="text-muted">
+        Want to know how EasyLink works? <a href="/about">Read more here</a>
+      </p>
       <button
         onClick={handleClick}
         className="btn btn-primary"

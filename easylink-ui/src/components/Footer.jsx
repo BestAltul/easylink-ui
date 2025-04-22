@@ -1,13 +1,15 @@
 // src/components/Footer.jsx
-import React from "react";
 import "./Footer.css";
 
-function Footer() {
+export default function Footer() {
   return (
     <footer className="footer">
-      <p>© {new Date().getFullYear()} EasyLink. All rights reserved.</p>
+      <div className="footer__container">
+        <p><strong>© 2025 EasyLink</strong>. All rights reserved.</p>
+        <p style={{ marginTop: "0.2rem", fontSize: "0.9rem", color: "#666" }}>
+          Contact us: support@easylink.io
+        </p>
+      </div>
     </footer>
   );
 }
-
-export default Footer;
