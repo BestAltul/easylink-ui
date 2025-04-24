@@ -4,7 +4,7 @@ import "./App.css";
 import Profile from "./components/Profile";
 import SignUp from "./components/SignUp";
 import StartAuth from "./components/StartAuth";
-import CheckAnswers from "./components/CheckAnswers";
+
 import Header from "./components/Header";
 import Review from "./components/Review";
 import Footer from "./components/Footer";
@@ -35,7 +35,6 @@ function App() {
             element={
               <>
                 <StartAuth questions={questions} setQuestions={setQuestions} />
-                <CheckAnswers questions={questions} />
               </>
             }
           />
