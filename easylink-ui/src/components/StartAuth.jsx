@@ -6,12 +6,12 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 
 function StartAuth({ questions, setQuestions }) {
   const [email, setEmail] = useState("");
-  const [questions, setQuestions] = useState([]);
   const [rawAnswers, setRawAnswers] = useState("");
   const [authResult, setAuthResult] = useState("");
   const { login } = useAuth();
   const navigate = useNavigate();
   const [showAnswers, setShowAnswers] = useState(false);
+
   const startAuth = async () => {
     try {
       const res = await fetch("/api/v3/auth/start", {
@@ -68,15 +68,12 @@ function StartAuth({ questions, setQuestions }) {
         />
       </div>
 
-      <button className="btn btn-success w-100 mb-4" onClick={handleStartAuth}>
+      <button className="btn btn-success w-100 mb-4" onClick={startAuth}>
         Start Auth
       </button>
 
       {Array.isArray(questions) && questions.length > 0 && (
-        <div
-          className="p-4 rounded shadow"
-          style={{ backgroundColor: "#f8f9fa" }}
-        >
+        <div className="p-4 rounded shadow" style={{ backgroundColor: "#f8f9fa" }}>
           <strong>Received questions:</strong>
           <ul className="mt-2">
             {questions.map((q, i) => (
@@ -85,7 +82,8 @@ function StartAuth({ questions, setQuestions }) {
               </li>
             ))}
           </ul>
-          <label className="form-label">Your Answers (comma-separated):</label>
+
+          <label className="form-label mt-3">Your Answers (comma-separated):</label>
           <div className="input-group">
             <input
               type={showAnswers ? "text" : "password"}
@@ -102,6 +100,7 @@ function StartAuth({ questions, setQuestions }) {
               {showAnswers ? "Hide" : "Show"}
             </button>
           </div>
+
           <button onClick={checkAnswers} className="btn btn-success w-100 mt-3">
             Check Answers
           </button>
@@ -124,4 +123,4 @@ function StartAuth({ questions, setQuestions }) {
   );
 }
 
-export default SignIn;
+export default StartAuth;
