@@ -17,7 +17,7 @@ function CheckAnswers({ questions }) {
         answer: splitted[i],
       }));
 
-      const res = await fetch("http://localhost:8080/api/v3/auth/check", {
+      const res = await fetch("/api/v3/auth/check", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ answers }),
@@ -27,7 +27,7 @@ function CheckAnswers({ questions }) {
       setAuthResult(text);
 
       if (text.toLowerCase().includes("success")) {
-        login({ email: "user@email.com" }); 
+        login({ email: "user@email.com" });
         navigate("/profile");
       }
     } catch (err) {

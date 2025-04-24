@@ -1,6 +1,5 @@
-import React, { useState, useEffect,useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useAuth } from "../js/AuthContext";
-
 
 function Review() {
   const [text, setText] = useState("");
@@ -10,15 +9,17 @@ function Review() {
   const reviewsEndRef = useRef(null);
 
   const scrollToBottom = (smooth = false) => {
-    reviewsEndRef.current?.scrollIntoView({ behavior: smooth ? "smooth" : "auto" });
+    reviewsEndRef.current?.scrollIntoView({
+      behavior: smooth ? "smooth" : "auto",
+    });
   };
-  
-  
+
   useEffect(() => {
     scrollToBottom(false);
   }, [reviews]);
 
-  const API_URL = "http://localhost:8080/api/v3/reviews";
+  //const API_URL = "http://localhost:8080/api/v3/reviews";
+  const API_URL = "/api/v3/reviews";
 
   // Универсальная функция загрузки отзывов
   const loadReviews = () => {
@@ -91,7 +92,13 @@ function Review() {
               >
                 {review.username || "Anonymous"}
               </div>
-              <div style={{ fontSize: "0.75rem", color: "#999", textAlign: "left" }}>
+              <div
+                style={{
+                  fontSize: "0.75rem",
+                  color: "#999",
+                  textAlign: "left",
+                }}
+              >
                 {new Date(review.createdAt).toLocaleString()}
               </div>
               <div

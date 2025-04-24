@@ -18,7 +18,7 @@ function SignUp() {
   const [showEntries, setShowEntries] = useState(false);
 
   useEffect(() => {
-    fetch("http://localhost:8080api/v3/auth/start", {
+    fetch("/api/v3/auth/start", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email: "template@email.com" }),
@@ -78,7 +78,7 @@ function SignUp() {
     }
 
     try {
-      const res = await fetch("http://localhost:8080/api/v3/auth/signup", {
+      const res = await fetch("/api/v3/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, entries: entriesList }),
