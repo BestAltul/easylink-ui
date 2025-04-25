@@ -35,7 +35,7 @@ function StartAuth({ questions, setQuestions }) {
         answer: splitted[i],
       }));
 
-      const res = await fetch("http://localhost:8080/api/v3/auth/check", {
+      const res = await fetch("/api/v3/auth/check", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ answers }),
@@ -73,7 +73,10 @@ function StartAuth({ questions, setQuestions }) {
       </button>
 
       {Array.isArray(questions) && questions.length > 0 && (
-        <div className="p-4 rounded shadow" style={{ backgroundColor: "#f8f9fa" }}>
+        <div
+          className="p-4 rounded shadow"
+          style={{ backgroundColor: "#f8f9fa" }}
+        >
           <strong>Received questions:</strong>
           <ul className="mt-2">
             {questions.map((q, i) => (
@@ -83,7 +86,9 @@ function StartAuth({ questions, setQuestions }) {
             ))}
           </ul>
 
-          <label className="form-label mt-3">Your Answers (comma-separated):</label>
+          <label className="form-label mt-3">
+            Your Answers (comma-separated):
+          </label>
           <div className="input-group">
             <input
               type={showAnswers ? "text" : "password"}

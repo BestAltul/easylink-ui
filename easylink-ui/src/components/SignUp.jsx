@@ -8,6 +8,7 @@ function SignUp() {
   const [questions, setQuestions] = useState([]);
   const [step, setStep] = useState(1);
   const [totalQuestions, setTotalQuestions] = useState(1);
+  const [questionTemplates, setQuestionTemplates] = useState([]);
 
   const [selectedQuestion, setSelectedQuestion] = useState("");
   const [customQuestionVisible, setCustomQuestionVisible] = useState(false);
@@ -30,6 +31,15 @@ function SignUp() {
       .catch(() => setQuestions([]));
   }, []);
 
+  useEffect(() => {
+    fetch("/api/v3/auth/question-templates")
+      .then((res) => res.json())
+      .then((data) => setQuestionTemplates(data))
+      .catch(() => setQuestionTemplates([]));
+  }, []);
+
+  console.log("QT", questionTemplates);
+
   const handleSelectQuestion = (e) => {
     const value = e.target.value;
     setSelectedQuestion(value);
@@ -38,25 +48,52 @@ function SignUp() {
   };
 
   const handleAdd = () => {
-    if (!realQuestion.trim() || !associativeQuestion.trim() || !answerText.trim()) {
+    if (
+      (!customQuestionVisible && !selectedQuestion) ||
+      (customQuestionVisible && !realQuestion.trim()) ||
+      !associativeQuestion.trim() ||
+      !answerText.trim()
+    ) {
       alert("Please fill in all fields");
       return;
     }
 
+    let questionTemplate;
+
+    if (selectedQuestion === "custom") {
+      // ручной ввод
+      questionTemplate = {
+        text: realQuestion.trim(),
+        predefined: false,
+        createdAt: new Date().toISOString(),
+      };
+    } else {
+      // поиск готового шаблона по text
+      const template = questionTemplates.find(
+        (q) => q.text === selectedQuestion
+      );
+      questionTemplate = template
+        ? template
+        : {
+            text: selectedQuestion,
+            predefined: true,
+            createdAt: new Date().toISOString(), // fallback
+          };
+    }
+
+    console.log("questionTemplate", questionTemplate);
+
     const newEntry = {
-      realQuestion: realQuestion.trim(),
+      realQuestion: questionTemplate,
       associativeQuestion: associativeQuestion.trim(),
       answer: answerText.trim(),
     };
 
-    const newEntries = [...entriesList, newEntry];
-    setEntriesList(newEntries);
+    setEntriesList((prev) => [...prev, newEntry]);
 
-    if (newEntries.length >= totalQuestions) {
-      setStep(totalQuestions + 3);
-    } else {
-      setStep(step + 1);
-    }
+    setStep((prev) =>
+      prev - 2 + 1 >= totalQuestions ? totalQuestions + 3 : prev + 1
+    );
 
     setSelectedQuestion("");
     setCustomQuestionVisible(false);
@@ -76,7 +113,6 @@ function SignUp() {
     //   email,
     //   entries: entriesList,
     // });
-    
 
     try {
       const res = await fetch("/api/v3/auth/signup", {
@@ -133,10 +169,7 @@ function SignUp() {
             value={totalQuestions}
             onChange={(e) => setTotalQuestions(Number(e.target.value))}
           />
-          <button
-            className="btn btn-primary mt-3"
-            onClick={() => setStep(3)}
-          >
+          <button className="btn btn-primary mt-3" onClick={() => setStep(3)}>
             Start
           </button>
         </div>
@@ -145,17 +178,26 @@ function SignUp() {
 
     if (step >= 3 && step < totalQuestions + 3) {
       return (
-        <div className="card p-4 shadow-sm" style={{ backgroundColor: "#f8f9fa" }}>
+        <div
+          className="card p-4 shadow-sm"
+          style={{ backgroundColor: "#f8f9fa" }}
+        >
           <h5 className="mb-3">
             Step {step - 2} of {totalQuestions}: Create a memory lock
           </h5>
 
           <label className="form-label">Choose a question</label>
-          <select className="form-select mb-3" onChange={handleSelectQuestion} value={selectedQuestion}>
+          <select
+            className="form-select mb-3"
+            onChange={handleSelectQuestion}
+            value={selectedQuestion}
+          >
             <option value="">-- Select a question --</option>
             <option value="custom">Enter your own</option>
-            {questions.map((q, i) => (
-              <option key={i} value={q.question}>{q.question}</option>
+            {questionTemplates.map((q, i) => (
+              <option key={i} value={q.text}>
+                {q.text}
+              </option>
             ))}
           </select>
 
@@ -185,7 +227,11 @@ function SignUp() {
               value={answerText}
               onChange={(e) => setAnswerText(e.target.value)}
             />
-            <button className="btn btn-outline-secondary" type="button" onClick={() => setShowAnswer(!showAnswer)}>
+            <button
+              className="btn btn-outline-secondary"
+              type="button"
+              onClick={() => setShowAnswer(!showAnswer)}
+            >
               <i className={`bi ${showAnswer ? "bi-eye-slash" : "bi-eye"}`}></i>
             </button>
           </div>
@@ -215,10 +261,9 @@ function SignUp() {
             className="progress-bar"
             role="progressbar"
             style={{
-              width: `${((step) / (totalQuestions + 2)) * 100}%`,
-              backgroundColor: "#4caf50" // или другой зелёный HEX
+              width: `${(step / (totalQuestions + 2)) * 100}%`,
+              backgroundColor: "#4caf50", // или другой зелёный HEX
             }}
-            
           >
             Step {step} of {totalQuestions + 2}
           </div>
