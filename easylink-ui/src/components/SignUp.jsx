@@ -48,7 +48,9 @@ function SignUp() {
         createdAt: new Date().toISOString(),
       };
     } else {
-      const template = questionTemplates.find((q) => q.text === selectedQuestion);
+      const template = questionTemplates.find(
+        (q) => q.text === selectedQuestion
+      );
       questionTemplate = template || {
         text: selectedQuestion,
         predefined: true,
@@ -86,7 +88,7 @@ function SignUp() {
     }
 
     try {
-      const res = await fetch("http://localhost:8080/api/v3/auth/signup", {
+      const res = await fetch("/api/v3/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, entries: entriesList }),
@@ -131,13 +133,17 @@ function SignUp() {
     if (step === 2) {
       return (
         <div className="card p-4 shadow-sm text-center">
-          <label className="form-label mb-3">Choose number of memory locks:</label>
+          <label className="form-label mb-3">
+            Choose number of memory locks:
+          </label>
           <div className="d-flex justify-content-center gap-3 flex-wrap">
             {[1, 2, 3, 4, 5].map((num) => (
               <button
                 key={num}
                 style={{ width: "60px", height: "60px", fontSize: "1.5rem" }}
-                className={`btn rounded-circle ${totalQuestions === num ? "btn-success" : "btn-outline-success"}`}
+                className={`btn rounded-circle ${
+                  totalQuestions === num ? "btn-success" : "btn-outline-success"
+                }`}
                 onClick={() => {
                   setTotalQuestions(num);
                   setStep(3);
@@ -153,7 +159,10 @@ function SignUp() {
 
     if (step >= 3 && step < totalQuestions + 3) {
       return (
-        <div className="card p-4 shadow-sm" style={{ backgroundColor: "#f8f9fa" }}>
+        <div
+          className="card p-4 shadow-sm"
+          style={{ backgroundColor: "#f8f9fa" }}
+        >
           <h5 className="mb-3">
             Step {step - 2} of {totalQuestions}: Create a memory lock
           </h5>

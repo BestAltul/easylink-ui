@@ -26,7 +26,11 @@ function SignUp() {
   };
 
   const handleAdd = () => {
-    if (!realQuestion.trim() || !associativeQuestion.trim() || !answerText.trim()) {
+    if (
+      !realQuestion.trim() ||
+      !associativeQuestion.trim() ||
+      !answerText.trim()
+    ) {
       alert("Please fill in all fields");
       return;
     }
@@ -61,7 +65,7 @@ function SignUp() {
     }
 
     try {
-      const res = await fetch("http://localhost:8080/api/v3/auth/signup", {
+      const res = await fetch("/api/v3/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, entries: entriesList }),
@@ -106,13 +110,17 @@ function SignUp() {
     if (step === 2) {
       return (
         <div className="card p-4 shadow-sm text-center">
-          <label className="form-label mb-3">Choose number of memory locks:</label>
+          <label className="form-label mb-3">
+            Choose number of memory locks:
+          </label>
           <div className="d-flex justify-content-center gap-3 flex-wrap">
             {[1, 2, 3, 4, 5].map((num) => (
               <button
                 key={num}
                 style={{ width: "60px", height: "60px", fontSize: "1.5rem" }}
-                className={`btn rounded-circle ${totalQuestions === num ? "btn-success" : "btn-outline-success"}`}
+                className={`btn rounded-circle ${
+                  totalQuestions === num ? "btn-success" : "btn-outline-success"
+                }`}
                 onClick={() => {
                   setTotalQuestions(num);
                   setStep(3);
@@ -124,22 +132,30 @@ function SignUp() {
           </div>
         </div>
       );
-
     }
 
     if (step >= 3 && step < totalQuestions + 3) {
       return (
-        <div className="card p-4 shadow-sm" style={{ backgroundColor: "#f8f9fa" }}>
+        <div
+          className="card p-4 shadow-sm"
+          style={{ backgroundColor: "#f8f9fa" }}
+        >
           <h5 className="mb-3">
             Step {step - 2} of {totalQuestions}: Create a memory lock
           </h5>
 
           <label className="form-label">Choose a question</label>
-          <select className="form-select mb-3" onChange={handleSelectQuestion} value={selectedQuestion}>
+          <select
+            className="form-select mb-3"
+            onChange={handleSelectQuestion}
+            value={selectedQuestion}
+          >
             <option value="">-- Select a question --</option>
             <option value="custom">Enter your own</option>
             {questions.map((q, i) => (
-              <option key={i} value={q.question}>{q.question}</option>
+              <option key={i} value={q.question}>
+                {q.question}
+              </option>
             ))}
           </select>
 
@@ -169,7 +185,11 @@ function SignUp() {
               value={answerText}
               onChange={(e) => setAnswerText(e.target.value)}
             />
-            <button className="btn btn-outline-secondary" type="button" onClick={() => setShowAnswer(!showAnswer)}>
+            <button
+              className="btn btn-outline-secondary"
+              type="button"
+              onClick={() => setShowAnswer(!showAnswer)}
+            >
               <i className={`bi ${showAnswer ? "bi-eye-slash" : "bi-eye"}`}></i>
             </button>
           </div>
@@ -199,8 +219,8 @@ function SignUp() {
             className="progress-bar"
             role="progressbar"
             style={{
-              width: `${((step) / (totalQuestions + 2)) * 100}%`,
-              backgroundColor: "#4caf50"
+              width: `${(step / (totalQuestions + 2)) * 100}%`,
+              backgroundColor: "#4caf50",
             }}
           >
             Step {step} of {totalQuestions + 2}
