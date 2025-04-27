@@ -1,10 +1,10 @@
+import React from "react";
 import { useState } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import "./App.css";
 import Profile from "./components/Profile";
 import SignUp from "./components/SignUp";
 import StartAuth from "./components/StartAuth";
-
 import Header from "./components/Header";
 import Review from "./components/Review";
 import Footer from "./components/Footer";

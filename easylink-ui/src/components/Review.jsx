@@ -19,7 +19,8 @@ function Review() {
   }, [reviews]);
 
   //const API_URL = "http://localhost:8080/api/v3/reviews";
-  const API_URL = "/api/v3/reviews";
+  const API_URL = "http://localhost:8080/api/v3/reviews";
+
 
   // Универсальная функция загрузки отзывов
   const loadReviews = () => {

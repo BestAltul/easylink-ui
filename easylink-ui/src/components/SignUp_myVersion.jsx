@@ -1,4 +1,3 @@
-import React from "react";
 import { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
@@ -7,9 +6,8 @@ import { useNavigate } from "react-router-dom";
 function SignUp() {
   const [email, setEmail] = useState("");
   const [questions, setQuestions] = useState([]);
-  const [questionTemplates, setQuestionTemplates] = useState([]);
   const [step, setStep] = useState(1);
-  const [totalQuestions, setTotalQuestions] = useState(3);
+  const [totalQuestions, setTotalQuestions] = useState(3); // default to 3
 
   const [selectedQuestion, setSelectedQuestion] = useState("");
   const [customQuestionVisible, setCustomQuestionVisible] = useState(false);
@@ -20,7 +18,6 @@ function SignUp() {
   const [entriesList, setEntriesList] = useState([]);
 
   const navigate = useNavigate();
-
   const handleSelectQuestion = (e) => {
     const value = e.target.value;
     setSelectedQuestion(value);
@@ -29,46 +26,24 @@ function SignUp() {
   };
 
   const handleAdd = () => {
-    if (
-      (!customQuestionVisible && !selectedQuestion) ||
-      (customQuestionVisible && !realQuestion.trim()) ||
-      !associativeQuestion.trim() ||
-      !answerText.trim()
-    ) {
+    if (!realQuestion.trim() || !associativeQuestion.trim() || !answerText.trim()) {
       alert("Please fill in all fields");
       return;
     }
 
-    let questionTemplate;
-
-    if (selectedQuestion === "custom") {
-      questionTemplate = {
-        text: realQuestion.trim(),
-        predefined: false,
-        createdAt: new Date().toISOString(),
-      };
-    } else {
-      const template = questionTemplates.find((q) => q.text === selectedQuestion);
-      questionTemplate = template || {
-        text: selectedQuestion,
-        predefined: true,
-        createdAt: new Date().toISOString(),
-      };
-    }
-
     const newEntry = {
-      realQuestion: questionTemplate,
+      realQuestion: realQuestion.trim(),
       associativeQuestion: associativeQuestion.trim(),
       answer: answerText.trim(),
     };
 
-    const newList = [...entriesList, newEntry];
-    setEntriesList(newList);
+    const newEntries = [...entriesList, newEntry];
+    setEntriesList(newEntries);
 
-    if (newList.length >= totalQuestions) {
+    if (newEntries.length >= totalQuestions) {
       setStep(totalQuestions + 3);
     } else {
-      setStep((prev) => prev + 1);
+      setStep(step + 1);
     }
 
     setSelectedQuestion("");
@@ -149,6 +124,7 @@ function SignUp() {
           </div>
         </div>
       );
+
     }
 
     if (step >= 3 && step < totalQuestions + 3) {
@@ -159,17 +135,11 @@ function SignUp() {
           </h5>
 
           <label className="form-label">Choose a question</label>
-          <select
-            className="form-select mb-3"
-            onChange={handleSelectQuestion}
-            value={selectedQuestion}
-          >
+          <select className="form-select mb-3" onChange={handleSelectQuestion} value={selectedQuestion}>
             <option value="">-- Select a question --</option>
             <option value="custom">Enter your own</option>
-            {questionTemplates.map((q, i) => (
-              <option key={i} value={q.text}>
-                {q.text}
-              </option>
+            {questions.map((q, i) => (
+              <option key={i} value={q.question}>{q.question}</option>
             ))}
           </select>
 
@@ -199,11 +169,7 @@ function SignUp() {
               value={answerText}
               onChange={(e) => setAnswerText(e.target.value)}
             />
-            <button
-              className="btn btn-outline-secondary"
-              type="button"
-              onClick={() => setShowAnswer(!showAnswer)}
-            >
+            <button className="btn btn-outline-secondary" type="button" onClick={() => setShowAnswer(!showAnswer)}>
               <i className={`bi ${showAnswer ? "bi-eye-slash" : "bi-eye"}`}></i>
             </button>
           </div>
@@ -233,8 +199,8 @@ function SignUp() {
             className="progress-bar"
             role="progressbar"
             style={{
-              width: `${(step / (totalQuestions + 2)) * 100}%`,
-              backgroundColor: "#4caf50",
+              width: `${((step) / (totalQuestions + 2)) * 100}%`,
+              backgroundColor: "#4caf50"
             }}
           >
             Step {step} of {totalQuestions + 2}

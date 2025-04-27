@@ -1,3 +1,4 @@
+import React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../js/AuthContext";
@@ -14,7 +15,7 @@ function StartAuth({ questions, setQuestions }) {
 
   const startAuth = async () => {
     try {
-      const res = await fetch("/api/v3/auth/start", {
+      const res = await fetch("http://localhost:8080/api/v3/auth/start", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
@@ -34,16 +35,16 @@ function StartAuth({ questions, setQuestions }) {
         entryId: q.entryId,
         answer: splitted[i],
       }));
-
-      const res = await fetch("/api/v3/auth/check", {
+  
+      const res = await fetch("http://localhost:8080/api/v3/auth/check", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ answers }),
+        body: JSON.stringify({ email, answers }), 
       });
-
+  
       const text = await res.text();
       setAuthResult(text);
-
+  
       if (text.toLowerCase().includes("success")) {
         login({ username: email });
         navigate("/profile");
@@ -52,6 +53,7 @@ function StartAuth({ questions, setQuestions }) {
       setAuthResult("Ошибка при проверке");
     }
   };
+  
 
   return (
     <section className="container mt-4">
