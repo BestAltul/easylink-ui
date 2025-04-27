@@ -15,7 +15,20 @@ function Header() {
   return (
     <header className="header">
       <div className="header__container">
-        <Link to="/" className="logo">EasyLink</Link>
+        <Link to="/" className="logo">
+          <img
+            src="/clearviewblue.png"
+            alt="logo"
+            style={{
+              width: "36px",
+              height: "36px",
+              marginRight: "8px",
+              verticalAlign: "bottom",
+            }}
+          />
+          EasyLink
+        </Link>
+
         <nav className="nav">
           <Link to="/">Home</Link>
           {!isAuthenticated && <Link to="/signup">Sign Up</Link>}
@@ -24,7 +37,9 @@ function Header() {
           <Link to="/about">About</Link>
           <Link to="/review">Review</Link>
           {isAuthenticated && (
-            <button onClick={handleLogout} className="logout-btn">Log Out</button>
+            <button onClick={handleLogout} className="logout-btn">
+              Log Out
+            </button>
           )}
         </nav>
       </div>
