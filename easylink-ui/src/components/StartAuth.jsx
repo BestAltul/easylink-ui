@@ -38,11 +38,13 @@ function StartAuth({ questions, setQuestions }) {
         answer: splitted[i],
       }));
 
-      const res = await fetch("http://localhost:8080/api/v3/auth/check", {
+      const res = await fetch("/api/v3/auth/check", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, answers }),
       });
+
+      console.log("resul", res);
 
       if (res.ok) {
         const data = await res.text();
@@ -55,14 +57,25 @@ function StartAuth({ questions, setQuestions }) {
           navigate("/profile");
         }
       } else {
-        const errorData = await res.json();
+        let errorData = null;
+        let errorText = null;
+
+        const contentType = res.headers.get("content-type") || "";
+
+        if (contentType.includes("application/json")) {
+          errorData = await res.json();
+        } else {
+          errorText = await res.text();
+        }
+
+        //   const errorData = await res.json();
 
         if (res.status === 423) {
           toast.error("🚫 Blocked: " + errorData.message, {
             position: "top-right",
           });
         } else if (res.status === 401) {
-          toast.warn("❗ Wrong answers: " + errorData.message, {
+          toast.warn("❗ Wrong answers: " + (errorData?.message || errorText), {
             position: "top-right",
           });
         } else {
