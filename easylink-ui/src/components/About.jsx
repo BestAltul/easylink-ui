@@ -4,7 +4,7 @@ export default function About() {
   const steps = [
     {
       title: "1. No passwords",
-      text: "You don’t need to remember complex passwords. Just create 2-3 questions and your answers – that’s your new secure login method.",
+      text: "You don’t need to memorize passwords or write them down.Just build a few strong personal associations — unique to you — and access your account naturally. Your answers are a reflection of your identity, something only you know.",
     },
     {
       title: "2. Private & Secure",
@@ -20,10 +20,6 @@ export default function About() {
     },
   ];
   const colors = ["#fff4b2", "#ffd6e7", "#f3e8ff", "#fff7d6"];
-
-
-
-
 
   return (
     <div className="container py-5">
@@ -66,6 +62,23 @@ export default function About() {
             </div>
           </div>
         ))}
+      </div>
+
+      <div
+        className="bg-light rounded-4 shadow p-4 mt-5"
+        style={{
+          fontFamily: "Segoe UI, sans-serif",
+          backgroundColor: "#eef2f7",
+        }}
+      >
+        <h4 className="mb-3 text-center">Our Mission</h4>
+        <p className="text-muted text-center mb-0">
+          EasyLink was founded with a simple idea: make digital identity easier,
+          safer, and more personal. We believe you shouldn't have to remember
+          dozens of passwords or give away private data just to access your
+          favorite services. Our goal is to empower users with freedom, privacy,
+          and simplicity in the digital world.
+        </p>
       </div>
     </div>
   );
