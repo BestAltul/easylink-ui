@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../js/AuthContext";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function StartAuth({ questions, setQuestions }) {
   const [email, setEmail] = useState("");
@@ -35,25 +37,46 @@ function StartAuth({ questions, setQuestions }) {
         entryId: q.entryId,
         answer: splitted[i],
       }));
-  
+
       const res = await fetch("http://localhost:8080/api/v3/auth/check", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, answers }), 
+        body: JSON.stringify({ email, answers }),
       });
-  
-      const text = await res.text();
-      setAuthResult(text);
-  
-      if (text.toLowerCase().includes("success")) {
-        login({ username: email });
-        navigate("/profile");
+
+      if (res.ok) {
+        const data = await res.text();
+        toast.success("✅ Success: " + data, { position: "top-right" });
+
+        setAuthResult(data);
+
+        if (data.toLowerCase().includes("success")) {
+          login({ username: email });
+          navigate("/profile");
+        }
+      } else {
+        const errorData = await res.json();
+
+        if (res.status === 423) {
+          toast.error("🚫 Blocked: " + errorData.message, {
+            position: "top-right",
+          });
+        } else if (res.status === 401) {
+          toast.warn("❗ Wrong answers: " + errorData.message, {
+            position: "top-right",
+          });
+        } else {
+          toast.error("❌ Error: " + res.status, { position: "top-right" });
+        }
       }
     } catch (err) {
-      setAuthResult("Ошибка при проверке");
+      // setAuthResult("Error");
+      toast.error("⚠️ Error on checking answers: " + err.message, {
+        position: "top-right",
+      });
+      setAuthResult("Error on checking answers");
     }
   };
-  
 
   return (
     <section className="container mt-4">

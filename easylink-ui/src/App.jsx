@@ -9,7 +9,9 @@ import Header from "./components/Header";
 import Review from "./components/Review";
 import Footer from "./components/Footer";
 import About from "./components/About";
-import Home from "./components/Home"; 
+import Home from "./components/Home";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   const [questions, setQuestions] = useState([]);
@@ -42,6 +44,7 @@ function App() {
         </Routes>
       </div>
       <Footer />
+      <ToastContainer />
     </>
   );
 }
