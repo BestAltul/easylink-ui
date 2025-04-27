@@ -21,6 +21,26 @@ function SignUp() {
 
   const navigate = useNavigate();
 
+  useEffect(() => {
+    fetch("/api/v3/auth/start", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: "template@email.com" }),
+    })
+      .then((res) => res.json())
+      .then((data) => setQuestions(data))
+      .catch(() => setQuestions([]));
+  }, []);
+
+  useEffect(() => {
+    fetch("/api/v3/auth/question-templates")
+      .then((res) => res.json())
+      .then((data) => setQuestionTemplates(data))
+      .catch(() => setQuestionTemplates([]));
+  }, []);
+
+  console.log("QT", questionTemplates);
+
   const handleSelectQuestion = (e) => {
     const value = e.target.value;
     setSelectedQuestion(value);
@@ -164,7 +184,8 @@ function SignUp() {
           style={{ backgroundColor: "#f8f9fa" }}
         >
           <h5 className="mb-3">
-            Step {step - 2} of {totalQuestions}: Create a memory lock
+            Step {step - 2} of {totalQuestions}: Create a memorizable
+            associative password
           </h5>
 
           <label className="form-label">Choose a question</label>

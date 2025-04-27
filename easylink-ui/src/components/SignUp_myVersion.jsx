@@ -141,7 +141,8 @@ function SignUp() {
           style={{ backgroundColor: "#f8f9fa" }}
         >
           <h5 className="mb-3">
-            Step {step - 2} of {totalQuestions}: Create a memory lock
+            Step {step - 2} of {totalQuestions}: Create a memorizable
+            associative password
           </h5>
 
           <label className="form-label">Choose a question</label>
