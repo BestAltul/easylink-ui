@@ -1,6 +1,9 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Profile() {
+  const navigate = useNavigate();
+
   const handleHoverIn = (e) => {
     e.currentTarget.style.backgroundColor = "#e9eff5";
     e.currentTarget.style.boxShadow = "0 10px 20px rgba(0, 0, 0, 0.15)";
@@ -17,22 +20,27 @@ export default function Profile() {
     {
       title: "💼 Business",
       text: "Share your professional profile, work-related info and business vibes.",
+      type: "business", // 👈 добавили type
     },
     {
       title: "🧍 Personal",
       text: "Highlight your interests, hobbies, and personal vibe stories.",
+      type: "personal",
     },
     {
       title: "🎯 Other",
       text: "Store and share everything else — events, projects, creative ideas.",
+      type: "other",
     },
   ];
+
   const cards2 = [
     {
       title: "❤️ My Vibes",
       text: "See the vibes you've already created!",
     },
   ];
+
   return (
     <div className="container py-5">
       <div className="text-center bg-light p-5 rounded shadow mb-5">
@@ -54,6 +62,14 @@ export default function Profile() {
                 transition: "all 0.3s ease",
                 cursor: "pointer",
               }}
+              onClick={() => {
+                if (card.type === "business") {
+                  navigate("/business-vibes"); // 👈 Переход при клике на карточку бизнес
+                }
+                if (card.type === "other") {
+                  navigate("/conference-vibes"); // 👈 добавили переход на конференцию
+                }
+              }}
               onMouseEnter={handleHoverIn}
               onMouseLeave={handleHoverOut}
             >
@@ -63,6 +79,7 @@ export default function Profile() {
           </div>
         ))}
       </div>
+
       <div className="text-center mt-5">
         {cards2.map((card, index) => (
           <div
@@ -77,12 +94,14 @@ export default function Profile() {
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.backgroundColor = "#ffeedb";
-              e.currentTarget.style.boxShadow = "0 10px 20px rgba(0, 0, 0, 0.15)";
+              e.currentTarget.style.boxShadow =
+                "0 10px 20px rgba(0, 0, 0, 0.15)";
               e.currentTarget.style.transform = "translateY(-5px)";
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.backgroundColor = "#fff8f0";
-              e.currentTarget.style.boxShadow = "0 .125rem .25rem rgba(0,0,0,.075)";
+              e.currentTarget.style.boxShadow =
+                "0 .125rem .25rem rgba(0,0,0,.075)";
               e.currentTarget.style.transform = "translateY(0)";
             }}
           >

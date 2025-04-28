@@ -12,6 +12,8 @@ import About from "./components/About";
 import Home from "./components/Home";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import BusinessVibeExample from "./components/BusinessVibeExample";
+import ConferenceVibeExample from "./components/ConferenceVibeExample";
 
 function App() {
   const [questions, setQuestions] = useState([]);
@@ -41,6 +43,8 @@ function App() {
             }
           />
           <Route path="/review" element={<Review />} />
+          <Route path="/business-vibes" element={<BusinessVibeExample />} />
+          <Route path="/conference-vibes" element={<ConferenceVibeExample />} />
         </Routes>
       </div>
       <Footer />
