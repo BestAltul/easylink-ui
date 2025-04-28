@@ -1,5 +1,4 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../js/AuthContext";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -16,13 +15,18 @@ function StartAuth({ questions, setQuestions }) {
   const [showAnswers, setShowAnswers] = useState(false);
 
   const startAuth = async () => {
+    if (!email.trim()) {
+      toast.error("⚠️ Please enter your email!", { position: "top-right" });
+      return;
+    }
+  
     try {
       const res = await fetch("/api/v3/auth/start", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
       });
-
+  
       const data = await res.json();
       setQuestions(data);
     } catch (err) {
@@ -44,8 +48,6 @@ function StartAuth({ questions, setQuestions }) {
         body: JSON.stringify({ email, answers }),
       });
 
-      console.log("resul", res);
-
       if (res.ok) {
         const data = await res.text();
         toast.success("✅ Success: " + data, { position: "top-right" });
@@ -57,10 +59,9 @@ function StartAuth({ questions, setQuestions }) {
           navigate("/profile");
         }
       } else {
+        const contentType = res.headers.get("content-type") || "";
         let errorData = null;
         let errorText = null;
-
-        const contentType = res.headers.get("content-type") || "";
 
         if (contentType.includes("application/json")) {
           errorData = await res.json();
@@ -68,10 +69,8 @@ function StartAuth({ questions, setQuestions }) {
           errorText = await res.text();
         }
 
-        //   const errorData = await res.json();
-
         if (res.status === 423) {
-          toast.error("🚫 Blocked: " + errorData.message, {
+          toast.error("🚫 Blocked: " + (errorData?.message || errorText), {
             position: "top-right",
           });
         } else if (res.status === 401) {
@@ -79,11 +78,12 @@ function StartAuth({ questions, setQuestions }) {
             position: "top-right",
           });
         } else {
-          toast.error("❌ Error: " + res.status, { position: "top-right" });
+          toast.error("❌ Error: " + res.status, {
+            position: "top-right",
+          });
         }
       }
     } catch (err) {
-      // setAuthResult("Error");
       toast.error("⚠️ Error on checking answers: " + err.message, {
         position: "top-right",
       });
@@ -124,9 +124,7 @@ function StartAuth({ questions, setQuestions }) {
             ))}
           </ul>
 
-          <label className="form-label mt-3">
-            Your Answers (comma-separated):
-          </label>
+          <label className="form-label mt-3">Your Answers (comma-separated):</label>
           <div className="input-group">
             <input
               type={showAnswers ? "text" : "password"}

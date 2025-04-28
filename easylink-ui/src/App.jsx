@@ -1,4 +1,3 @@
-import React from "react";
 import { useState } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import "./App.css";
@@ -10,10 +9,11 @@ import Review from "./components/Review";
 import Footer from "./components/Footer";
 import About from "./components/About";
 import Home from "./components/Home";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import BusinessVibeExample from "./components/BusinessVibeExample";
 import ConferenceVibeExample from "./components/ConferenceVibeExample";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import PersonalVibeExample from "./components/PersonalVibeExample";
 
 function App() {
   const [questions, setQuestions] = useState([]);
@@ -22,6 +22,7 @@ function App() {
   return (
     <>
       <Header />
+      <ToastContainer />
       <div
         style={{
           maxWidth: "600px",
@@ -36,19 +37,15 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route
             path="/signin"
-            element={
-              <>
-                <StartAuth questions={questions} setQuestions={setQuestions} />
-              </>
-            }
+            element={<StartAuth questions={questions} setQuestions={setQuestions} />}
           />
           <Route path="/review" element={<Review />} />
           <Route path="/business-vibes" element={<BusinessVibeExample />} />
           <Route path="/conference-vibes" element={<ConferenceVibeExample />} />
+          <Route path="/personal-vibes" element={<PersonalVibeExample />} />
         </Routes>
       </div>
       <Footer />
-      <ToastContainer />
     </>
   );
 }

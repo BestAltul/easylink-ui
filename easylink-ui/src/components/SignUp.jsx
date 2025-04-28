@@ -1,12 +1,12 @@
-import React from "react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function SignUp() {
   const [email, setEmail] = useState("");
-  const [questions, setQuestions] = useState([]);
   const [questionTemplates, setQuestionTemplates] = useState([]);
   const [step, setStep] = useState(1);
   const [totalQuestions, setTotalQuestions] = useState(3);
@@ -21,25 +21,13 @@ function SignUp() {
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    fetch("/api/v3/auth/start", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: "template@email.com" }),
-    })
-      .then((res) => res.json())
-      .then((data) => setQuestions(data))
-      .catch(() => setQuestions([]));
-  }, []);
-
+  // Загружаем шаблоны вопросов
   useEffect(() => {
     fetch("/api/v3/auth/question-templates")
       .then((res) => res.json())
       .then((data) => setQuestionTemplates(data))
       .catch(() => setQuestionTemplates([]));
   }, []);
-
-  console.log("QT", questionTemplates);
 
   const handleSelectQuestion = (e) => {
     const value = e.target.value;
@@ -55,12 +43,11 @@ function SignUp() {
       !associativeQuestion.trim() ||
       !answerText.trim()
     ) {
-      alert("Please fill in all fields");
+      toast.error("Please fill in all fields", { position: "top-right" });
       return;
     }
 
     let questionTemplate;
-
     if (selectedQuestion === "custom") {
       questionTemplate = {
         text: realQuestion.trim(),
@@ -68,9 +55,7 @@ function SignUp() {
         createdAt: new Date().toISOString(),
       };
     } else {
-      const template = questionTemplates.find(
-        (q) => q.text === selectedQuestion
-      );
+      const template = questionTemplates.find((q) => q.text === selectedQuestion);
       questionTemplate = template || {
         text: selectedQuestion,
         predefined: true,
@@ -103,7 +88,7 @@ function SignUp() {
 
   const handleSignup = async () => {
     if (!email.trim()) {
-      alert("Email is required");
+      toast.error("Email is required", { position: "top-right" });
       return;
     }
 
@@ -115,10 +100,14 @@ function SignUp() {
       });
 
       const message = await res.text();
-      alert(message);
-      navigate("/signin");
+      if (res.ok) {
+        toast.success(message, { position: "top-right" });
+        navigate("/signin");
+      } else {
+        toast.error(message || "Registration failed", { position: "top-right" });
+      }
     } catch (err) {
-      alert("Registration failed");
+      toast.error("Registration failed", { position: "top-right" });
     }
   };
 
@@ -138,7 +127,7 @@ function SignUp() {
             className="btn btn-primary mt-3"
             onClick={() => {
               if (!email.trim()) {
-                alert("Email is required");
+                toast.error("Email is required", { position: "top-right" });
                 return;
               }
               setStep(2);
@@ -153,9 +142,7 @@ function SignUp() {
     if (step === 2) {
       return (
         <div className="card p-4 shadow-sm text-center">
-          <label className="form-label mb-3">
-            Choose number of memory locks:
-          </label>
+          <label className="form-label mb-3">Choose number of memory locks:</label>
           <div className="d-flex justify-content-center gap-3 flex-wrap">
             {[1, 2, 3, 4, 5].map((num) => (
               <button
@@ -179,13 +166,9 @@ function SignUp() {
 
     if (step >= 3 && step < totalQuestions + 3) {
       return (
-        <div
-          className="card p-4 shadow-sm"
-          style={{ backgroundColor: "#f8f9fa" }}
-        >
+        <div className="card p-4 shadow-sm" style={{ backgroundColor: "#f8f9fa" }}>
           <h5 className="mb-3">
-            Step {step - 2} of {totalQuestions}: Create a memorizable
-            associative password
+            Step {step - 2} of {totalQuestions}: Create a memorizable associative password
           </h5>
 
           <label className="form-label">Choose a question</label>
