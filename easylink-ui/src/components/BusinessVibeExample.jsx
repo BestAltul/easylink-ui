@@ -117,7 +117,7 @@ function BusinessVibeCard({ profile }) {
           <div className="text-start">
             <p>📷 Show QR Code</p>
             <p>✉️ Send Link</p>
-            <p>📍 Share Location</p>
+            <p>📍 Share My Location</p>
           </div>
         )}
       </div>

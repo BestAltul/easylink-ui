@@ -65,11 +65,11 @@ function ConferenceVibeCard({ conference }) {
           </button>
           <button
             className={`btn btn-sm ${
-              activeTab === "resources" ? "btn-primary" : "btn-outline-primary"
+              activeTab === "share" ? "btn-primary" : "btn-outline-primary"
             }`}
-            onClick={() => setActiveTab("resources")}
+            onClick={() => setActiveTab("share")}
           >
-            Resources
+            Share Vibe
           </button>
         </div>
 
@@ -88,10 +88,6 @@ function ConferenceVibeCard({ conference }) {
                 <li key={idx}>{item}</li>
               ))}
             </ul>
-          </div>
-        )}
-        {activeTab === "resources" && (
-          <div className="text-start">
             <strong>Resources:</strong>
             <ul>
               {conference.resources.map((res, idx) => (
@@ -102,6 +98,14 @@ function ConferenceVibeCard({ conference }) {
                 </li>
               ))}
             </ul>
+          </div>
+        )}
+
+        {activeTab === "share" && (
+          <div className="text-start">
+            <p>📷 Show QR Code</p>
+            <p>✉️ Send My Vibe Link</p>
+            <p>📍 Share My Location</p>
           </div>
         )}
       </div>
