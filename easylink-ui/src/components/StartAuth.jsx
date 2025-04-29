@@ -11,7 +11,7 @@ function StartAuth({ questions, setQuestions }) {
   const [email, setEmail] = useState("");
   const [rawAnswers, setRawAnswers] = useState("");
   const [authResult, setAuthResult] = useState("");
-  const { login } = useAuth();
+  const { login, user } = useAuth();
   const navigate = useNavigate();
   const [showAnswers, setShowAnswers] = useState(false);
 
@@ -38,10 +38,13 @@ function StartAuth({ questions, setQuestions }) {
         answer: splitted[i],
       }));
 
+      const timezone =
+        user?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
+
       const res = await fetch("/api/v3/auth/check", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, answers }),
+        body: JSON.stringify({ email, answers, timezone }),
       });
 
       console.log("resul", res);
@@ -53,7 +56,8 @@ function StartAuth({ questions, setQuestions }) {
         setAuthResult(data);
 
         if (data.toLowerCase().includes("success")) {
-          login({ username: email });
+          const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+          login({ username: email, timezone });
           navigate("/profile");
         }
       } else {

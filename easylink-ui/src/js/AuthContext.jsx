@@ -1,7 +1,6 @@
 import React from "react";
 import { createContext, useContext, useState, useEffect } from "react";
 
-
 const AuthContext = createContext({
   user: null,
   isAuthenticated: false,
@@ -11,6 +10,7 @@ const AuthContext = createContext({
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
+  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
   // загружаем пользователя из localStorage при старте
   useEffect(() => {
