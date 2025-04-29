@@ -1,5 +1,4 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../js/AuthContext";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -9,7 +8,8 @@ import "react-toastify/dist/ReactToastify.css";
 
 function StartAuth({ questions, setQuestions }) {
   const [email, setEmail] = useState("");
-  const [rawAnswers, setRawAnswers] = useState("");
+  const [inputAnswer, setInputAnswer] = useState("");
+  const [answersList, setAnswersList] = useState([]);
   const [authResult, setAuthResult] = useState("");
   const { login, user } = useAuth();
   const navigate = useNavigate();
@@ -30,12 +30,33 @@ function StartAuth({ questions, setQuestions }) {
     }
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" || e.key === ",") {
+      e.preventDefault();
+      const trimmed = inputAnswer.trim();
+      if (trimmed && !answersList.includes(trimmed)) {
+        setAnswersList([...answersList, trimmed]);
+        setInputAnswer("");
+      }
+    }
+  };
+
+  const removeAnswer = (indexToRemove) => {
+    setAnswersList(answersList.filter((_, index) => index !== indexToRemove));
+  };
+
   const checkAnswers = async () => {
+    if (answersList.length !== questions.length) {
+      toast.warn(`❗ Please enter exactly ${questions.length} answers.`, {
+        position: "top-right",
+      });
+      return;
+    }
+
     try {
-      const splitted = rawAnswers.split(/[,; ]/).map((s) => s.trim());
       const answers = questions.map((q, i) => ({
         entryId: q.entryId,
-        answer: splitted[i],
+        answer: answersList[i] || "",
       }));
 
       const timezone =
@@ -47,12 +68,9 @@ function StartAuth({ questions, setQuestions }) {
         body: JSON.stringify({ email, answers, timezone }),
       });
 
-      console.log("resul", res);
-
       if (res.ok) {
         const data = await res.text();
         toast.success("✅ Success: " + data, { position: "top-right" });
-
         setAuthResult(data);
 
         if (data.toLowerCase().includes("success")) {
@@ -63,7 +81,6 @@ function StartAuth({ questions, setQuestions }) {
       } else {
         let errorData = null;
         let errorText = null;
-
         const contentType = res.headers.get("content-type") || "";
 
         if (contentType.includes("application/json")) {
@@ -72,10 +89,8 @@ function StartAuth({ questions, setQuestions }) {
           errorText = await res.text();
         }
 
-        //   const errorData = await res.json();
-
         if (res.status === 423) {
-          toast.error("🚫 Blocked: " + errorData.message, {
+          toast.error("🚫 Blocked: " + (errorData?.message || errorText), {
             position: "top-right",
           });
         } else if (res.status === 401) {
@@ -87,7 +102,6 @@ function StartAuth({ questions, setQuestions }) {
         }
       }
     } catch (err) {
-      // setAuthResult("Error");
       toast.error("⚠️ Error on checking answers: " + err.message, {
         position: "top-right",
       });
@@ -129,15 +143,36 @@ function StartAuth({ questions, setQuestions }) {
           </ul>
 
           <label className="form-label mt-3">
-            Your Answers (comma-separated):
+            Your Answers (enter devided):
           </label>
+
+          <div className="d-flex flex-wrap mb-2" style={{ gap: "5px" }}>
+            {answersList.map((answer, index) => (
+              <div
+                key={index}
+                className="badge bg-primary d-flex align-items-center"
+                style={{ padding: "0.5rem", fontSize: "1rem" }}
+              >
+                {showAnswers ? answer : "•••••"}
+                <button
+                  type="button"
+                  className="btn-close btn-close-white ms-2"
+                  aria-label="Remove"
+                  onClick={() => removeAnswer(index)}
+                  style={{ fontSize: "0.6rem" }}
+                ></button>
+              </div>
+            ))}
+          </div>
+
           <div className="input-group">
             <input
               type={showAnswers ? "text" : "password"}
               className="form-control shadow-sm"
-              value={rawAnswers}
-              onChange={(e) => setRawAnswers(e.target.value)}
-              placeholder="e.g. cat, house, school"
+              value={inputAnswer}
+              onChange={(e) => setInputAnswer(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Type answer and press Enter"
             />
             <button
               type="button"
