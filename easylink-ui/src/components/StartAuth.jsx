@@ -16,13 +16,18 @@ function StartAuth({ questions, setQuestions }) {
   const [showAnswers, setShowAnswers] = useState(false);
 
   const startAuth = async () => {
+    if (!email.trim()) {
+      toast.error("⚠️ Please enter your email!", { position: "top-right" });
+      return;
+    }
+  
     try {
       const res = await fetch("/api/v3/auth/start", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
       });
-
+  
       const data = await res.json();
       setQuestions(data);
     } catch (err) {
@@ -79,9 +84,9 @@ function StartAuth({ questions, setQuestions }) {
           navigate("/profile");
         }
       } else {
+        const contentType = res.headers.get("content-type") || "";
         let errorData = null;
         let errorText = null;
-        const contentType = res.headers.get("content-type") || "";
 
         if (contentType.includes("application/json")) {
           errorData = await res.json();
@@ -98,7 +103,9 @@ function StartAuth({ questions, setQuestions }) {
             position: "top-right",
           });
         } else {
-          toast.error("❌ Error: " + res.status, { position: "top-right" });
+          toast.error("❌ Error: " + res.status, {
+            position: "top-right",
+          });
         }
       }
     } catch (err) {
@@ -141,6 +148,7 @@ function StartAuth({ questions, setQuestions }) {
               </li>
             ))}
           </ul>
+
 
           <label className="form-label mt-3">
             Your Answers (enter devided):

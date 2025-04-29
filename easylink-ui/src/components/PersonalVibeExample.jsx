@@ -1,40 +1,40 @@
 import React, { useState } from "react";
 
-export default function BusinessVibeExample() {
-  const businessVibes = [
+export default function PersonalVibeExample() {
+  const personalVibes = [
     {
-      fullName: "John Doe",
-      phone: "+1 555-123-4567",
-      email: "john.doe@example.com",
-      photoUrl: "/john_doe.png",
-      facebook: "https://facebook.com/johndoe",
-      linkedin: "https://linkedin.com/in/johndoe",
-      website: "https://johndoe.com",
+      fullName: "Alex Johnson",
+      hobby: "Photography",
+      favoriteColor: "Blue",
+      bio: "Loves traveling and capturing memories through the lens.",
+      photoUrl: "/alex_johnson.png",
+      instagram: "https://instagram.com/alexjohnson",
+      twitter: "https://twitter.com/alexjohnson",
     },
     {
-      fullName: "Jane Smith",
-      phone: "+1 555-987-6543",
-      email: "jane.smith@example.com",
-      photoUrl: "/jane_smith.png",
-      facebook: "https://facebook.com/janesmith",
-      linkedin: "https://linkedin.com/in/janesmith",
-      website: "https://janesmith.com",
+      fullName: "Emily Davis",
+      hobby: "Reading",
+      favoriteColor: "Green",
+      bio: "A bookworm and coffee enthusiast.",
+      photoUrl: "/emily_devis.png",
+      instagram: "https://instagram.com/emilydavis",
+      twitter: "https://twitter.com/emilydavis",
     },
   ];
 
   return (
     <div className="container py-5">
-      <h2 className="mb-5 text-center">Business Vibes</h2>
+      <h2 className="mb-5 text-center">Personal Vibes</h2>
       <div className="row g-4">
-        {businessVibes.map((profile, index) => (
-          <BusinessVibeCard key={index} profile={profile} />
+        {personalVibes.map((profile, index) => (
+          <PersonalVibeCard key={index} profile={profile} />
         ))}
       </div>
     </div>
   );
 }
 
-function BusinessVibeCard({ profile }) {
+function PersonalVibeCard({ profile }) {
   const [activeTab, setActiveTab] = useState("main");
 
   return (
@@ -77,37 +77,29 @@ function BusinessVibeCard({ profile }) {
           <div className="text-start">
             <h5>{profile.fullName}</h5>
             <p className="mb-1">
-              <strong>Phone:</strong> {profile.phone}
+              <strong>Hobby:</strong> {profile.hobby}
             </p>
             <p className="mb-1">
-              <strong>Email:</strong> {profile.email}
+              <strong>Favorite Color:</strong> {profile.favoriteColor}
             </p>
+            <p className="mb-1">{profile.bio}</p>
             <div className="d-flex flex-column gap-2 mt-2">
-              {profile.facebook && (
+              {profile.instagram && (
                 <a
-                  href={profile.facebook}
+                  href={profile.instagram}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  Facebook
+                  Instagram
                 </a>
               )}
-              {profile.linkedin && (
+              {profile.twitter && (
                 <a
-                  href={profile.linkedin}
+                  href={profile.twitter}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  LinkedIn
-                </a>
-              )}
-              {profile.website && (
-                <a
-                  href={profile.website}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Website
+                  Twitter
                 </a>
               )}
             </div>
@@ -116,8 +108,8 @@ function BusinessVibeCard({ profile }) {
         {activeTab === "actions" && (
           <div className="text-start">
             <p>📷 Show QR Code</p>
-            <p>✉️ Send Link</p>
-            <p>📍 Share My Location</p>
+            <p>✉️ Send Personal Story</p>
+            <p>🎉 Share Favorite Moment</p>
           </div>
         )}
       </div>
