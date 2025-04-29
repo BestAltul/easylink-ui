@@ -17,21 +17,25 @@ export default function Profile() {
   ]);
   const [inputText, setInputText] = useState("");
 
+  // Vibe options with explicit routes
   const vibeOptions = [
-    { title: "💼 Business", text: "Share your professional profile, work-related info and business vibes.", type: "business" },
-    { title: "🧍 Personal", text: "Highlight your interests, hobbies, and personal vibe stories.", type: "personal" },
-    { title: "🎯 Other", text: "Store and share everything else — events, projects, creative ideas.", type: "other" },
+    { title: "💼 Business", text: "Share your professional profile, work-related info and business vibes.", path: "/business-vibes" },
+    { title: "🧍 Personal", text: "Highlight your interests, hobbies, and personal vibe stories.", path: "/personal-vibes" },
+    { title: "🎯 Other", text: "Store and share everything else — events, projects, creative ideas.", path: "/conference-vibes" },
   ];
+
   const profileCards = [
     { title: "❤️ My Vibes", text: "See the vibes you've already created!", background: "#fff8f0", hoverBackground: "#ffeedb", buttonText: "View My Vibes", buttonColor: "danger", onClick: () => navigate("/my-vibes") },
     { title: "💙 Create New Vibe", text: "Add a new personal, business, or event Vibe to your account.", background: "#e3f2fd", hoverBackground: "#d0e5f7", buttonText: "Create Vibe", buttonColor: "primary", onClick: () => navigate("/create-vibe") },
   ];
+
   const navItems = [
     { icon: "✏️", label: "Edit", route: "/edit-profile", variant: "outline-primary" },
     { icon: "⚙️", label: "Settings", route: "/settings", variant: "outline-secondary" },
     { icon: "🚪", label: "Logout", route: "/logout", variant: "outline-danger" },
   ];
 
+  // Simulate agent auto-reply
   useEffect(() => {
     if (mode === "chat" && messages[messages.length - 1].from === "user") {
       const timer = setTimeout(() => {
@@ -58,7 +62,7 @@ export default function Profile() {
 
   return (
     <>
-      {/* Keyframes */}
+      {/* Animations */}
       <style>{`
         @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         .animate-slideUp { animation: slideUp 0.3s ease-out; }
@@ -118,9 +122,9 @@ export default function Profile() {
         <div className="d-flex justify-content-between text-center mb-5">
           {vibeOptions.map((opt, idx) => (
             <div
-              key={opt.type}
+              key={opt.path}
               className="flex-fill mx-2 p-4 shadow-sm rounded animate-slideUp"
-              onClick={() => navigate(`/${opt.type}-vibes`)}
+              onClick={() => navigate(opt.path)}
               onMouseEnter={() => setHoveredVibe(idx)}
               onMouseLeave={() => setHoveredVibe(null)}
               style={{
@@ -129,6 +133,7 @@ export default function Profile() {
                 transform: hoveredVibe === idx ? 'translateY(-8px)' : 'none',
                 opacity: hoveredVibe === idx ? 1 : 0.9,
                 transition: 'all 0.3s ease',
+                cursor: 'pointer',
                 minWidth: 0,
               }}
             >
