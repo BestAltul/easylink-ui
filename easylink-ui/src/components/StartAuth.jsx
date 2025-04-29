@@ -8,9 +8,10 @@ import "react-toastify/dist/ReactToastify.css";
 
 function StartAuth({ questions, setQuestions }) {
   const [email, setEmail] = useState("");
-  const [rawAnswers, setRawAnswers] = useState("");
+  const [inputAnswer, setInputAnswer] = useState("");
+  const [answersList, setAnswersList] = useState([]);
   const [authResult, setAuthResult] = useState("");
-  const { login } = useAuth();
+  const { login, user } = useAuth();
   const navigate = useNavigate();
   const [showAnswers, setShowAnswers] = useState(false);
 
@@ -34,28 +35,52 @@ function StartAuth({ questions, setQuestions }) {
     }
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" || e.key === ",") {
+      e.preventDefault();
+      const trimmed = inputAnswer.trim();
+      if (trimmed && !answersList.includes(trimmed)) {
+        setAnswersList([...answersList, trimmed]);
+        setInputAnswer("");
+      }
+    }
+  };
+
+  const removeAnswer = (indexToRemove) => {
+    setAnswersList(answersList.filter((_, index) => index !== indexToRemove));
+  };
+
   const checkAnswers = async () => {
+    if (answersList.length !== questions.length) {
+      toast.warn(`❗ Please enter exactly ${questions.length} answers.`, {
+        position: "top-right",
+      });
+      return;
+    }
+
     try {
-      const splitted = rawAnswers.split(/[,; ]/).map((s) => s.trim());
       const answers = questions.map((q, i) => ({
         entryId: q.entryId,
-        answer: splitted[i],
+        answer: answersList[i] || "",
       }));
+
+      const timezone =
+        user?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
 
       const res = await fetch("/api/v3/auth/check", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, answers }),
+        body: JSON.stringify({ email, answers, timezone }),
       });
 
       if (res.ok) {
         const data = await res.text();
         toast.success("✅ Success: " + data, { position: "top-right" });
-
         setAuthResult(data);
 
         if (data.toLowerCase().includes("success")) {
-          login({ username: email });
+          const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+          login({ username: email, timezone });
           navigate("/profile");
         }
       } else {
@@ -124,14 +149,37 @@ function StartAuth({ questions, setQuestions }) {
             ))}
           </ul>
 
-          <label className="form-label mt-3">Your Answers (comma-separated):</label>
+          <label className="form-label mt-3">
+            Your Answers (enter devided):
+          </label>
+
+          <div className="d-flex flex-wrap mb-2" style={{ gap: "5px" }}>
+            {answersList.map((answer, index) => (
+              <div
+                key={index}
+                className="badge bg-primary d-flex align-items-center"
+                style={{ padding: "0.5rem", fontSize: "1rem" }}
+              >
+                {showAnswers ? answer : "•••••"}
+                <button
+                  type="button"
+                  className="btn-close btn-close-white ms-2"
+                  aria-label="Remove"
+                  onClick={() => removeAnswer(index)}
+                  style={{ fontSize: "0.6rem" }}
+                ></button>
+              </div>
+            ))}
+          </div>
+
           <div className="input-group">
             <input
               type={showAnswers ? "text" : "password"}
               className="form-control shadow-sm"
-              value={rawAnswers}
-              onChange={(e) => setRawAnswers(e.target.value)}
-              placeholder="e.g. cat, house, school"
+              value={inputAnswer}
+              onChange={(e) => setInputAnswer(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Type answer and press Enter"
             />
             <button
               type="button"
