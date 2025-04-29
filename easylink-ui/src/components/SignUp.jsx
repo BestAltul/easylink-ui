@@ -1,28 +1,34 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap-icons/font/bootstrap-icons.css";
+import "react-toastify/dist/ReactToastify.css";
 
 function SignUp() {
   const [email, setEmail] = useState("");
   const [questions, setQuestions] = useState([]);
+  const [questionTemplates, setQuestionTemplates] = useState([]);
+  const [step, setStep] = useState(1);
+  const [totalQuestions, setTotalQuestions] = useState(3);
+
   const [selectedQuestion, setSelectedQuestion] = useState("");
   const [customQuestionVisible, setCustomQuestionVisible] = useState(false);
-
   const [realQuestion, setRealQuestion] = useState("");
   const [associativeQuestion, setAssociativeQuestion] = useState("");
   const [answerText, setAnswerText] = useState("");
   const [showAnswer, setShowAnswer] = useState(false);
   const [entriesList, setEntriesList] = useState([]);
-  const [showEntries, setShowEntries] = useState(false);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("http://localhost:8080api/v3/auth/start", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: "template@email.com" }),
-    })
+    fetch("/api/v3/auth/question-templates")
       .then((res) => res.json())
-      .then((data) => setQuestions(data))
-      .catch(() => setQuestions([]));
+      .then((data) => setQuestionTemplates(data))
+      .catch(() => setQuestionTemplates([]));
   }, []);
+  
 
   const handleSelectQuestion = (e) => {
     const value = e.target.value;
@@ -32,23 +38,29 @@ function SignUp() {
   };
 
   const handleAdd = () => {
-    if (
-      !realQuestion.trim() ||
-      !associativeQuestion.trim() ||
-      !answerText.trim()
-    ) {
-      alert("Please fill in all fields");
+    if ((!customQuestionVisible && !selectedQuestion) || (customQuestionVisible && !realQuestion.trim()) || !associativeQuestion.trim() || !answerText.trim()) {
+      toast.error("Please fill in all fields", { position: "top-right" });
       return;
     }
 
-    setEntriesList([
-      ...entriesList,
-      {
-        realQuestion: realQuestion.trim(),
-        associativeQuestion: associativeQuestion.trim(),
-        answer: answerText.trim(),
-      },
-    ]);
+    const questionTemplate = selectedQuestion === "custom"
+      ? { text: realQuestion.trim(), predefined: false, createdAt: new Date().toISOString() }
+      : { text: selectedQuestion, predefined: true, createdAt: new Date().toISOString() };
+
+    const newEntry = {
+      realQuestion: questionTemplate,
+      associativeQuestion: associativeQuestion.trim(),
+      answer: answerText.trim(),
+    };
+
+    const updatedList = [...entriesList, newEntry];
+    setEntriesList(updatedList);
+
+    if (updatedList.length >= totalQuestions) {
+      setStep(totalQuestions + 3);
+    } else {
+      setStep((prev) => prev + 1);
+    }
 
     setSelectedQuestion("");
     setCustomQuestionVisible(false);
@@ -58,195 +70,143 @@ function SignUp() {
     setShowAnswer(false);
   };
 
-  const handleRemove = (indexToRemove) => {
-    setEntriesList(entriesList.filter((_, i) => i !== indexToRemove));
-  };
-
   const handleSignup = async () => {
     if (!email.trim()) {
-      alert("Email is required");
-      return;
-    }
-
-    if (entriesList.length === 0) {
-      alert("Please add at least one entry");
+      toast.error("Email is required", { position: "top-right" });
       return;
     }
 
     try {
-      const res = await fetch("http://localhost:8080/api/v3/auth/signup", {
+      const res = await fetch("/api/v3/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, entries: entriesList }),
       });
-      alert(await res.text());
-    } catch (err) {
-      alert("Registration failed");
+
+      const message = await res.text();
+      if (res.ok) {
+        toast.success(message, { position: "top-right" });
+        navigate("/signin");
+      } else {
+        toast.error(message || "Registration failed", { position: "top-right" });
+      }
+    } catch (error) {
+      toast.error("Registration error", { position: "top-right" });
     }
   };
 
-  const getPairTitle = (index) => {
-    const titles = [
-      "First question–answer pair",
-      "Second question–answer pair",
-      "Third question–answer pair",
-      "Fourth question–answer pair",
-      "Fifth question–answer pair",
-    ];
-    return titles[index] || `Entry #${index + 1}`;
+  const renderStep = () => {
+    if (step === 1) {
+      return (
+        <div className="card p-4 shadow-sm">
+          <label className="form-label">Email</label>
+          <input
+            type="email"
+            className="form-control"
+            placeholder="Enter your email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <button className="btn btn-primary mt-3" onClick={() => setStep(2)}>
+            Next
+          </button>
+        </div>
+      );
+    }
+
+    if (step === 2) {
+      return (
+        <div className="card p-4 shadow-sm text-center">
+          <label className="form-label mb-3">Choose number of memory locks:</label>
+          <div className="d-flex justify-content-center gap-3 flex-wrap">
+            {[1, 2, 3, 4, 5].map((num) => (
+              <button
+                key={num}
+                style={{ width: "60px", height: "60px", fontSize: "1.5rem" }}
+                className={`btn rounded-circle ${totalQuestions === num ? "btn-success" : "btn-outline-success"}`}
+                onClick={() => setTotalQuestions(num) || setStep(3)}
+              >
+                {num}
+              </button>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    if (step >= 3 && step < totalQuestions + 3) {
+      return (
+        <div className="card p-4 shadow-sm" style={{ backgroundColor: "#f8f9fa" }}>
+          <h5 className="mb-3">Step {step - 2} of {totalQuestions}: Create a memorable password</h5>
+
+          <label className="form-label">Choose a question</label>
+          <select className="form-select mb-3" onChange={handleSelectQuestion} value={selectedQuestion}>
+            <option value="">-- Select a question --</option>
+            <option value="custom">Enter your own</option>
+            {questionTemplates.map((q, i) => (
+              <option key={i} value={q.text}>{q.text}</option>
+            ))}
+          </select>
+
+          {customQuestionVisible && (
+            <>
+              <label className="form-label">Custom question</label>
+              <input className="form-control mb-3" value={realQuestion} onChange={(e) => setRealQuestion(e.target.value)} />
+            </>
+          )}
+
+          <label className="form-label">Hint (to help you remember)</label>
+          <input className="form-control mb-3" value={associativeQuestion} onChange={(e) => setAssociativeQuestion(e.target.value)} />
+
+          <div className="input-group mb-3">
+            <input
+              type={showAnswer ? "text" : "password"}
+              className="form-control"
+              placeholder="Answer"
+              value={answerText}
+              onChange={(e) => setAnswerText(e.target.value)}
+            />
+            <button
+              type="button"
+              className="btn btn-outline-secondary"
+              onClick={() => setShowAnswer(!showAnswer)}
+            >
+              <i className={`bi ${showAnswer ? "bi-eye-slash" : "bi-eye"}`}></i>
+            </button>
+          </div>
+
+          <button className="btn btn-success w-100" onClick={handleAdd}>
+            {entriesList.length + 1 === totalQuestions ? "Finish" : "Next"}
+          </button>
+        </div>
+      );
+    }
+
+    return (
+      <div className="text-center">
+        <h4 className="mb-3">All Done!</h4>
+        <button className="btn btn-primary" onClick={handleSignup}>Submit & Create Account</button>
+      </div>
+    );
   };
 
   return (
-    <section>
-      <h2>Sign Up</h2>
-
-      <div style={{ marginBottom: "1.5rem" }}>
-        <label style={{ display: "block", marginBottom: "0.5rem" }}>
-          Email:
-        </label>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="Enter your email"
-          style={{ width: "100%", padding: "0.5rem" }}
-        />
-      </div>
-
-      <div
-        style={{
-          border: "1px solid #ccc",
-          padding: "1rem",
-          borderRadius: "8px",
-          marginBottom: "1rem",
-          backgroundColor: "#f9f9f9",
-        }}
-      >
-        <h4>{getPairTitle(entriesList.length)}</h4>
-
-        <select
-          onChange={handleSelectQuestion}
-          value={selectedQuestion}
-          style={{
-            width: "100%",
-            padding: "0.5rem",
-            marginBottom: "0.5rem",
-          }}
-        >
-          <option value="">-- Select a question --</option>
-          <option value="custom">Enter your own question</option>
-          {questions.map((q, i) => (
-            <option key={i} value={q.question}>
-              {q.question}
-            </option>
-          ))}
-        </select>
-
-        {customQuestionVisible && (
-          <input
-            type="text"
-            value={realQuestion}
-            onChange={(e) => setRealQuestion(e.target.value)}
-            placeholder="Enter your own question"
-            style={{
-              width: "100%",
-              padding: "0.5rem",
-              marginBottom: "0.5rem",
-            }}
-          />
-        )}
-
-        <input
-          type="text"
-          value={associativeQuestion}
-          onChange={(e) => setAssociativeQuestion(e.target.value)}
-          placeholder="Associative hint"
-          style={{
-            width: "100%",
-            padding: "0.5rem",
-            marginBottom: "0.5rem",
-          }}
-        />
-
-        <div style={{ display: "flex", marginBottom: "0.5rem" }}>
-          <input
-            type={showAnswer ? "text" : "password"}
-            value={answerText}
-            onChange={(e) => setAnswerText(e.target.value)}
-            placeholder="Answer"
-            style={{ flex: 1, padding: "0.5rem" }}
-          />
-          <button
-            type="button"
-            onClick={() => setShowAnswer(!showAnswer)}
-            style={{ marginLeft: "0.5rem", padding: "0.5rem" }}
+    <section className="container mt-5 mb-5">
+      <div className="mb-4">
+        <div className="progress" style={{ height: "20px" }}>
+          <div
+            className="progress-bar"
+            role="progressbar"
+            style={{ width: `${(step / (totalQuestions + 2)) * 100}%`, backgroundColor: "#4caf50" }}
           >
-            {showAnswer ? "Hide" : "Show"}
-          </button>
+            Step {step} of {totalQuestions + 2}
+          </div>
         </div>
-
-        <button
-          onClick={handleAdd}
-          style={{ width: "100%", padding: "0.5rem" }}
-        >
-          Add entry
-        </button>
       </div>
 
-      {entriesList.length > 0 && (
-        <button
-          onClick={() => setShowEntries(!showEntries)}
-          style={{
-            marginBottom: "1rem",
-            padding: "0.5rem",
-            width: "100%",
-            backgroundColor: "#eee",
-            border: "1px solid #ccc",
-            borderRadius: "4px",
-            cursor: "pointer",
-          }}
-        >
-          {showEntries ? "Hide entries" : "Show entries"}
-        </button>
-      )}
+      <h2 className="mb-4 text-center">Start Your Journey with EasyLink 🔒</h2>
 
-      {showEntries && entriesList.length > 0 && (
-        <div style={{ marginBottom: "1rem" }}>
-          <h4>Your entries:</h4>
-          <ul>
-            {entriesList.map((entry, i) => (
-              <li key={i} style={{ marginBottom: "0.5rem" }}>
-                <div>
-                  <strong>Question:</strong> {entry.realQuestion} <br />
-                  <strong>Hint:</strong> {entry.associativeQuestion} <br />
-                  <strong>Answer:</strong> {entry.answer}
-                </div>
-                <button
-                  onClick={() => handleRemove(i)}
-                  style={{
-                    marginTop: "0.3rem",
-                    padding: "0.2rem 0.5rem",
-                    color: "white",
-                    backgroundColor: "red",
-                    border: "none",
-                    borderRadius: "4px",
-                    cursor: "pointer",
-                  }}
-                >
-                  ✕ Remove
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      <button
-        onClick={handleSignup}
-        style={{ marginTop: "1rem", padding: "0.5rem", width: "100%" }}
-      >
-        Sign Up
-      </button>
+      {renderStep()}
     </section>
   );
 }

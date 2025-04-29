@@ -1,55 +1,52 @@
 import { useState } from "react";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import "./App.css";
+import Profile from "./components/Profile";
 import SignUp from "./components/SignUp";
 import StartAuth from "./components/StartAuth";
-import CheckAnswers from "./components/CheckAnswers";
+import Header from "./components/Header";
+import Review from "./components/Review";
+import Footer from "./components/Footer";
+import About from "./components/About";
+import Home from "./components/Home";
+import BusinessVibeExample from "./components/BusinessVibeExample";
+import ConferenceVibeExample from "./components/ConferenceVibeExample";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import PersonalVibeExample from "./components/PersonalVibeExample";
 
 function App() {
-  const [page, setPage] = useState("home");
   const [questions, setQuestions] = useState([]);
+  const navigate = useNavigate();
 
   return (
-    <div
-      style={{
-        maxWidth: "600px",
-        margin: "2rem auto",
-        fontFamily: "sans-serif",
-      }}
-    >
-      <h1>EasyLink Auth</h1>
-
-      {page === "home" && (
-        <div>
-          <button
-            onClick={() => setPage("signup")}
-            style={{ padding: "1rem", margin: "1rem", width: "100%" }}
-          >
-            Sign Up
-          </button>
-          <button
-            onClick={() => setPage("signin")}
-            style={{ padding: "1rem", margin: "1rem", width: "100%" }}
-          >
-            Sign In
-          </button>
-        </div>
-      )}
-
-      {page === "signup" && <SignUp onBack={() => setPage("home")} />}
-      {page === "signin" && (
-        <>
-          //
-          <StartAuth questions={questions} setQuestions={setQuestions} />
-          <CheckAnswers questions={questions} />
-          <button
-            onClick={() => setPage("home")}
-            style={{ marginTop: "1rem", padding: "0.5rem" }}
-          >
-            Back
-          </button>
-        </>
-      )}
-    </div>
+    <>
+      <Header />
+      <ToastContainer />
+      <div
+        style={{
+          maxWidth: "600px",
+          margin: "2rem auto",
+          fontFamily: "sans-serif",
+        }}
+      >
+        <Routes>
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/about" element={<About />} />
+          <Route
+            path="/signin"
+            element={<StartAuth questions={questions} setQuestions={setQuestions} />}
+          />
+          <Route path="/review" element={<Review />} />
+          <Route path="/business-vibes" element={<BusinessVibeExample />} />
+          <Route path="/conference-vibes" element={<ConferenceVibeExample />} />
+          <Route path="/personal-vibes" element={<PersonalVibeExample />} />
+        </Routes>
+      </div>
+      <Footer />
+    </>
   );
 }
 
