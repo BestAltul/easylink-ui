@@ -1,11 +1,24 @@
 // src/data/contactIcons.js
+import React from "react";
+
 import {
-  FaInstagram, FaWhatsapp, FaTelegram, FaPhone, FaGlobe, FaEnvelope,
-  FaFacebook, FaVk, FaTiktok, FaLinkedin, FaYoutube, FaTwitter,
-  FaSnapchat, FaDiscord, FaGithub
+  FaInstagram,
+  FaWhatsapp,
+  FaTelegram,
+  FaPhone,
+  FaGlobe,
+  FaEnvelope,
+  FaFacebook,
+  FaVk,
+  FaTiktok,
+  FaLinkedin,
+  FaYoutube,
+  FaTwitter,
+  FaSnapchat,
+  FaDiscord,
+  FaGithub,
 } from "react-icons/fa";
 import { SiX } from "react-icons/si";
-
 
 const iconMap = {
   website: <FaGlobe color="#007bff" />,
