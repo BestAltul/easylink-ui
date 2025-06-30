@@ -2,6 +2,10 @@
 import React from "react";
 import iconMap from "../../data/contactIcons";
 import { FaGlobe } from "react-icons/fa";
+import { BsShareFill, BsClipboard } from "react-icons/bs";
+import { FaTelegramPlane, FaWhatsapp, FaInstagram } from "react-icons/fa";
+import { QRCodeCanvas } from "qrcode.react";
+import { createPortal } from "react-dom";
 
 const getButtonColor = (type) => {
   switch (type) {
@@ -19,9 +23,31 @@ const weekDays = [
   "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"
 ];
 
-export default function VibePreview({ name, description, photoFile, contacts, type, extraBlocks }) {
-  // Микро-анимация: состояние для hover QR
+export default function VibePreview({ id, name, description, photoFile, contacts, type, extraBlocks }) {
   const [qrHover, setQrHover] = React.useState(false);
+  const [showShare, setShowShare] = React.useState(false);
+  const [copied, setCopied] = React.useState(false);
+
+  // Ссылка на вайб
+  const shareUrl = id
+    ? `${window.location.origin}/vibes/${id}`
+    : window.location.href;
+
+  // Для закрытия по клику вне окна
+  React.useEffect(() => {
+    if (!showShare) return;
+    const handleClick = (e) => {
+      if (e.target.classList && e.target.classList.contains("vibe-share-backdrop")) setShowShare(false);
+    };
+    window.addEventListener("mousedown", handleClick);
+    return () => window.removeEventListener("mousedown", handleClick);
+  }, [showShare]);
+
+  function handleCopy(link) {
+    navigator.clipboard.writeText(link);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  }
 
   return (
     <div
@@ -32,10 +58,148 @@ export default function VibePreview({ name, description, photoFile, contacts, ty
         border: "none",
         maxWidth: 400,
         margin: "0 auto",
-        transition: "box-shadow .16s, transform .18s"
+        transition: "box-shadow .16s, transform .18s",
+        position: "relative",
       }}
       tabIndex={0}
     >
+      {/* Кнопка "поделиться" */}
+      <div style={{ position: "absolute", top: 16, right: 16, zIndex: 20 }}>
+        <button
+          className="btn btn-light shadow-sm share-btn"
+          style={{
+            borderRadius: 99,
+            padding: 7,
+            border: "none",
+            background: "#f7faff",
+            boxShadow: "0 2px 8px #e6e9f7",
+            cursor: "pointer"
+          }}
+          title="Share"
+          onClick={() => setShowShare(true)}
+        >
+          <BsShareFill size={20} style={{ color: "#627bf7" }} />
+        </button>
+      </div>
+
+      {/* Share Modal через Portal */}
+      {showShare && typeof window !== "undefined" && createPortal(
+        <div
+          className="vibe-share-backdrop"
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            background: "rgba(34,42,75,.22)",
+            zIndex: 1111,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <div
+            className="card shadow-lg p-4"
+            style={{
+              minWidth: 320,
+              maxWidth: 370,
+              borderRadius: 18,
+              position: "relative",
+            }}
+            onClick={e => e.stopPropagation()}
+          >
+            <button
+              className="btn-close position-absolute"
+              style={{ top: 10, right: 10 }}
+              onClick={() => setShowShare(false)}
+            />
+            <div className="mb-3">
+              <h5>Share your Vibe</h5>
+              <div className="text-muted" style={{ fontSize: 15 }}>
+                Отправь ссылку, QR или отправь в мессенджер!
+              </div>
+            </div>
+            <input
+              className="form-control mb-2"
+              value={shareUrl}
+              readOnly
+              style={{
+                fontSize: 15,
+                background: "#f5f7fb",
+                borderRadius: 12,
+                fontWeight: 500,
+                cursor: "pointer",
+              }}
+              onClick={e => {
+                e.target.select();
+                handleCopy(shareUrl);
+              }}
+            />
+            <button
+              className={`btn w-100 mb-2 ${copied ? "btn-success" : "btn-outline-primary"}`}
+              onClick={() => handleCopy(shareUrl)}
+              style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}
+            >
+              {copied ? (
+                <>
+                  <span className="me-2">&#10003;</span> Copied!
+                </>
+              ) : (
+                <>
+                  <BsClipboard /> Copy Link
+                </>
+              )}
+            </button>
+            <div className="d-flex flex-column gap-2 mb-2">
+              <a
+                href={`https://t.me/share/url?url=${encodeURIComponent(shareUrl)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-outline-primary d-flex align-items-center gap-2"
+                style={{ fontWeight: 500, fontSize: 16 }}
+                onClick={() => setCopied(false)}
+              >
+                <FaTelegramPlane /> Telegram
+              </a>
+              <a
+                href={`https://wa.me/?text=${encodeURIComponent(shareUrl)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-outline-success d-flex align-items-center gap-2"
+                style={{ fontWeight: 500, fontSize: 16 }}
+                onClick={() => setCopied(false)}
+              >
+                <FaWhatsapp /> WhatsApp
+              </a>
+              <a
+                href={`https://www.instagram.com/?url=${encodeURIComponent(shareUrl)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-outline-danger d-flex align-items-center gap-2"
+                style={{ fontWeight: 500, fontSize: 16 }}
+                onClick={() => setCopied(false)}
+              >
+                <FaInstagram /> Instagram
+              </a>
+            </div>
+            <div className="text-center my-3">
+              <QRCodeCanvas
+                value={shareUrl}
+                size={112}
+                bgColor="#ffffff"
+                fgColor="#4154ff"
+                level="M"
+                style={{ margin: "0 auto", display: "block" }}
+              />
+              <div style={{ fontSize: 12, color: "#888", marginTop: 7 }}>
+                Отсканируй, чтобы открыть Vibe
+              </div>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
       <div className="d-flex flex-column align-items-center">
         {/* Аватар с hover */}
         <div
@@ -112,13 +276,14 @@ export default function VibePreview({ name, description, photoFile, contacts, ty
 
             return (
               <a
+                key={c.type + c.value + i}
                 className="contact-btn"
                 style={{
                   minWidth: 140,
                   height: 44,
                   display: "flex",
                   alignItems: "center",
-                  background: color, // твой градиент или цвет
+                  background: color,
                   borderRadius: 22,
                   boxShadow: "0 2px 8px #e9e9ee",
                   padding: "0 20px 0 16px",
@@ -127,7 +292,7 @@ export default function VibePreview({ name, description, photoFile, contacts, ty
                   color: "#222",
                   border: "none",
                   textDecoration: "none",
-                  gap: 10, // расстояние между иконкой и текстом
+                  gap: 10,
                   overflow: "hidden"
                 }}
                 href={link}
@@ -137,7 +302,7 @@ export default function VibePreview({ name, description, photoFile, contacts, ty
                 <span style={{
                   display: "flex",
                   alignItems: "center",
-                  fontSize: 22, // размер иконки
+                  fontSize: 22,
                   minWidth: 24,
                   justifyContent: "center"
                 }}>
@@ -145,11 +310,11 @@ export default function VibePreview({ name, description, photoFile, contacts, ty
                 </span>
                 <span style={{
                   flex: 1,
-                  minWidth: 0, // чтобы текст не расширял всю кнопку
+                  minWidth: 0,
                   whiteSpace: "nowrap",
                   textOverflow: "ellipsis",
                   overflow: "hidden",
-                  lineHeight: "1.4", // чтобы буквы как p не обрезались
+                  lineHeight: "1.4",
                   marginLeft: 6
                 }}>
                   {c.value}
@@ -164,7 +329,7 @@ export default function VibePreview({ name, description, photoFile, contacts, ty
         {extraBlocks && extraBlocks.length > 0 && (
           <div className="w-100 mt-2">
             {extraBlocks.map((block, i) => (
-              <div key={i}
+              <div key={block.label + i}
                 className="mb-2 px-3 py-2 rounded-3"
                 style={{
                   background: "#f7f9fd",
@@ -229,7 +394,7 @@ export default function VibePreview({ name, description, photoFile, contacts, ty
         </div>
       </div>
 
-      {/* Стили прямо в компонент (для примера, но лучше вынести в CSS-модуль или SCSS) */}
+      {/* Стили прямо в компонент (лучше вынести в отдельный файл) */}
       <style>
         {`
         .vibe-preview:hover, .vibe-preview:focus-within {
@@ -261,6 +426,14 @@ export default function VibePreview({ name, description, photoFile, contacts, ty
           .vibe-avatar {
             width: 66px !important; height: 66px !important;
           }
+        }
+        .share-btn:hover, .share-btn:focus {
+          background: #ebf0fc !important;
+          box-shadow: 0 6px 18px #d3dfff !important;
+        }
+        .share-menu .dropdown-item:hover {
+          background: #f3f7fe !important;
+          color: #222 !important;
         }
         `}
       </style>
