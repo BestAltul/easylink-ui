@@ -5,6 +5,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { motion, AnimatePresence } from "framer-motion";
 
 function StartAuth({ questions, setQuestions }) {
   const [email, setEmail] = useState("");
@@ -108,7 +109,7 @@ function StartAuth({ questions, setQuestions }) {
         const data = await res.json();
         const token = data["Authentication successful"];
 
-        toast.success("✅ Success: ", { position: "top-right" });
+        toast.success("Success ", { position: "top-right" });
         setAuthResult("Authenticationnsuccessful");
 
         sessionStorage.setItem("jwt", token);
@@ -170,48 +171,89 @@ function StartAuth({ questions, setQuestions }) {
       </div>
 
       {Array.isArray(questions) && questions.length > 0 && (
-        <div
-          className="p-4 rounded shadow"
-          style={{ backgroundColor: "#f8f9fa" }}
-        >
-          <strong>
-            Question {currentStep + 1} of {questions.length}
-          </strong>
-          <p className="mt-2">{questions[currentStep]?.question}</p>
+        <div className="d-flex gap-4 align-items-start" style={{ minHeight: 380 }}>
+          {/* Left: Steps nav */}
+          <ul className="list-group shadow-sm rounded-3" style={{ minWidth: 120 }}>
+            {questions.map((q, idx) => (
+              <li
+                key={q.entryId}
+                className={`list-group-item d-flex align-items-center gap-2 border-0 rounded-2 my-1 px-3 py-2 ${idx === currentStep ? "bg-success bg-opacity-10" : ""}`}
+                style={{
+                  cursor: "pointer",
+                  fontWeight: idx === currentStep ? 600 : 400,
+                  transition: "background 0.2s"
+                }}
+                onClick={() => setCurrentStep(idx)}
+              >
+                <i className={`bi bi-${answersList[idx]?.trim() ? "check-circle-fill text-success" : "circle"}`}></i>
+                <span style={{fontSize: 15}}>Q{idx + 1}</span>
+              </li>
+            ))}
+          </ul>
 
-          <div className="input-group">
-            <input
-              ref={inputRef}
-              type={showPassword ? "text" : "password"}
-              className="form-control shadow-sm"
-              value={inputAnswer}
-              onChange={(e) => setInputAnswer(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="Type your answer and press Enter"
-            />
-            <button
-              className="btn btn-outline-secondary"
-              type="button"
-              onClick={() => setShowPassword((prev) => !prev)}
-            >
-              <i className={`bi bi-eye${showPassword ? "-slash" : ""}`}></i>
-            </button>
-          </div>
-
-          <div className="d-flex justify-content-between mt-3">
-            <button
-              onClick={handleBack}
-              className="btn btn-outline-secondary"
-              disabled={currentStep === 0}
-            >
-              Back
-            </button>
-            <button onClick={handleNext} className="btn btn-success">
-              Next
-            </button>
+          {/* Center: Form */}
+          <div className="flex-grow-1 position-relative">
+            {/* Progress bar */}
+            <div className="progress mb-3" style={{ height: 7 }}>
+              <div
+                className="progress-bar bg-success"
+                style={{
+                  width: `${((currentStep + 1) / questions.length) * 100}%`,
+                  transition: "width 0.4s"
+                }}
+              />
+            </div>
+            {/* Вопрос с анимацией */}
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={currentStep}
+                initial={{ opacity: 0, x: 40 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -40 }}
+                transition={{ duration: 0.2 }}
+                className="card shadow-lg p-4 rounded-4 border-0"
+                style={{ minHeight: 240 }}
+              >
+                <div className="mb-1 text-muted" style={{ fontSize: 14 }}>
+                  {questions.length > 1 && `Answer question ${currentStep + 1} of ${questions.length}`}
+                </div>
+                <div className="mb-2 fw-semibold" style={{ fontSize: 18 }}>
+                  {questions[currentStep]?.question}
+                </div>
+                <div className="text-secondary mb-3" style={{ fontSize: 13 }}>
+                  {/* Твоя подсказка, при желании */}
+                  Case-insensitive. Only you know your answer.
+                </div>
+                <div className="input-group mb-2">
+                  <input
+                    ref={inputRef}
+                    type={showPassword ? "text" : "password"}
+                    className="form-control"
+                    value={inputAnswer}
+                    onChange={e => setInputAnswer(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    placeholder="Type your answer"
+                    style={{ borderRadius: "14px 0 0 14px" }}
+                  />
+                  <button className="btn btn-outline-secondary" type="button" onClick={() => setShowPassword(v => !v)}>
+                    <i className={`bi bi-eye${showPassword ? "-slash" : ""}`}></i>
+                  </button>
+                </div>
+                <div className="d-flex justify-content-between align-items-center mt-3">
+                  <button className="btn btn-outline-secondary px-3" onClick={handleBack} disabled={currentStep === 0}>
+                    <i className="bi bi-arrow-left"></i> Back
+                  </button>
+                  <button className="btn btn-success px-4" onClick={handleNext} disabled={!inputAnswer.trim()}>
+                    {currentStep === questions.length - 1 ? "Login" : "Next"}
+                    <i className="bi bi-arrow-right ms-2"></i>
+                  </button>
+                </div>
+              </motion.div>
+            </AnimatePresence>
           </div>
         </div>
       )}
+
 
       {authResult && <div className="alert alert-info mt-3">{authResult}</div>}
 
