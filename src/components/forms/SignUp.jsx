@@ -27,7 +27,7 @@ function SignUp() {
   const [showAnswer, setShowAnswer] = useState(false);
   const [entriesList, setEntriesList] = useState([]);
   const [emailTouched, setEmailTouched] = useState(false);
-
+  const [subStep, setSubStep] = useState(0); // 0 - вопрос, 1 - подсказка, 2 - ответ
   const navigate = useNavigate();
 
   // === EMAIL REGEX ===
@@ -249,78 +249,125 @@ function SignUp() {
             Think up a question that only you know the answer to. This will be used for passwordless login!
           </div>
           <h5 className="mb-3">Question {step - 2} of {totalQuestions}</h5>
-          <label className="form-label">Question</label>
-          <select className="form-select mb-3" onChange={handleSelectQuestion} value={selectedQuestion}>
-            <option value="">— Select —</option>
-            <option value="custom">Write your own</option>
-            {questionTemplates.map((q, i) => (
-              <option key={i} value={q.text}>{q.text}</option>
-            ))}
-          </select>
-          {customQuestionVisible && (
+
+          {subStep === 0 && (
             <>
-              <label className="form-label">Custom question</label>
-              <input
-                className="form-control mb-3"
-                value={realQuestion}
-                onChange={(e) => setRealQuestion(e.target.value)}
-                placeholder="Enter your question..."
-                autoFocus
-              />
+              <label className="form-label">Question</label>
+              <select className="form-select mb-3" onChange={handleSelectQuestion} value={selectedQuestion}>
+                <option value="">— Select —</option>
+                <option value="custom">Write your own</option>
+                {questionTemplates.map((q, i) => (
+                  <option key={i} value={q.text}>{q.text}</option>
+                ))}
+              </select>
+              {customQuestionVisible && (
+                <>
+                  <label className="form-label">Custom question</label>
+                  <input
+                    className="form-control mb-3"
+                    value={realQuestion}
+                    onChange={(e) => setRealQuestion(e.target.value)}
+                    placeholder="Enter your question..."
+                    autoFocus
+                  />
+                </>
+              )}
+              <div className="text-end">
+                <button
+                  className="btn btn-primary px-4"
+                  disabled={
+                    (!customQuestionVisible && !selectedQuestion) ||
+                    (customQuestionVisible && !realQuestion.trim())
+                  }
+                  onClick={() => setSubStep(1)}
+                >
+                  Next
+                </button>
+              </div>
             </>
           )}
-          <label className="form-label">Hint (to help you remember)</label>
-          <input
-            className="form-control mb-3"
-            value={associativeQuestion}
-            onChange={(e) => setAssociativeQuestion(e.target.value)}
-            placeholder="This will help you recall the answer"
-          />
 
-          <div className="input-group mb-3">
-            <input
-              type={showAnswer ? "text" : "password"}
-              className="form-control"
-              placeholder="Answer"
-              value={answerText}
-              onChange={(e) => setAnswerText(e.target.value)}
-            />
-            <button
-              type="button"
-              className="btn btn-outline-secondary"
-              onClick={() => setShowAnswer(!showAnswer)}
-              tabIndex={-1}
-            >
-              <i className={`bi ${showAnswer ? "bi-eye-slash" : "bi-eye"}`}></i>
-            </button>
-          </div>
-          <div style={{ textAlign: "center" }}>
-            <button
-              style={{
-                borderRadius: "12px",
-                fontSize: "1.17rem",
-                fontWeight: 600,
-                minWidth: "145px",
-                padding: "13px 35px",
-                background: "linear-gradient(90deg, #4ade80 0%, #22d3ee 100%)",
-                color: "#fff",
-                border: "none",
-                boxShadow: "0 4px 20px rgba(34,211,238,0.09)",
-                cursor: "pointer",
-                transition: "filter 0.16s, transform 0.1s"
-              }}
-              onMouseOver={e => e.currentTarget.style.filter = "brightness(0.95)"}
-              onMouseOut={e => e.currentTarget.style.filter = "brightness(1)"}
-              onClick={handleAdd}
-              disabled={(!customQuestionVisible && !selectedQuestion) ||
-                (customQuestionVisible && !realQuestion.trim()) ||
-                !associativeQuestion.trim() ||
-                !answerText.trim()
-              }
-            >
-              {isLastQuestion ? "Create" : "Next"}
-            </button>
-          </div>
+          {subStep === 1 && (
+            <>
+              <label className="form-label">Hint (to help you remember)</label>
+              <input
+                className="form-control mb-3"
+                value={associativeQuestion}
+                onChange={(e) => setAssociativeQuestion(e.target.value)}
+                placeholder="This will help you recall the answer"
+                autoFocus
+              />
+              <div className="d-flex justify-content-between">
+                <button
+                  className="btn btn-light px-4"
+                  onClick={() => setSubStep(0)}
+                >
+                  Back
+                </button>
+                <button
+                  className="btn btn-primary px-4"
+                  disabled={!associativeQuestion.trim()}
+                  onClick={() => setSubStep(2)}
+                >
+                  Next
+                </button>
+              </div>
+            </>
+          )}
+
+          {subStep === 2 && (
+            <>
+              <label className="form-label">Answer</label>
+              <div className="input-group mb-3">
+                <input
+                  type={showAnswer ? "text" : "password"}
+                  className="form-control"
+                  placeholder="Answer"
+                  value={answerText}
+                  onChange={(e) => setAnswerText(e.target.value)}
+                  autoFocus
+                />
+                <button
+                  type="button"
+                  className="btn btn-outline-secondary"
+                  onClick={() => setShowAnswer(!showAnswer)}
+                  tabIndex={-1}
+                >
+                  <i className={`bi ${showAnswer ? "bi-eye-slash" : "bi-eye"}`}></i>
+                </button>
+              </div>
+              <div className="d-flex justify-content-between">
+                <button
+                  className="btn btn-light px-4"
+                  onClick={() => setSubStep(1)}
+                >
+                  Back
+                </button>
+                <button
+                  style={{
+                    borderRadius: "12px",
+                    fontSize: "1.17rem",
+                    fontWeight: 600,
+                    minWidth: "145px",
+                    padding: "13px 35px",
+                    background: "linear-gradient(90deg, #4ade80 0%, #22d3ee 100%)",
+                    color: "#fff",
+                    border: "none",
+                    boxShadow: "0 4px 20px rgba(34,211,238,0.09)",
+                    cursor: "pointer",
+                    transition: "filter 0.16s, transform 0.1s"
+                  }}
+                  disabled={!answerText.trim()}
+                  onClick={() => {
+                    handleAdd();
+                    setSubStep(0); // reset for next question
+                  }}
+                >
+                  {isLastQuestion ? "Create" : "Next"}
+                </button>
+              </div>
+            </>
+          )}
         </div>
       );
     }
