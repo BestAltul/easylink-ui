@@ -1,27 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import VibePreview from "./VibePreview";
-
-// Универсальный парсер
-function parseFields(fieldsDTO = []) {
-  let name = "";
-  const contacts = [];
-  fieldsDTO.forEach(field => {
-    if (field.type === "fullName" || field.type === "name") {
-      name = field.value;
-    }
-    if (
-      field.type === "phone" ||
-      field.type === "email" ||
-      field.type === "telegram" ||
-      field.type === "whatsapp" ||
-      field.type === "website"
-    ) {
-      contacts.push({ type: field.type, value: field.value });
-    }
-  });
-  return { name, contacts };
-}
+import VibeEditor from "./VibeEditor";
+import parseFields from "../../data/parseFields";
 
 export default function VibePage() {
   const { id } = useParams();
@@ -46,14 +27,17 @@ export default function VibePage() {
       .finally(() => setLoading(false));
   }, [id, token]);
 
-  if (loading) return <div className="text-center my-5">Loading...</div>;
-  if (!vibe) return <div className="alert alert-danger my-5 text-center">Vibe not found.</div>;
+  if (loading)
+    return <div className="text-center my-5">Loading...</div>;
+  if (!vibe)
+    return <div className="alert alert-danger my-5 text-center">Vibe not found.</div>;
 
-  const { name, contacts } = parseFields(vibe.fieldsDTO);
+  // Парсим поля
+  const { name, contacts, extraBlocks } = parseFields(vibe.fieldsDTO || []);
 
   return (
-    <div className="container py-5" style={{ maxWidth: 860, minHeight: 400, position: "relative" }}>
-      {/* Кнопки справа */}
+    <div className="container py-5" style={{ maxWidth: 980, minHeight: 420, position: "relative" }}>
+      {/* Кнопки справа сверху */}
       <div style={{
         position: "absolute",
         top: 14,
@@ -100,16 +84,17 @@ export default function VibePage() {
         </button>
       </div>
 
-      <div className="d-flex" style={{ minHeight: 400 }}>
-        {/* Блок превью и анимация смещения */}
+      {/* Основной flex-контент */}
+      <div className="d-flex" style={{ minHeight: 420 }}>
+        {/* Превью */}
         <div
           style={{
-            flex: editing ? "0 0 56%" : "1 1 100%",
+            flex: editing ? "0 0 50%" : "1 1 100%",
             minWidth: 0,
             transition: "flex-basis .45s cubic-bezier(.68,-0.4,.27,1.25), margin-right .3s",
-            marginRight: editing ? 28 : 0,
+            marginRight: editing ? 32 : 0,
             filter: editing ? "blur(0.5px) grayscale(0.08)" : "none",
-            transform: editing ? "translateX(-30px) scale(.99)" : "none",
+            transform: editing ? "translateX(-24px) scale(.99)" : "none",
             zIndex: 1,
           }}
         >
@@ -122,29 +107,32 @@ export default function VibePage() {
             photoFile={vibe.photo}
             contacts={contacts}
             type={vibe.type}
-            extraBlocks={vibe.extraBlocks || []}
+            extraBlocks={extraBlocks}
           />
         </div>
 
-        {/* Панель редактора */}
+        {/* Редактор (50% ширины) */}
         {editing && (
           <div
             className="card shadow"
             style={{
-              minWidth: 330,
-              maxWidth: 380,
-              marginLeft: 36,
+              flex: "0 0 100%",
+              maxWidth: 1000,
+              marginTop: 40, 
+              marginLeft: 22,
               borderRadius: 18,
               background: "#fff",
               zIndex: 2,
               animation: "slideIn .53s cubic-bezier(.62,-0.45,.28,1.3)",
               display: "flex",
               alignItems: "center",
-              justifyContent: "center"
+              justifyContent: "center",
+              minHeight: 420
             }}
           >
-            <VibeEditForm
-              initial={vibe}
+            <VibeEditor
+              initialFields={vibe.fieldsDTO || []}
+              initialDescription={vibe.description}
               onCancel={() => setEditing(false)}
               onSave={updatedVibe => {
                 setVibe(updatedVibe);
@@ -154,14 +142,14 @@ export default function VibePage() {
           </div>
         )}
 
-        {/* Панель Settings */}
+        {/* Панель Settings (можно вынести в отдельный компонент) */}
         {showSettings && (
           <div
             className="card shadow"
             style={{
-              minWidth: 260,
-              maxWidth: 300,
-              marginLeft: 40,
+              flex: "0 0 32%",
+              maxWidth: 320,
+              marginLeft: 32,
               borderRadius: 14,
               background: "#f5f8fe",
               zIndex: 22,
@@ -184,6 +172,7 @@ export default function VibePage() {
         )}
       </div>
 
+      {/* Стили для анимации */}
       <style>{`
         @keyframes slideIn {
           0% { opacity: 0; transform: translateX(140px) scale(.97);}
@@ -191,72 +180,5 @@ export default function VibePage() {
         }
       `}</style>
     </div>
-  );
-}
-
-// Мини-редактор (оставь свой VibeEditForm если нужно)
-function VibeEditForm({ initial, onCancel, onSave }) {
-  const { name } = parseFields(initial.fieldsDTO);
-  const [formName, setFormName] = useState(name);
-  const [description, setDescription] = useState(initial.description);
-
-  function handleSubmit(e) {
-    e.preventDefault();
-    let nameFieldExists = false;
-    const newFields = initial.fieldsDTO.map(field => {
-      if (field.type === "name") {
-        nameFieldExists = true;
-        return { ...field, value: formName };
-      }
-      return field;
-    });
-    if (!nameFieldExists) {
-      newFields.push({
-        type: "name",
-        value: formName,
-        label: "Name",
-        id: undefined
-      });
-    }
-    fetch(`/api/v3/vibes/${initial.id}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${sessionStorage.getItem("jwt")}`,
-      },
-      body: JSON.stringify({
-        description,
-        fieldsDTO: newFields,
-      }),
-    })
-      .then(res => res.json())
-      .then(updated => onSave(updated));
-  }
-
-  return (
-    <form onSubmit={handleSubmit} className="p-4 w-100">
-      <div className="mb-3">
-        <label className="form-label">Vibe Name</label>
-        <input
-          className="form-control"
-          value={formName}
-          onChange={e => setFormName(e.target.value)}
-          required
-        />
-      </div>
-      <div className="mb-3">
-        <label className="form-label">Description</label>
-        <textarea
-          className="form-control"
-          value={description}
-          onChange={e => setDescription(e.target.value)}
-          rows={3}
-        />
-      </div>
-      <div className="d-flex gap-2 mt-3">
-        <button className="btn btn-success" type="submit">Save</button>
-        <button className="btn btn-secondary" type="button" onClick={onCancel}>Cancel</button>
-      </div>
-    </form>
   );
 }
