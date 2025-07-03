@@ -44,6 +44,13 @@
   color: #007bff;
   text-decoration: none;
   transition: color 0.2s;
+  height: 20px;   
+}
+.logo img {
+  width: 28px;                  /* уменьшил размер иконки */
+  height: 28px;
+  object-fit: contain;
+  display: block;
 }
 .logo:hover {
   color: #0056a3;

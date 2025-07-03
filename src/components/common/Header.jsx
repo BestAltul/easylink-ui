@@ -15,18 +15,36 @@ function Header() {
   return (
     <header className="header">
       <div className="header__container">
-        <Link to="/" className="logo">
+        <Link
+          to="/"
+          className="logo"
+          style={{
+            display: "flex",               // Обеспечиваем, что картинка и текст идут в одну строку
+            alignItems: "center",          // Выравнивание по центру
+            textDecoration: "none",        // Нет подчёркивания
+            width: "auto",                 // Только содержимое
+            padding: 0,                    // Нет внутренних отступов
+            margin: 0                      // Нет внешних отступов
+          }}
+        >
           <img
             src="/clearviewblue.png"
             alt="logo"
             style={{
               width: "36px",
               height: "36px",
-              marginRight: "8px",
-              verticalAlign: "bottom",
+              marginRight: "8px"
             }}
           />
-          EasyLink
+          <span
+            style={{
+              color: "#007bff",
+              fontWeight: "bold",
+              fontSize: "2rem"
+            }}
+          >
+            EasyLink
+          </span>
         </Link>
 
         <nav className="nav">

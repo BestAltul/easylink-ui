@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 import VibePreview from "./VibePreview";
 import VibeEditor from "./VibeEditor";
 import parseFields from "../../data/parseFields";
+import { useParams, useNavigate } from "react-router-dom";
 
 export default function VibePage() {
   const { id } = useParams();
@@ -10,7 +10,8 @@ export default function VibePage() {
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
-
+  const navigate = useNavigate();
+  
   const token = sessionStorage.getItem("jwt");
 
   useEffect(() => {
@@ -37,6 +38,60 @@ export default function VibePage() {
 
   return (
     <div className="container py-5" style={{ maxWidth: 980, minHeight: 420, position: "relative" }}>
+    {/* Вынеси в отдельный div */}
+    <div
+      className="d-flex align-items-center"
+      style={{
+        position: "relative",
+        marginBottom: 36,
+        minHeight: 56
+      }}
+    >
+      {/* Кнопка Back слева */}
+      <button
+        className="btn btn-outline-secondary d-flex align-items-center"
+        style={{
+          borderRadius: 12,
+          fontWeight: 500,
+          boxShadow: "0 2px 8px rgba(70,110,255,0.06)",
+          gap: 6,
+          minWidth: 120, // Чтобы не прыгал заголовок при исчезновении кнопки
+          zIndex: 2,
+          position: "relative"
+        }}
+        onClick={() => navigate("/my-vibes")}
+      >
+        <svg
+          width="18"
+          height="18"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          viewBox="0 0 20 20"
+          style={{ marginRight: 6, marginLeft: -3 }}
+        >
+          <path d="M13 5l-5 5 5 5" />
+        </svg>
+        Back to Vibes
+      </button>
+
+      {/* Заголовок строго по центру, абсолют */}
+      <h2
+        className="fw-bold"
+        style={{
+          position: "absolute",
+          left: 0,
+          right: 0,
+          textAlign: "center",
+          margin: 0,
+          letterSpacing: ".02em",
+          pointerEvents: "none",
+          zIndex: 1
+        }}
+      >
+        Vibe
+      </h2>
+    </div>
       {/* Кнопки справа сверху */}
       <div style={{
         position: "absolute",
@@ -98,9 +153,6 @@ export default function VibePage() {
             zIndex: 1,
           }}
         >
-          <h2 className="fw-bold mb-4" style={{ letterSpacing: ".02em" }}>
-            Vibe
-          </h2>
           <VibePreview
             name={name}
             description={vibe.description}
@@ -118,7 +170,7 @@ export default function VibePage() {
             style={{
               flex: "0 0 100%",
               maxWidth: 1000,
-              marginTop: 40, 
+              // marginTop: 10, 
               marginLeft: 22,
               borderRadius: 18,
               background: "#fff",

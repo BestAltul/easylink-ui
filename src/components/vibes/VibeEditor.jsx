@@ -54,14 +54,14 @@ export default function VibeEditor({ initialFields, initialDescription, onCancel
   return (
     <div style={{
       margin: "0 auto",
-      marginTop: 48,
+      // marginTop: 0,
       maxWidth: 720,
       background: "#fcfdff",
       borderRadius: 24,
       boxShadow: "0 8px 44px #e4eafc55",
-      padding: "38px 32px 28px 32px",
+      // padding: "0px 0px 28px 0px",
       width: "100%",
-      minHeight: 540,
+      // minHeight: 540,
       transition: "box-shadow 0.18s"
     }}>
       <form onSubmit={handleSave} className="w-100">
