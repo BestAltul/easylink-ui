@@ -200,7 +200,8 @@ export default function VibePage() {
             className="card shadow"
             style={{
               flex: "0 0 32%",
-              maxWidth: 320,
+              maxWidth: "90vw",
+              width: "100%",
               marginLeft: 32,
               borderRadius: 14,
               background: "#f5f8fe",

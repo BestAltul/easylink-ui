@@ -55,7 +55,7 @@ export default function VibeEditor({ initialFields, initialDescription, onCancel
     <div style={{
       margin: "0 auto",
       // marginTop: 0,
-      maxWidth: 720,
+      // width: "clamp(320px, 44vw, 520px)",
       background: "#fcfdff",
       borderRadius: 24,
       boxShadow: "0 8px 44px #e4eafc55",

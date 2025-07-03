@@ -11,7 +11,7 @@ import About from "./components/pages/About";
 import Home from "./components/pages/Home";
 import BusinessVibeExample from "./components/vibes/BusinessVibeExample";
 import ConferenceVibeExample from "./components/vibes/ConferenceVibeExample";
-import CreateVibe from "./components/forms/CreateVibe";
+import CreateVibe from "./components/forms/CreateVibe/CreateVibe";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import PersonalVibeExample from "./components/vibes/PersonalVibeExample";
