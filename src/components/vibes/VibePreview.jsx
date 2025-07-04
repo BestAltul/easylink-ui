@@ -6,6 +6,7 @@ import { BsShareFill, BsClipboard } from "react-icons/bs";
 import { FaTelegramPlane, FaWhatsapp, FaInstagram } from "react-icons/fa";
 import { QRCodeCanvas } from "qrcode.react";
 import { createPortal } from "react-dom";
+import { getContactLink } from "../../data/contactLinks";
 
 const getButtonColor = (type) => {
   switch (type) {
@@ -260,20 +261,7 @@ export default function VibePreview({ id, name, description, photoFile, contacts
             const icon = iconMap[c.type] || <FaGlobe />;
             const color = getButtonColor(c.type);
 
-            let link = "#";
-            if (c.type === "instagram" && c.value)
-              link = c.value.startsWith("http") ? c.value : `https://instagram.com/${c.value.replace(/^@/, "")}`;
-            else if (c.type === "whatsapp" && c.value)
-              link = c.value.startsWith("http") ? c.value : `https://wa.me/${c.value.replace(/\D/g, "")}`;
-            else if (c.type === "telegram" && c.value)
-              link = c.value.startsWith("http") ? c.value : `https://t.me/${c.value.replace(/^@/, "")}`;
-            else if (c.type === "email" && c.value)
-              link = `mailto:${c.value}`;
-            else if (c.type === "phone" && c.value)
-              link = `tel:${c.value}`;
-            else if (c.type === "website" && c.value)
-              link = c.value.startsWith("http") ? c.value : `https://${c.value}`;
-
+            const link = getContactLink(c.type, c.value);
             return (
               <a
                 key={c.type + c.value + i}

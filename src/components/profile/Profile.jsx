@@ -167,7 +167,7 @@ export default function Profile() {
               <div className="text-muted" style={{ fontSize: 13 }}>Streak: {user?.streak ?? 0}d</div>
             </div>
           </div>
-          <div className="d-flex justify-content-center mb-4">
+          {/* <div className="d-flex justify-content-center mb-4">
             <div
               className="profile-card p-4 rounded shadow text-center animate-slideUp"
               style={{
@@ -185,8 +185,8 @@ export default function Profile() {
               <button className="btn btn-outline-primary px-4 py-2" style={{ fontWeight: 500, fontSize: 17 }}>
                 Open Map
               </button>
-            </div>
-          </div>
+            </div> *
+          </div> */}
           {/* Cards row */}
           <div className="d-flex gap-4 justify-content-center cards-row">
             {profileCards.map((card, idx) => (
