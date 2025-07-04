@@ -154,6 +154,7 @@ export default function VibePage() {
           }}
         >
           <VibePreview
+            id={vibe.id}
             name={name}
             description={vibe.description}
             photoFile={vibe.photo}

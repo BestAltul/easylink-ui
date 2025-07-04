@@ -189,7 +189,7 @@ export default function VibePreview({ id, name, description, photoFile, contacts
                 value={shareUrl}
                 size={112}
                 bgColor="#ffffff"
-                fgColor="#4154ff"
+                fgColor="#222"
                 level="M"
                 style={{ margin: "0 auto", display: "block" }}
               />
