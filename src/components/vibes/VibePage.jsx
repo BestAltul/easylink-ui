@@ -34,7 +34,8 @@ export default function VibePage() {
     return <div className="alert alert-danger my-5 text-center">Vibe not found.</div>;
 
   // Парсим поля
-  const { name, contacts, extraBlocks } = parseFields(vibe.fieldsDTO || []);
+  const name = vibe.name;
+  const {contacts, extraBlocks } = parseFields(vibe.fieldsDTO || []);
 
   return (
     <div className="container py-5" style={{ maxWidth: 980, minHeight: 420, position: "relative" }}>

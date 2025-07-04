@@ -349,36 +349,51 @@ export default function VibePreview({ id, name, description, photoFile, contacts
             ))}
           </div>
         )}
-        {/* QR-код — теперь с анимацией и кликом */}
-        <div className="mt-4">
-          <div
-            className="qr-preview"
-            onMouseEnter={() => setQrHover(true)}
-            onMouseLeave={() => setQrHover(false)}
-            tabIndex={0}
-            style={{
-              width: 60,
-              height: 60,
-              background: qrHover ? "#f3f7fd" : "#fafafa",
-              border: "1.5px dashed #ddd",
-              borderRadius: 9,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: 18,
-              color: qrHover ? "#7b91fa" : "#aaa",
-              boxShadow: qrHover ? "0 3px 12px #e6ecfa" : "",
-              cursor: "pointer",
-              transition: "all .17s"
-            }}
-            title="Click to enlarge"
-            onClick={() => window.alert("Здесь будет ваш QR-code!")}
-          >
-            QR
-          </div>
-          <div style={{ fontSize: 12, color: "#aaa" }}>
-            Share QR code
-          </div>
+        {/* QR-код или заглушка */}
+        <div className="mt-4 text-center">
+          {id ? (
+            <>
+              <QRCodeCanvas
+                value={`${window.location.origin}/vibes/${id}`}
+                size={60}
+                bgColor="#fff"
+                fgColor="#222"
+                level="M"
+                style={{
+                  margin: "0 auto",
+                  display: "block",
+                  borderRadius: 9,
+                  border: "1.5px dashed #ddd",
+                  background: "#fafafa",
+                  padding: 4,
+                }}
+              />
+              <div style={{ fontSize: 12, color: "#aaa" }}>
+                Share QR code
+              </div>
+            </>
+          ) : (
+            <div
+              className="qr-preview"
+              tabIndex={0}
+              style={{
+                width: 60,
+                height: 60,
+                background: "#fafafa",
+                border: "1.5px dashed #ddd",
+                borderRadius: 9,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: 18,
+                color: "#aaa",
+                margin: "0 auto"
+              }}
+              title="QR code will appear after creating the Vibe"
+            >
+              QR
+            </div>
+          )}
         </div>
       </div>
 
