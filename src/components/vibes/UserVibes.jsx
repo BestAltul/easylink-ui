@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { QRCodeCanvas } from "qrcode.react";
 import "./UserVibes.css";
+import { useTranslation } from "react-i18next";
 
 function Loader() {
   return (
@@ -14,6 +15,7 @@ function Loader() {
 }
 
 export default function MyVibes() {
+  const { t } = useTranslation();
   const [vibes, setVibes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [shareVibe, setShareVibe] = useState(null);
@@ -82,12 +84,12 @@ export default function MyVibes() {
             >
               <path d="M13 5l-5 5 5 5" />
             </svg>
-            Back to Profile
+            {t("myvibes.back")}
           </button>
         </div>
         <div style={{ flex: 2, display: "flex", justifyContent: "center" }}>
           <h2 className="fw-bold mb-0" style={{ letterSpacing: ".02em" }}>
-            My Vibes
+            {t("myvibes.title")}
           </h2>
         </div>
         <div style={{ flex: 1, display: "flex", justifyContent: "flex-end" }}>
@@ -100,7 +102,7 @@ export default function MyVibes() {
             }}
             onClick={() => navigate("/create-vibe")}
           >
-            + Create New Vibe
+            {t("myvibes.create")}
           </button>
         </div>
       </div>
@@ -115,10 +117,10 @@ export default function MyVibes() {
             style={{ maxWidth: 500, margin: "30px auto" }}
           >
             <div style={{ fontSize: 54, marginBottom: 12 }}>🌊</div>
-            No Vibes found.
+            {t("myvibes.no_vibes")}
             <br />
             <span style={{ fontSize: 15, color: "#68798a" }}>
-              Create your first Vibe!
+              {t("myvibes.no_vibes_hint")}
             </span>
           </div>
         ) : (
@@ -140,7 +142,7 @@ export default function MyVibes() {
                     }}
                     className="vibe-card position-relative myvibe-card"
                     tabIndex={0}
-                    title="Click to view and edit"
+                    title={t("myvibes.title")}
                     onClick={() => navigate(`/vibes/${vibe.id}`)}
                   >
                     <div
@@ -166,7 +168,7 @@ export default function MyVibes() {
                           handleShare(vibe);
                         }}
                         tabIndex={-1}
-                        title="Share"
+                        title={t("myvibes.share")}
                       >
                         <svg
                           width="18"
@@ -181,7 +183,7 @@ export default function MyVibes() {
                           <circle cx="15" cy="15" r="2.1" />
                           <path d="M6.7 9l5.6-3.2M6.7 11l5.6 3.2" />
                         </svg>
-                        Share
+                        {t("myvibes.share")}
                       </button>
                     </div>
                     <div className="d-flex justify-content-center mb-2 mt-1">
@@ -248,7 +250,7 @@ export default function MyVibes() {
                     >
                       {vibe.description || (
                         <span style={{ color: "#adb5bd" }}>
-                          No description.
+                          {t("myvibes.no_description")}
                         </span>
                       )}
                     </p>
@@ -293,9 +295,9 @@ export default function MyVibes() {
                       onClick={closeShare}
                     />
                     <div className="mb-3">
-                      <h5>Share your Vibe</h5>
+                      <h5>{t("myvibes.share_title")}</h5>
                       <div className="text-muted" style={{ fontSize: 15 }}>
-                        Отправь ссылку на свой вайб или покажи QR-код!
+                        {t("myvibes.share_subtitle")}
                       </div>
                     </div>
                     <input
@@ -322,10 +324,10 @@ export default function MyVibes() {
                     >
                       {copied ? (
                         <>
-                          <span className="me-2">&#10003;</span> Copied!
+                          <span className="me-2">&#10003;</span> {t("myvibes.copied")}
                         </>
                       ) : (
-                        "Copy Link"
+                        t("myvibes.copy")
                       )}
                     </button>
                     <div className="text-center my-3">
@@ -344,7 +346,7 @@ export default function MyVibes() {
                           marginTop: 7,
                         }}
                       >
-                        Отсканируй, чтобы открыть Vibe
+                        {t("myvibes.scan")}
                       </div>
                     </div>
                   </motion.div>

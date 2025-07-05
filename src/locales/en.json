@@ -1,0 +1,164 @@
+{
+    "home":{
+    "welcome": "Welcome to EasyLink",
+    "subtitle": "Your modern solution for secure and effortless identity management.",
+    "curious": "Curious how EasyLink empowers your digital life?",
+    "learn_more": "Learn more",
+    "get_started": "Get Started",
+    "why": "Why EasyLink?",
+    "secure_title": "Secure by Design",
+    "secure_text": "Your data stays protected with multi-layer authentication and encryption.",
+    "fast_title": "Lightning Fast Access",
+    "fast_text": "Login in seconds, without remembering complex passwords or codes.",
+    "friendly_title": "User Friendly",
+    "friendly_text": "Designed for everyone — simple, intuitive, and beautifully easy to use."
+    },
+    "header":{
+        "home": "Home",
+        "sign_up": "Sign Up",
+        "log_in": "Log In",
+        "profile": "Profile",
+        "about": "About",
+        "review": "Review",
+        "log_out": "Log Out"
+    },
+    "footer": {
+        "terms": "Conditions of Use",
+        "privacy": "Privacy Notice",
+        "ads": "Interest-Based Ads",
+        "copyright": "All rights reserved."
+    },
+    "about":{
+        "title": "What is EasyLink?",
+    "subtitle": "A fast, modern way to connect and build your own digital Vibe.",
+    "steps": [
+      {
+        "title": "No Passwords",
+        "text": "Sign in with your personal associations — no passwords, codes, or emails. Only what matters to you."
+      },
+      {
+        "title": "Private & Secure",
+        "text": "Your data is encrypted and never shared. Only you control access."
+      },
+      {
+        "title": "Fast Authentication",
+        "text": "Quick access with your answers — no codes or password resets."
+      },
+      {
+        "title": "Your Vibe, Your Rules",
+        "text": "Your digital Vibe is all about you. Share contacts, links, and more on your own terms."
+      }
+    ],
+    "cta": "Try creating your Vibe!",
+    "mission_title": "Our Mission",
+    "mission": "EasyLink was built for those who value simplicity and privacy. Forget dozens of passwords and unnecessary data — your digital world, under your control."
+    },
+    "signup": {
+    "progress_step": "Step {{step}} of {{total}}",
+    "progress_done": "Almost done!",
+    "title": "EasyLink Registration",
+    "step1_info": "Enter your email to create an account.",
+    "step1_label": "Email",
+    "step1_invalid": "Enter a valid email address",
+    "step1_next": "Next",
+
+    "step2_info": "How many memory locks do you want to add? More = safer!",
+    "step2_label": "Choose number of memory locks:",
+    
+    "step3_info": "Think up a question that only you know the answer to. This will be used for passwordless login!",
+    "step3_question": "Question",
+    "step3_custom": "Write your own",
+    "step3_custom_label": "Custom question",
+    "step3_hint": "Hint (to help you remember)",
+    "step3_hint_placeholder": "This will help you recall the answer",
+    "step3_back": "Back",
+    "step3_next": "Next",
+    "step3_answer": "Answer",
+    "step3_create": "Create",
+    "step3_of": "of {{total}}",
+    "step3_select": "Select",
+
+    "questions_preview_title": "Your memory is protected 🔐",
+    "questions_preview_q": "Q:",
+    "questions_preview_hint": "Hint:",
+    "questions_preview_answer": "Answer: ••••",
+
+    "finish_create": "Create Account",
+
+    "toast_fill_all": "Please fill in all fields",
+    "toast_email_required": "Email is required",
+    "toast_error": "Registration error",
+    "toast_fail": "Registration failed"
+    },
+    "auth": {
+        "title": "Sign In",
+        "email_label": "Email:",
+        "email_placeholder": "Enter your email",
+        "email_not_found": "❌ Email not found",
+        "error_verifying_email": "⚠️ Error verifying email",
+        "answer_exactly": "❗ Please enter exactly {{count}} answers.",
+        "success": "Success",
+        "blocked": "🚫 Blocked: {{reason}}",
+        "wrong_answers": "❗ Wrong answers: {{reason}}",
+        "general_error": "❌ Error: {{status}}",
+        "error_checking_answers": "⚠️ Error on checking answers: {{error}}",
+        "q_number": "Q{{num}}",
+        "progress": "Answer question {{current}} of {{total}}",
+        "case_insensitive": "Case-insensitive. Only you know your answer.",
+        "answer_placeholder": "Type your answer",
+        "back": "Back",
+        "next": "Next",
+        "login": "Login",
+        "no_account": "Don't have an account?",
+        "signup": "Sign up"
+    },
+    "review": {
+      "title": "What People Say",
+      "leave": "Leave a Review",
+      "placeholder": "Your feedback about EasyLink...",
+      "submit": "Submit",
+      "thank_you": "Thank you for your review! 💬",
+      "must_login": "You must be logged in to post a review.",
+      "anonymous": "Anonymous"
+    },
+    "profile": {
+      "welcome": "Welcome back, {{name}}!",
+      "dashboard": "This is your personal dashboard. Manage your interests, hobbies, groups, and communities — and share what matters through different types of Vibes.",
+      "vibes": "Vibes",
+      "friends": "Friends",
+      "streak": "Streak: {{count}}d",
+      "cards": [
+        {
+          "title": "❤️ My Vibes",
+          "text": "See the vibes you've already created!",
+          "button": "View My Vibes"
+        },
+        {
+          "title": "💙 Create New Vibe",
+          "text": "Add a new personal, business, or event Vibe to your account.",
+          "button": "Create Vibe"
+        }
+      ],
+      "sidebar": {
+        "edit": "Edit",
+        "settings": "Settings",
+        "logout": "Logout"
+      },
+      "user_name": "User Name"
+    },
+    "myvibes": {
+      "back": "Back to Profile",
+      "title": "My Vibes",
+      "create": "+ Create New Vibe",
+      "loading": "Loading Vibes...",
+      "no_vibes": "No Vibes found.",
+      "no_vibes_hint": "Create your first Vibe!",
+      "share": "Share",
+      "share_title": "Share your Vibe",
+      "share_subtitle": "Send your Vibe link or show the QR code!",
+      "copy": "Copy Link",
+      "copied": "Copied!",
+      "scan": "Scan to open Vibe",
+      "no_description": "No description."
+     }
+}

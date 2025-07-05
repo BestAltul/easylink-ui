@@ -3,10 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 export default function Home() {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
+  const { t } = useTranslation();
 
   const handleClick = () => {
     if (isAuthenticated) {
@@ -18,20 +20,16 @@ export default function Home() {
 
   return (
     <div className="container text-center py-5">
-      {/* Главный заголовок */}
-      <h1
-        className="mb-3"
-        style={{ fontWeight: "700", fontSize: "3rem", animation: "fadeIn 1s" }}
-      >
-        Welcome to EasyLink
+      <h1 className="mb-3" style={{ fontWeight: "700", fontSize: "3rem", animation: "fadeIn 1s" }}>
+        {t('home.welcome')}
       </h1>
       <p className="lead mb-4" style={{ animation: "fadeIn 1.5s" }}>
-        Your modern solution for secure and effortless identity management.
+        {t('home.subtitle')}
       </p>
       <p className="text-muted" style={{ animation: "fadeIn 2s" }}>
-        Curious how EasyLink empowers your digital life?{" "}
+        {t('home.curious')}{" "}
         <Link to="/about" className="text-primary">
-          Learn more
+          {t('home.learn_more')}
         </Link>
       </p>
       <button
@@ -39,37 +37,31 @@ export default function Home() {
         className="btn btn-primary px-5 py-3 mt-4"
         style={{ fontSize: "1.25rem", animation: "fadeIn 2.5s" }}
       >
-        Get Started
+        {t('home.get_started')}
       </button>
 
       {/* Features Section */}
-      <div
-        className="row mt-5 justify-content-center"
-        style={{ animation: "fadeIn 2s" }}
-      >
-        <h2 className="mb-5 text-center">Why EasyLink?</h2>
+      <div className="row mt-5 justify-content-center" style={{ animation: "fadeIn 2s" }}>
+        <h2 className="mb-5 text-center">{t('home.why')}</h2>
 
         {[
           {
             emoji: "🔒",
-            title: "Secure by Design",
-            text: "Your data stays protected with multi-layer authentication and encryption.",
+            title: t("home.secure_title"),
+            text: t("home.secure_text"),
           },
           {
             emoji: "⚡",
-            title: "Lightning Fast Access",
-            text: "Login in seconds, without remembering complex passwords or codes.",
+            title: t("home.fast_title"),
+            text: t("home.fast_text"),
           },
           {
             emoji: "😊",
-            title: "User Friendly",
-            text: "Designed for everyone — simple, intuitive, and beautifully easy to use.",
+            title: t("home.friendly_title"),
+            text: t("home.friendly_text"),
           },
         ].map((item, idx) => (
-          <div
-            key={idx}
-            className="col-md-4 mb-4 d-flex justify-content-center"
-          >
+          <div key={idx} className="col-md-4 mb-4 d-flex justify-content-center">
             <div
               className="card p-4 shadow-sm"
               style={{
@@ -80,21 +72,16 @@ export default function Home() {
               }}
             >
               <div className="card-body d-flex flex-column align-items-center text-center">
-                <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>
-                  {item.emoji}
-                </div>
+                <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>{item.emoji}</div>
                 <h5 className="card-title mb-2">{item.title}</h5>
-                <p
-                  className="card-text"
-                  style={{ fontSize: "0.95rem", color: "#555" }}
-                >
+                <p className="card-text" style={{ fontSize: "0.95rem", color: "#555" }}>
                   {item.text}
                 </p>
               </div>
             </div>
           </div>
         ))}
-
+        
         <style>
           {`
             .card:hover {

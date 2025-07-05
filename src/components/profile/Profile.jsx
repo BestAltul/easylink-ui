@@ -1,40 +1,43 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { useTranslation } from "react-i18next";
 import avatarPlaceholder from "../../assets/avatarPlaceholder.png";
 
 export default function Profile() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user, logout } = useAuth();
+  const { t } = useTranslation();
   const [hoveredCard, setHoveredCard] = useState(null);
   const [sidebarHover, setSidebarHover] = useState(false);
   const sidebarRef = useRef();
 
   const profileCards = [
     {
-      title: "❤️ My Vibes",
-      text: "See the vibes you've already created!",
+      title: t("profile.cards.0.title"),
+      text: t("profile.cards.0.text"),
       background: "#fff8f0",
       hoverBackground: "#ffeedb",
-      buttonText: "View My Vibes",
+      buttonText: t("profile.cards.0.button"),
       buttonColor: "danger",
       onClick: () => navigate("/my-vibes"),
     },
     {
-      title: "💙 Create New Vibe",
-      text: "Add a new personal, business, or event Vibe to your account.",
+      title: t("profile.cards.1.title"),
+      text: t("profile.cards.1.text"),
       background: "#e3f2fd",
       hoverBackground: "#d0e5f7",
-      buttonText: "Create Vibe",
+      buttonText: t("profile.cards.1.button"),
       buttonColor: "primary",
       onClick: () => navigate("/create-vibe"),
     },
   ];
 
   const navItems = [
-    { icon: "✏️", label: "Edit", route: "/edit-profile", variant: "outline-primary" },
-    { icon: "⚙️", label: "Settings", route: "/settings", variant: "outline-secondary" },
-    { icon: "🚪", label: "Logout", route: "/", variant: "outline-danger", isLogout: true },
+    { icon: "✏️", label: t("profile.sidebar.edit"), route: "/edit-profile", variant: "outline-primary" },
+    { icon: "⚙️", label: t("profile.sidebar.settings"), route: "/settings", variant: "outline-secondary" },
+    { icon: "🚪", label: t("profile.sidebar.logout"), route: "/", variant: "outline-danger", isLogout: true },
   ];
 
   const handleLogout = () => {
@@ -121,7 +124,7 @@ export default function Profile() {
 
         {sidebarHover && (
           <div className="text-center mb-2 animate-slideUp">
-            <h6 className="mb-0">{user?.name || "User Name"}</h6>
+            <h6 className="mb-0">{user?.name || t("profile.user_name")}</h6>
             <small className="text-muted d-block">{user?.email}</small>
           </div>
         )}
@@ -147,47 +150,29 @@ export default function Profile() {
       <main className="py-5 px-4" style={{ marginLeft: "60px" }}>
         <div className="mx-auto" style={{ maxWidth: "1200px" }}>
           <div className="text-center bg-light p-5 rounded shadow mb-5 animate-slideUp">
-            <h2 className="mb-4">Welcome back, {user?.name || "friend"}!</h2>
+            <h2 className="mb-4">
+              {t("profile.welcome", { name: user?.name || t("profile.user_name") })}
+            </h2>
             <p className="lead text-muted">
-              This is your personal dashboard. Manage your interests, hobbies,
-              groups, and communities — and share what matters through different types of Vibes.
+              {t("profile.dashboard")}
             </p>
           </div>
           <div className="d-flex gap-4 justify-content-center mb-4 animate-slideUp">
             <div className="bg-white rounded p-3 shadow-sm text-center" style={{ minWidth: 110 }}>
               <div style={{ fontSize: 26, fontWeight: 600 }}>{user?.vibesCount ?? 0}</div>
-              <div className="text-muted" style={{ fontSize: 13 }}>Vibes</div>
+              <div className="text-muted" style={{ fontSize: 13 }}>{t("profile.vibes")}</div>
             </div>
             <div className="bg-white rounded p-3 shadow-sm text-center" style={{ minWidth: 110 }}>
               <div style={{ fontSize: 26, fontWeight: 600 }}>{user?.friendsCount ?? 0}</div>
-              <div className="text-muted" style={{ fontSize: 13 }}>Friends</div>
+              <div className="text-muted" style={{ fontSize: 13 }}>{t("profile.friends")}</div>
             </div>
             <div className="bg-white rounded p-3 shadow-sm text-center" style={{ minWidth: 110 }}>
               <div style={{ fontSize: 16, fontWeight: 500, color: "#6a1b9a" }}>🔥</div>
-              <div className="text-muted" style={{ fontSize: 13 }}>Streak: {user?.streak ?? 0}d</div>
+              <div className="text-muted" style={{ fontSize: 13 }}>
+                {t("profile.streak", { count: user?.streak ?? 0 })}
+              </div>
             </div>
           </div>
-          {/* <div className="d-flex justify-content-center mb-4">
-            <div
-              className="profile-card p-4 rounded shadow text-center animate-slideUp"
-              style={{
-                backgroundColor: "#fafbfc",
-                minWidth: 280,
-                maxWidth: 400,
-                cursor: "pointer",
-              }}
-              onClick={() => navigate("/map")}
-              tabIndex={0}
-              onKeyDown={e => (e.key === "Enter" || e.key === " ") && navigate("/map")}
-            >
-              <h5 className="mb-2" style={{ fontWeight: 600, fontSize: 22 }}>🗺️ Show My Map</h5>
-              <p className="text-muted mb-3" style={{ minHeight: 38 }}>See your Vibes on the world map!</p>
-              <button className="btn btn-outline-primary px-4 py-2" style={{ fontWeight: 500, fontSize: 17 }}>
-                Open Map
-              </button>
-            </div> *
-          </div> */}
-          {/* Cards row */}
           <div className="d-flex gap-4 justify-content-center cards-row">
             {profileCards.map((card, idx) => (
               <div

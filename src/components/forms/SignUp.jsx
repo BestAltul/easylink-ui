@@ -4,13 +4,7 @@ import { toast } from "react-toastify";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "react-toastify/dist/ReactToastify.css";
-
-const STEP_LABELS = [
-  "Email",
-  "Choose number of questions",
-  "Questions & Answers",
-  "Finish"
-];
+import { useTranslation } from "react-i18next";
 
 function SignUp() {
   const [email, setEmail] = useState("");
@@ -29,6 +23,7 @@ function SignUp() {
   const [emailTouched, setEmailTouched] = useState(false);
   const [subStep, setSubStep] = useState(0); // 0 - вопрос, 1 - подсказка, 2 - ответ
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   // === EMAIL REGEX ===
   const isEmailValid = email.trim().length === 0
@@ -51,7 +46,7 @@ function SignUp() {
 
   const handleAdd = () => {
     if ((!customQuestionVisible && !selectedQuestion) || (customQuestionVisible && !realQuestion.trim()) || !associativeQuestion.trim() || !answerText.trim()) {
-      toast.error("Please fill in all fields", { position: "top-right" });
+      toast.error(t("signup.toast_fill_all"), { position: "top-right" });
       return;
     }
 
@@ -81,7 +76,7 @@ function SignUp() {
     setAnswerText("");
     setShowAnswer(false);
   };
-  
+
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
     if (emailTouched) setEmailTouched(false);
@@ -89,7 +84,7 @@ function SignUp() {
 
   const handleSignup = async () => {
     if (!email.trim()) {
-      toast.error("Email is required", { position: "top-right" });
+      toast.error(t("signup.toast_email_required"), { position: "top-right" });
       return;
     }
 
@@ -105,12 +100,20 @@ function SignUp() {
         toast.success(message, { position: "top-right" });
         navigate("/signin");
       } else {
-        toast.error(message || "Registration failed", { position: "top-right" });
+        toast.error(message || t("signup.toast_fail"), { position: "top-right" });
       }
     } catch (error) {
-      toast.error("Registration error", { position: "top-right" });
+      toast.error(t("signup.toast_error"), { position: "top-right" });
     }
   };
+
+  // Для лейблов шагов сбоку
+  const STEP_LABELS = [
+    t("signup.step1_label"),
+    t("signup.step2_label"),
+    t("signup.step3_question"),
+    t("signup.step3_create")
+  ];
 
   function SidebarSteps() {
     return (
@@ -152,17 +155,16 @@ function SignUp() {
     );
   }
 
-
   function QuestionsPreview() {
     return (
       <div className="card mb-3 p-3 shadow-sm">
-        <h6 className="mb-3">Your memory is protected 🔐</h6>
+        <h6 className="mb-3">{t("signup.questions_preview_title")}</h6>
         <ul className="list-group">
           {entriesList.map((entry, i) => (
             <li key={i} className="list-group-item d-flex flex-column align-items-start border-0 bg-light mb-2 rounded">
-              <span className="fw-semibold mb-1">Q: {entry.realQuestion.text}</span>
-              <span className="text-muted mb-1">Hint: {entry.associativeQuestion}</span>
-              <span style={{ opacity: 0.5 }}>Answer: ••••</span>
+              <span className="fw-semibold mb-1">{t("signup.questions_preview_q")} {entry.realQuestion.text}</span>
+              <span className="text-muted mb-1">{t("signup.questions_preview_hint")} {entry.associativeQuestion}</span>
+              <span style={{ opacity: 0.5 }}>{t("signup.questions_preview_answer")}</span>
             </li>
           ))}
         </ul>
@@ -175,8 +177,8 @@ function SignUp() {
     if (step === 1) {
       return (
         <div className="card p-5 shadow-sm animate-fadein">
-          <div className="mb-2 small text-muted">Enter your email to create an account.</div>
-          <label className="form-label">Email</label>
+          <div className="mb-2 small text-muted">{t("signup.step1_info")}</div>
+          <label className="form-label">{t("signup.step1_label")}</label>
           <div className="input-group mb-2">
             <input
               type="email"
@@ -193,7 +195,7 @@ function SignUp() {
             )}
           </div>
           {!isEmailValid && email.trim() && emailTouched && (
-            <div className="invalid-feedback d-block">Enter a valid email address</div>
+            <div className="invalid-feedback d-block">{t("signup.step1_invalid")}</div>
           )}
           <button
             className="btn btn-primary mt-3"
@@ -203,7 +205,7 @@ function SignUp() {
             }}
             disabled={!email.trim()}
           >
-            Next
+            {t("signup.step1_next")}
           </button>
         </div>
       );
@@ -214,9 +216,9 @@ function SignUp() {
       return (
         <div className="card p-5 shadow-sm animate-fadein text-center">
           <div className="mb-4 small text-muted" style={{ fontSize: 18 }}>
-            How many memory locks do you want to add? More = safer!
+            {t("signup.step2_info")}
           </div>
-          <label className="form-label mb-4" style={{ fontSize: 20 }}>Choose number of memory locks:</label>
+          <label className="form-label mb-4" style={{ fontSize: 20 }}>{t("signup.step2_label")}</label>
           <div className="d-flex justify-content-center gap-4 flex-nowrap mb-2">
             {[1, 2, 3, 4, 5].map((num) => (
               <button
@@ -246,28 +248,28 @@ function SignUp() {
       return (
         <div className="card p-5 shadow-sm animate-fadein" style={{ backgroundColor: "#f8f9fa" }}>
           <div className="mb-2 small text-muted" style={{ fontSize: 16 }}>
-            Think up a question that only you know the answer to. This will be used for passwordless login!
+            {t("signup.step3_info")}
           </div>
-          <h5 className="mb-3">Question {step - 2} of {totalQuestions}</h5>
+          <h5 className="mb-3">{t("signup.step3_question")} {step - 2} {t("signup.step3_of", { total: totalQuestions })}</h5>
 
           {subStep === 0 && (
             <>
-              <label className="form-label">Question</label>
+              <label className="form-label">{t("signup.step3_question")}</label>
               <select className="form-select mb-3" onChange={handleSelectQuestion} value={selectedQuestion}>
-                <option value="">— Select —</option>
-                <option value="custom">Write your own</option>
+                <option value="">— {t("signup.step3_select")} —</option>
+                <option value="custom">{t("signup.step3_custom")}</option>
                 {questionTemplates.map((q, i) => (
                   <option key={i} value={q.text}>{q.text}</option>
                 ))}
               </select>
               {customQuestionVisible && (
                 <>
-                  <label className="form-label">Custom question</label>
+                  <label className="form-label">{t("signup.step3_custom_label")}</label>
                   <input
                     className="form-control mb-3"
                     value={realQuestion}
                     onChange={(e) => setRealQuestion(e.target.value)}
-                    placeholder="Enter your question..."
+                    placeholder={t("signup.step3_custom_label")}
                     autoFocus
                   />
                 </>
@@ -281,7 +283,7 @@ function SignUp() {
                   }
                   onClick={() => setSubStep(1)}
                 >
-                  Next
+                  {t("signup.step3_next")}
                 </button>
               </div>
             </>
@@ -289,12 +291,12 @@ function SignUp() {
 
           {subStep === 1 && (
             <>
-              <label className="form-label">Hint (to help you remember)</label>
+              <label className="form-label">{t("signup.step3_hint")}</label>
               <input
                 className="form-control mb-3"
                 value={associativeQuestion}
                 onChange={(e) => setAssociativeQuestion(e.target.value)}
-                placeholder="This will help you recall the answer"
+                placeholder={t("signup.step3_hint_placeholder")}
                 autoFocus
               />
               <div className="d-flex justify-content-between">
@@ -302,14 +304,14 @@ function SignUp() {
                   className="btn btn-light px-4"
                   onClick={() => setSubStep(0)}
                 >
-                  Back
+                  {t("signup.step3_back")}
                 </button>
                 <button
                   className="btn btn-primary px-4"
                   disabled={!associativeQuestion.trim()}
                   onClick={() => setSubStep(2)}
                 >
-                  Next
+                  {t("signup.step3_next")}
                 </button>
               </div>
             </>
@@ -317,12 +319,12 @@ function SignUp() {
 
           {subStep === 2 && (
             <>
-              <label className="form-label">Answer</label>
+              <label className="form-label">{t("signup.step3_answer")}</label>
               <div className="input-group mb-3">
                 <input
                   type={showAnswer ? "text" : "password"}
                   className="form-control"
-                  placeholder="Answer"
+                  placeholder={t("signup.step3_answer")}
                   value={answerText}
                   onChange={(e) => setAnswerText(e.target.value)}
                   autoFocus
@@ -341,7 +343,7 @@ function SignUp() {
                   className="btn btn-light px-4"
                   onClick={() => setSubStep(1)}
                 >
-                  Back
+                  {t("signup.step3_back")}
                 </button>
                 <button
                   style={{
@@ -363,7 +365,7 @@ function SignUp() {
                     setSubStep(0); // reset for next question
                   }}
                 >
-                  {isLastQuestion ? "Create" : "Next"}
+                  {isLastQuestion ? t("signup.step3_create") : t("signup.step3_next")}
                 </button>
               </div>
             </>
@@ -372,13 +374,12 @@ function SignUp() {
       );
     }
 
-
     // FINISH STEP
     return (
       <div className="animate-fadein text-center">
         <QuestionsPreview />
         <button className="btn btn-primary btn-lg px-5" onClick={handleSignup}>
-          Create Account
+          {t("signup.finish_create")}
         </button>
       </div>
     );
@@ -403,13 +404,13 @@ function SignUp() {
                   style={{ width: `${(step / (totalQuestions + 2)) * 100}%`, backgroundColor: "#5cb85c" }}
                 >
                   {step < totalQuestions + 3
-                    ? `Step ${step} of ${totalQuestions + 2}`
-                    : "Almost done!"}
+                    ? t("signup.progress_step", { step, total: totalQuestions + 2 })
+                    : t("signup.progress_done")}
                 </div>
               </div>
             </div>
             <h2 className="mb-5 text-center fw-bold" style={{ fontSize: 40, width: "100%" }}>
-              EasyLink Registration <span role="img" aria-label="lock">🔒</span>
+              {t("signup.title")} <span role="img" aria-label="lock">🔒</span>
             </h2>
             <div style={{ width: "100%", maxWidth: 720 }}>{renderStep()}</div>
           </div>

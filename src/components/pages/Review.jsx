@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useAuth } from "../../context/AuthContext";
+import { useTranslation } from "react-i18next";
 
 function Review() {
   const [text, setText] = useState("");
@@ -7,6 +8,7 @@ function Review() {
   const [reviews, setReviews] = useState([]);
   const { user, isAuthenticated } = useAuth();
   const reviewsEndRef = useRef(null);
+  const { t } = useTranslation();
 
   const scrollToBottom = (smooth = false) => {
     reviewsEndRef.current?.scrollIntoView({
@@ -35,7 +37,7 @@ function Review() {
 
   const handleSubmit = (e) => {
     if (!isAuthenticated) {
-      alert("You must be logged in to post a review.");
+      alert(t("review.must_login"));
       return;
     }
     e.preventDefault();
@@ -76,7 +78,7 @@ function Review() {
           fontFamily: "Segoe UI, sans-serif",
         }}
       >
-        <h2 className="text-center mb-4">What People Say</h2>
+        <h2 className="text-center mb-4">{t("review.title")}</h2>
 
         <div className="mb-4" style={{ maxHeight: "300px", overflowY: "auto" }}>
           {reviews.map((review, index) => (
@@ -89,7 +91,7 @@ function Review() {
                   marginBottom: "0.2rem",
                 }}
               >
-                {review.username || "Anonymous"}
+                {review.username || t("review.anonymous")}
               </div>
               <div
                 style={{
@@ -118,22 +120,22 @@ function Review() {
           ))}
         </div>
 
-        <h4 className="mb-3">Leave a Review</h4>
+        <h4 className="mb-3">{t("review.leave")}</h4>
         <form onSubmit={handleSubmit}>
           <textarea
             value={text}
             onChange={(e) => setText(e.target.value)}
-            placeholder="Your feedback about EasyLink..."
+            placeholder={t("review.placeholder")}
             className="form-control mb-3 shadow-sm"
             style={{ height: "120px", resize: "none" }}
           />
           <button type="submit" className="btn btn-success px-4">
-            Submit
+            {t("review.submit")}
           </button>
         </form>
 
         {submitted && (
-          <p className="mt-3 text-success">Thank you for your review! 💬</p>
+          <p className="mt-3 text-success">{t("review.thank_you")}</p>
         )}
       </div>
     </div>

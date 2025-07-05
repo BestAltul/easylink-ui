@@ -1,42 +1,31 @@
 import React from "react";
 import { FaKey, FaLock, FaBolt, FaUserCircle } from "react-icons/fa";
+import { useTranslation } from "react-i18next";
 
-const steps = [
-  {
-    title: "No Passwords",
-    icon: <FaKey size={30} style={{ color: "#efbd3e" }} />,
-    text: "Sign in with your personal associations — no passwords, codes, or emails. Only what matters to you.",
-  },
-  {
-    title: "Private & Secure",
-    icon: <FaLock size={30} style={{ color: "#f4528e" }} />,
-    text: "Your data is encrypted and never shared. Only you control access.",
-  },
-  {
-    title: "Fast Authentication",
-    icon: <FaBolt size={30} style={{ color: "#a687e7" }} />,
-    text: "Quick access with your answers — no codes or password resets.",
-  },
-  {
-    title: "Your Vibe, Your Rules",
-    icon: <FaUserCircle size={30} style={{ color: "#e6c455" }} />,
-    text: "Your digital Vibe is all about you. Share contacts, links, and more on your own terms.",
-  },
+const icons = [
+  <FaKey size={30} style={{ color: "#efbd3e" }} />,
+  <FaLock size={30} style={{ color: "#f4528e" }} />,
+  <FaBolt size={30} style={{ color: "#a687e7" }} />,
+  <FaUserCircle size={30} style={{ color: "#e6c455" }} />
 ];
 
 const colors = ["#fff4b2", "#ffd6e7", "#f3e8ff", "#fff7d6"];
 
 export default function About() {
+  const { t } = useTranslation();
+
+  // Секции шагов теперь берём из переводов
+  const steps = t("about.steps", { returnObjects: true });
+
   return (
     <div className="container py-5" style={{ minHeight: 600 }}>
       {/* Header */}
       <div className="text-center mb-5">
-        {/* <img src="/logo192.png" alt="EasyLink Logo" width={70} className="mb-3" /> */}
         <h1 className="fw-bold" style={{ letterSpacing: 2 }}>
-          What is EasyLink?
+          {t("about.title")}
         </h1>
         <p className="lead text-muted mb-0" style={{ maxWidth: 500, margin: "0 auto" }}>
-          A fast, modern way to connect and build your own digital Vibe.
+          {t("about.subtitle")}
         </p>
       </div>
 
@@ -59,7 +48,7 @@ export default function About() {
               onFocus={e => e.currentTarget.style.transform = "translateY(-6px) scale(1.04)"}
               onBlur={e => e.currentTarget.style.transform = "none"}
             >
-              <div className="mb-2 text-center">{step.icon}</div>
+              <div className="mb-2 text-center">{icons[index]}</div>
               <h5 className="mb-2 text-center" style={{ fontWeight: 600 }}>{step.title}</h5>
               <p className="text-muted mb-0 text-center" style={{ fontSize: 16 }}>{step.text}</p>
             </div>
@@ -80,7 +69,7 @@ export default function About() {
             letterSpacing: 1,
           }}
         >
-          Try creating your Vibe!
+          {t("about.cta")}
         </a>
       </div>
 
@@ -93,9 +82,9 @@ export default function About() {
         }}
       >
         <div className="mb-2 text-center" style={{ fontSize: 30 }}>🌟</div>
-        <h4 className="mb-2 text-center fw-bold">Our Mission</h4>
+        <h4 className="mb-2 text-center fw-bold">{t("about.mission_title")}</h4>
         <p className="text-muted text-center mb-0" style={{ fontSize: 17 }}>
-          <span style={{ fontWeight: 600 }}>EasyLink</span> was built for those who value simplicity and privacy. Forget dozens of passwords and unnecessary data — your digital world, under your control.
+          {t("about.mission")}
         </p>
       </div>
     </div>

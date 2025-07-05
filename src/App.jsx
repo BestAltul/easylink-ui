@@ -21,6 +21,7 @@ import { Navigate } from "react-router-dom";
 import UserMapPage from "./components/pages/UserMapPage";
 import UserVibes from "./components/vibes/UserVibes";
 import VibePage from "./components/vibes/VibePage";
+import './i18n';
 
 function App() {
   const [questions, setQuestions] = useState([]);

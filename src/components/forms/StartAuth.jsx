@@ -6,6 +6,7 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslation } from "react-i18next";
 
 function StartAuth({ questions, setQuestions }) {
   const [email, setEmail] = useState("");
@@ -17,6 +18,7 @@ function StartAuth({ questions, setQuestions }) {
   const { login, user } = useAuth();
   const navigate = useNavigate();
   const inputRef = useRef();
+  const { t } = useTranslation();
 
   // Автофокус и автоподстановка ответа при смене шага
   useEffect(() => {
@@ -39,7 +41,7 @@ function StartAuth({ questions, setQuestions }) {
       if (res.status === 404) {
         setQuestions([]);
         setAnswersList([]);
-        toast.error("❌ Email not found", { position: "top-right" });
+        toast.error(t("auth.email_not_found"), { position: "top-right" });
       } else {
         const data = await res.json();
         setQuestions(data);
@@ -47,7 +49,7 @@ function StartAuth({ questions, setQuestions }) {
         setCurrentStep(0);
       }
     } catch (err) {
-      toast.error("⚠️ Error verifying email", { position: "top-right" });
+      toast.error(t("auth.error_verifying_email"), { position: "top-right" });
     }
   };
 
@@ -82,7 +84,7 @@ function StartAuth({ questions, setQuestions }) {
 
   const checkAnswers = async (finalAnswers) => {
     if (finalAnswers.length !== questions.length) {
-      toast.warn(`❗ Please enter exactly ${questions.length} answers.`, {
+      toast.warn(t("auth.answer_exactly", { count: questions.length }), {
         position: "top-right",
       });
       return;
@@ -109,8 +111,8 @@ function StartAuth({ questions, setQuestions }) {
         const data = await res.json();
         const token = data["Authentication successful"];
 
-        toast.success("Success ", { position: "top-right" });
-        setAuthResult("Authenticationnsuccessful");
+        toast.success(t("auth.success"), { position: "top-right" });
+        setAuthResult(t("auth.success"));
 
         sessionStorage.setItem("jwt", token);
 
@@ -130,33 +132,33 @@ function StartAuth({ questions, setQuestions }) {
         }
 
         if (res.status === 423) {
-          toast.error("🚫 Blocked: " + (errorData?.message || errorText), {
+          toast.error(t("auth.blocked", { reason: errorData?.message || errorText }), {
             position: "top-right",
           });
         } else if (res.status === 401) {
-          toast.warn("❗ Wrong answers: " + (errorData?.message || errorText), {
+          toast.warn(t("auth.wrong_answers", { reason: errorData?.message || errorText }), {
             position: "top-right",
           });
         } else {
-          toast.error("❌ Error: " + res.status, {
+          toast.error(t("auth.general_error", { status: res.status }), {
             position: "top-right",
           });
         }
       }
     } catch (err) {
-      toast.error("⚠️ Error on checking answers: " + err.message, {
+      toast.error(t("auth.error_checking_answers", { error: err.message }), {
         position: "top-right",
       });
-      setAuthResult("Error on checking answers");
+      setAuthResult(t("auth.error_checking_answers", { error: err.message }));
     }
   };
 
   return (
     <section className="container mt-4">
-      <h2 className="mb-4">Sign In</h2>
+      <h2 className="mb-4">{t("auth.title")}</h2>
 
       <div className="mb-3">
-        <label className="form-label">Email:</label>
+        <label className="form-label">{t("auth.email_label")}</label>
         <input
           type="email"
           className="form-control shadow-sm"
@@ -166,7 +168,7 @@ function StartAuth({ questions, setQuestions }) {
           onKeyDown={(e) => {
             if (e.key === "Enter") verifyEmail(email);
           }}
-          placeholder="Enter your email"
+          placeholder={t("auth.email_placeholder")}
         />
       </div>
 
@@ -186,7 +188,9 @@ function StartAuth({ questions, setQuestions }) {
                 onClick={() => setCurrentStep(idx)}
               >
                 <i className={`bi bi-${answersList[idx]?.trim() ? "check-circle-fill text-success" : "circle"}`}></i>
-                <span style={{fontSize: 15}}>Q{idx + 1}</span>
+                <span style={{fontSize: 15}}>
+                  {t("auth.q_number", { num: idx + 1 })}
+                </span>
               </li>
             ))}
           </ul>
@@ -215,14 +219,17 @@ function StartAuth({ questions, setQuestions }) {
                 style={{ minHeight: 240 }}
               >
                 <div className="mb-1 text-muted" style={{ fontSize: 14 }}>
-                  {questions.length > 1 && `Answer question ${currentStep + 1} of ${questions.length}`}
+                  {questions.length > 1 &&
+                    t("auth.progress", {
+                      current: currentStep + 1,
+                      total: questions.length,
+                    })}
                 </div>
                 <div className="mb-2 fw-semibold" style={{ fontSize: 18 }}>
                   {questions[currentStep]?.question}
                 </div>
                 <div className="text-secondary mb-3" style={{ fontSize: 13 }}>
-                  {/* Твоя подсказка, при желании */}
-                  Case-insensitive. Only you know your answer.
+                  {t("auth.case_insensitive")}
                 </div>
                 <div className="input-group mb-2">
                   <input
@@ -232,7 +239,7 @@ function StartAuth({ questions, setQuestions }) {
                     value={inputAnswer}
                     onChange={e => setInputAnswer(e.target.value)}
                     onKeyDown={handleKeyDown}
-                    placeholder="Type your answer"
+                    placeholder={t("auth.answer_placeholder")}
                     style={{ borderRadius: "14px 0 0 14px" }}
                   />
                   <button className="btn btn-outline-secondary" type="button" onClick={() => setShowPassword(v => !v)}>
@@ -241,10 +248,10 @@ function StartAuth({ questions, setQuestions }) {
                 </div>
                 <div className="d-flex justify-content-between align-items-center mt-3">
                   <button className="btn btn-outline-secondary px-3" onClick={handleBack} disabled={currentStep === 0}>
-                    <i className="bi bi-arrow-left"></i> Back
+                    <i className="bi bi-arrow-left"></i> {t("auth.back")}
                   </button>
                   <button className="btn btn-success px-4" onClick={handleNext} disabled={!inputAnswer.trim()}>
-                    {currentStep === questions.length - 1 ? "Login" : "Next"}
+                    {currentStep === questions.length - 1 ? t("auth.login") : t("auth.next")}
                     <i className="bi bi-arrow-right ms-2"></i>
                   </button>
                 </div>
@@ -254,17 +261,16 @@ function StartAuth({ questions, setQuestions }) {
         </div>
       )}
 
-
       {authResult && <div className="alert alert-info mt-3">{authResult}</div>}
 
       <p className="text-center mt-3">
-        Don't have an account?{" "}
+        {t("auth.no_account")}{" "}
         <button
           onClick={() => navigate("/signup")}
           className="btn btn-link p-0"
           style={{ textDecoration: "underline", fontWeight: "500" }}
         >
-          Sign up
+          {t("auth.signup")}
         </button>
       </p>
     </section>

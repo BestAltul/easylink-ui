@@ -1,64 +1,54 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { useTranslation } from "react-i18next";
 import "./Header.css";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 function Header() {
   const { isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const handleLogout = () => {
     logout();
-    navigate("/"); // после выхода — редиректим на главную
+    navigate("/");
   };
 
   return (
     <header className="header">
       <div className="header__container">
-        <Link
-          to="/"
-          className="logo"
-          style={{
-            display: "flex",               // Обеспечиваем, что картинка и текст идут в одну строку
-            alignItems: "center",          // Выравнивание по центру
-            textDecoration: "none",        // Нет подчёркивания
-            width: "auto",                 // Только содержимое
-            padding: 0,                    // Нет внутренних отступов
-            margin: 0                      // Нет внешних отступов
-          }}
-        >
+        <Link to="/" className="logo" style={{
+          display: "flex",
+          alignItems: "center",
+          textDecoration: "none",
+          width: "auto",
+          padding: 0,
+          margin: 0
+        }}>
           <img
             src="/clearviewblue.png"
             alt="logo"
-            style={{
-              width: "36px",
-              height: "36px",
-              marginRight: "8px"
-            }}
+            style={{ width: "36px", height: "36px", marginRight: "8px" }}
           />
-          <span
-            style={{
-              color: "#007bff",
-              fontWeight: "bold",
-              fontSize: "2rem"
-            }}
-          >
+          <span style={{ color: "#007bff", fontWeight: "bold", fontSize: "2rem" }}>
             EasyLink
           </span>
         </Link>
 
-        <nav className="nav">
-          <Link to="/">Home</Link>
-          {!isAuthenticated && <Link to="/signup">Sign Up</Link>}
-          {!isAuthenticated && <Link to="/signin">Log In</Link>}
-          {isAuthenticated && <Link to="/profile">Profile</Link>}
-          <Link to="/about">About</Link>
-          <Link to="/review">Review</Link>
+        <nav className="nav" style={{ display: "flex", alignItems: "center", gap: 16 }}>
+          <Link to="/">{t("header.home")}</Link>
+          {!isAuthenticated && <Link to="/signup">{t("header.sign_up")}</Link>}
+          {!isAuthenticated && <Link to="/signin">{t("header.log_in")}</Link>}
+          {isAuthenticated && <Link to="/profile">{t("header.profile")}</Link>}
+          <Link to="/about">{t("header.about")}</Link>
+          <Link to="/review">{t("header.review")}</Link>
           {isAuthenticated && (
             <button onClick={handleLogout} className="logout-btn">
-              Log Out
+              {t("header.log_out")}
             </button>
           )}
+          <LanguageSwitcher />
         </nav>
       </div>
     </header>
