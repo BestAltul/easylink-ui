@@ -28,3 +28,4 @@ function Avatar({ name, photoFile }) {
     </div>
   );
 }
+export default Avatar;

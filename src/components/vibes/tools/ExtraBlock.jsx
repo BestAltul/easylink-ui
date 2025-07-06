@@ -1,3 +1,13 @@
+const weekDays = [
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+  "Sunday",
+];
+
 function ExtraBlock({ block }) {
   return (
     <div
@@ -35,3 +45,4 @@ function ExtraBlock({ block }) {
     </div>
   );
 }
+export default ExtraBlock;
