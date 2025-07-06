@@ -162,5 +162,17 @@
       "no_description": "No description.",
       "delete": "Delete",
       "delete_confirm": "Delete this Vibe? This cannot be undone."
-     }
+     },
+    "interactions": {
+      "back": "← Back",
+      "title": "Interactions",
+      "loading_vibe": "Loading vibe...",
+      "not_found": "Vibe not found.",
+      "no_name": "No Name",
+      "info_text": "This is your vibe. See below who follows you and who you follow.",
+      "following": "Following",
+      "followers": "Followers",
+      "following_empty": "You are not following anyone yet.",
+      "followers_empty": "No one follows you yet."
+    }
 }

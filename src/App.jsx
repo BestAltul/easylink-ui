@@ -63,7 +63,7 @@ function App() {
         <Route path="/my-vibes" element={<UserVibes />} />
         <Route path="/vibes" element={<UserVibes />} />
         <Route path="/vibes/:id" element={<VibePage />} />
-        <Route path="/vibes/interactions" element={<InteractionsPage />} />
+        <Route path="/vibes/:id/interactions" element={<InteractionsPage />} />
       </Routes>
       <Footer />
     </>
