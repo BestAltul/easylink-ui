@@ -154,6 +154,20 @@
     "copy": "Copier le lien",
     "copied": "Copié !",
     "scan": "Scannez pour ouvrir le Vibe",
-    "no_description": "Pas de description."
+    "no_description": "Pas de description.",
+    "delete_error": "Erreur lors de la suppression du Vibe",
+    "delete_success": "Vibe supprimé !"
+  },
+  "interactions": {
+    "back": "← Retour",
+    "title": "Interactions",
+    "loading_vibe": "Chargement du vibe...",
+    "not_found": "Vibe introuvable.",
+    "no_name": "Sans nom",
+    "info_text": "Ceci est votre vibe. Ci-dessous — vos abonnements et vos abonnés.",
+    "following": "Abonnements",
+    "followers": "Abonnés",
+    "following_empty": "Vous ne suivez encore personne.",
+    "followers_empty": "Personne ne vous suit encore."
   }
 }

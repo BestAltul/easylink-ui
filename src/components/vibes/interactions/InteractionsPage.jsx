@@ -1,120 +1,211 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
-// Типы интеракций, если нужно (можно импортировать)
-const INTERACTION_TYPES = [
-  { key: "subscribe", label: "Subscribe" },
-  { key: "like", label: "Like" },
-  // ...другие типы
-];
+const typeColor = {
+  BUSINESS: "#4b7bfd",
+  PERSONAL: "#fc6736",
+  EVENT: "#1fc48d",
+};
 
-export default function InteractionPage() {
-  const { id } = useParams(); // id вайба, к которому идём
-  const [loading, setLoading] = useState(true);
-  const [interactions, setInteractions] = useState([]);
-  const [error, setError] = useState(null);
+export default function InteractionsPage() {
+  const { t } = useTranslation();
+  const { id } = useParams();
   const navigate = useNavigate();
 
-  // Для "подписаться"
-  const [submitting, setSubmitting] = useState(false);
-  const [success, setSuccess] = useState(false);
+  const [vibe, setVibe] = useState(null);
+  const [loadingVibe, setLoadingVibe] = useState(true);
+  const [followers, setFollowers] = useState([]);
+  const [following, setFollowing] = useState([]);
+  const token = sessionStorage.getItem("jwt");
 
-  // Фетчим все интеракции на этот вайб
   useEffect(() => {
-    setLoading(true);
-    fetch(`/api/v3/interactions/vibe/${id}`, {
+    setLoadingVibe(true);
+
+    // Получаем данные вайба
+    fetch(`/api/v3/vibes/${id}`, {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${sessionStorage.getItem("jwt")}`,
+        Authorization: `Bearer ${token}`,
       },
     })
-      .then((res) => {
-        if (!res.ok) throw new Error("Ошибка получения интеракций");
-        return res.json();
-      })
-      .then((data) => setInteractions(data || []))
-      .catch((err) => setError(err.message))
-      .finally(() => setLoading(false));
-  }, [id, success]);
+      .then((res) => res.json())
+      .then((data) => setVibe(data))
+      .catch(() => setVibe(null))
+      .finally(() => setLoadingVibe(false));
 
-  // Подписка на вайб
-  const handleSubscribe = async () => {
-    setSubmitting(true);
-    setSuccess(false);
-    try {
-      const body = {
-        targetVibeId: id,
-        interactionType: "subscribe", // или любой другой тип
-        // ...сюда добавь userEmail, myVibeId, anonymous, active если нужно
-      };
-      const res = await fetch(`/api/v3/interactions`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${sessionStorage.getItem("jwt")}`,
-        },
-        body: JSON.stringify(body),
-      });
-      if (!res.ok) throw new Error("Не удалось подписаться");
-      setSuccess(true);
-    } catch (err) {
-      alert("Ошибка: " + err.message);
-    } finally {
-      setSubmitting(false);
-    }
-  };
+    // Получаем подписчиков (followers)
+    fetch(`/api/v3/interactions/${id}/followers`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => setFollowers(data))
+      .catch(() => setFollowers([]));
+
+    // Получаем на кого подписан (following)
+    fetch(`/api/v3/interactions/${id}/following`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => setFollowing(data))
+      .catch(() => setFollowing([]));
+  }, [id, token]);
 
   return (
-    <div className="container py-5" style={{ maxWidth: 700 }}>
-      <button
-        className="btn btn-outline-secondary mb-4"
-        onClick={() => navigate(-1)}
-      >
-        ← Back
-      </button>
-      <h2 className="mb-3">Interactions</h2>
-      <div className="mb-4 text-muted">
-        Здесь отображаются все подписчики и ваши взаимодействия с этим вайбом.
+    <div className="container py-5" style={{ maxWidth: 1100 }}>
+      <div className="d-flex align-items-center mb-4">
+        <button
+          className="btn btn-outline-secondary"
+          onClick={() => navigate(-1)}
+        >
+          {t("interactions.back")}
+        </button>
+        <h2 className="fw-bold mx-auto mb-0" style={{ letterSpacing: ".02em" }}>
+          {t("interactions.title")}
+        </h2>
       </div>
-      <button
-        className="btn btn-primary mb-4"
-        onClick={handleSubscribe}
-        disabled={submitting}
-      >
-        {submitting ? "Подписка..." : success ? "Вы подписаны!" : "Подписаться на вайб"}
-      </button>
-      {loading ? (
-        <div>Загрузка...</div>
-      ) : error ? (
-        <div className="alert alert-danger">{error}</div>
-      ) : interactions.length === 0 ? (
-        <div className="alert alert-info">Нет интеракций с этим вайбом.</div>
-      ) : (
-        <table className="table table-hover">
-          <thead>
-            <tr>
-              <th>User Email</th>
-              <th>Тип</th>
-              <th>Active</th>
-              <th>Дата</th>
-            </tr>
-          </thead>
-          <tbody>
-            {interactions.map((item, i) => (
-              <tr key={item.id || i}>
-                <td>{item.userEmail || "—"}</td>
-                <td>{item.interactionType}</td>
-                <td>{item.active ? "✔️" : "—"}</td>
-                <td>
-                  {item.createdAt
-                    ? new Date(item.createdAt).toLocaleString()
-                    : "—"}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+
+      <div className="row g-5">
+        {/* Левая колонка — реальные данные о вайбе */}
+        <div className="col-md-4">
+          <div
+            className="card p-4 mb-4 shadow"
+            style={{ borderRadius: 18, minHeight: 170 }}
+          >
+            {loadingVibe ? (
+              <div className="text-muted">{t("interactions.loading_vibe")}</div>
+            ) : !vibe ? (
+              <div className="text-danger">{t("interactions.not_found")}</div>
+            ) : (
+              <>
+                <div style={{ fontSize: 20, fontWeight: 700 }}>
+                  {vibe.name || <span style={{ color: "#aaa" }}>{t("interactions.no_name")}</span>}
+                </div>
+                <div
+                  className="mt-2"
+                  style={{
+                    fontWeight: 500,
+                    color: typeColor[vibe.type] || "#607d8b",
+                    textTransform: "uppercase",
+                    letterSpacing: ".03em",
+                    fontSize: 15,
+                  }}
+                >
+                  {vibe.type}
+                </div>
+                <div style={{ fontSize: 14, color: "#999", marginTop: 8 }}>
+                  {t("interactions.info_text")}
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+        {/* Правая колонка — Followers & Following */}
+        <div className="col-md-8">
+          <div className="row g-4">
+            {/* Following */}
+            <div className="col-md-6">
+              <div className="card p-4 shadow" style={{ borderRadius: 18, minHeight: 210 }}>
+                <h5 className="mb-3" style={{ color: "#476dfe" }}>{t("interactions.following")}</h5>
+                {following.length === 0 ? (
+                  <div className="text-muted">{t("interactions.following_empty")}</div>
+                ) : (
+                  <ul className="list-group list-group-flush">
+                    {following.map((f) => (
+                      <li
+                        className="list-group-item d-flex align-items-center"
+                        key={f.id}
+                        style={{
+                          border: "none",
+                          padding: "12px 0",
+                          fontSize: 16,
+                          fontWeight: 500,
+                        }}
+                      >
+                        <span
+                          style={{
+                            width: 10,
+                            height: 10,
+                            borderRadius: "50%",
+                            background: typeColor[f.type] || "#adb5bd",
+                            display: "inline-block",
+                            marginRight: 10,
+                          }}
+                        />
+                        <span>{f.name}</span>
+                        <span
+                          style={{
+                            fontSize: 13,
+                            fontWeight: 400,
+                            color: "#aaa",
+                            marginLeft: 8,
+                            textTransform: "uppercase",
+                          }}
+                        >
+                          {f.type}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </div>
+            {/* Followers */}
+            <div className="col-md-6">
+              <div className="card p-4 shadow" style={{ borderRadius: 18, minHeight: 210 }}>
+                <h5 className="mb-3" style={{ color: "#1fc48d" }}>{t("interactions.followers")}</h5>
+                {followers.length === 0 ? (
+                  <div className="text-muted">{t("interactions.followers_empty")}</div>
+                ) : (
+                  <ul className="list-group list-group-flush">
+                    {followers.map((f) => (
+                      <li
+                        className="list-group-item d-flex align-items-center"
+                        key={f.id}
+                        style={{
+                          border: "none",
+                          padding: "12px 0",
+                          fontSize: 16,
+                          fontWeight: 500,
+                        }}
+                      >
+                        <span
+                          style={{
+                            width: 10,
+                            height: 10,
+                            borderRadius: "50%",
+                            background: typeColor[f.type] || "#adb5bd",
+                            display: "inline-block",
+                            marginRight: 10,
+                          }}
+                        />
+                        <span>{f.name}</span>
+                        <span
+                          style={{
+                            fontSize: 13,
+                            fontWeight: 400,
+                            color: "#aaa",
+                            marginLeft: 8,
+                            textTransform: "uppercase",
+                          }}
+                        >
+                          {f.type}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
