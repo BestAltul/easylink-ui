@@ -6,7 +6,6 @@ function parseFields(fieldsDTO = []) {
   let name = "";
   let description = "";
 
-  // Получаем список ключей контактов для проверки
   const contactKeys = CONTACT_TYPES.map(type => type.key.toLowerCase());
 
   fieldsDTO.forEach(field => {
@@ -27,9 +26,19 @@ function parseFields(fieldsDTO = []) {
 
     // Часы работы
     if (fieldLabel === "hours") {
+      let hoursValue = field.value;
+      // Если это строка, пытаемся парсить
+      if (typeof hoursValue === "string") {
+        try {
+          hoursValue = JSON.parse(hoursValue);
+        } catch {
+          hoursValue = {};
+        }
+      }
       extraBlocks.push({
         label: "Hours",
-        value: field.value
+        type: "hours",
+        value: hoursValue
       });
     }
 

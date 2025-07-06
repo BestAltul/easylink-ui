@@ -13,6 +13,23 @@ export default function Profile() {
   const [sidebarHover, setSidebarHover] = useState(false);
   const sidebarRef = useRef();
 
+  // Новое: Считаем вайбы через fetch
+  const [vibesCount, setVibesCount] = useState(0);
+
+  useEffect(() => {
+    // Не отправляем запрос без пользователя
+    if (!user?.jwt) return;
+    fetch("/api/v3/vibes", {
+      headers: {
+        Authorization: `Bearer ${user.jwt}`,
+        "Content-Type": "application/json"
+      }
+    })
+      .then(res => res.json())
+      .then(data => setVibesCount(Array.isArray(data) ? data.length : 0))
+      .catch(() => setVibesCount(0));
+  }, [user?.jwt]);
+
   const profileCards = [
     {
       title: t("profile.cards.0.title"),
@@ -159,7 +176,7 @@ export default function Profile() {
           </div>
           <div className="d-flex gap-4 justify-content-center mb-4 animate-slideUp">
             <div className="bg-white rounded p-3 shadow-sm text-center" style={{ minWidth: 110 }}>
-              <div style={{ fontSize: 26, fontWeight: 600 }}>{user?.vibesCount ?? 0}</div>
+              <div style={{ fontSize: 26, fontWeight: 600 }}>{vibesCount}</div>
               <div className="text-muted" style={{ fontSize: 13 }}>{t("profile.vibes")}</div>
             </div>
             <div className="bg-white rounded p-3 shadow-sm text-center" style={{ minWidth: 110 }}>

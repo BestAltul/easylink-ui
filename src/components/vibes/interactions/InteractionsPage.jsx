@@ -15,16 +15,18 @@ export default function InteractionsPage() {
 
   const [vibe, setVibe] = useState(null);
   const [loadingVibe, setLoadingVibe] = useState(true);
-
   const [followers, setFollowers] = useState([]);
   const [following, setFollowing] = useState([]);
+  const token = sessionStorage.getItem("jwt");
 
   useEffect(() => {
     setLoadingVibe(true);
+
+    // Получаем данные вайба
     fetch(`/api/v3/vibes/${id}`, {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${sessionStorage.getItem("jwt")}`,
+        Authorization: `Bearer ${token}`,
       },
     })
       .then((res) => res.json())
@@ -32,18 +34,28 @@ export default function InteractionsPage() {
       .catch(() => setVibe(null))
       .finally(() => setLoadingVibe(false));
 
-    // DUMMY DATA (replace with API)
-    setTimeout(() => {
-      setFollowers([
-        { id: "1", name: "Vasya Pupkin", type: "PERSONAL" },
-        { id: "2", name: "Music Festival", type: "EVENT" },
-      ]);
-      setFollowing([
-        { id: "3", name: "Local Library", type: "BUSINESS" },
-        { id: "4", name: "Tech Meetup", type: "EVENT" },
-      ]);
-    }, 400);
-  }, [id]);
+    // Получаем подписчиков (followers)
+    fetch(`/api/v3/interactions/${id}/followers`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => setFollowers(data))
+      .catch(() => setFollowers([]));
+
+    // Получаем на кого подписан (following)
+    fetch(`/api/v3/interactions/${id}/following`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => setFollowing(data))
+      .catch(() => setFollowing([]));
+  }, [id, token]);
 
   return (
     <div className="container py-5" style={{ maxWidth: 1100 }}>

@@ -31,7 +31,7 @@ export default function VibePreview({ id, name, description, photoFile, contacts
 
   // Ссылка на вайб
   const shareUrl = id
-    ? `${window.location.origin}/vibes/${id}`
+    ? `${window.location.origin}/view/${id}`
     : window.location.href;
 
   // Для закрытия по клику вне окна

@@ -76,7 +76,7 @@ export default function MyVibes() {
   // ---------------------
 
   const shareLink =
-    shareVibe && window.location.origin + `/vibes/${shareVibe.id}`;
+    shareVibe && window.location.origin + `/view/${shareVibe.id}`;
 
   return (
     <div className="container py-5">
