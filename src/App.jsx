@@ -21,6 +21,7 @@ import { Navigate } from "react-router-dom";
 import UserMapPage from "./components/pages/UserMapPage";
 import UserVibes from "./components/vibes/UserVibes";
 import VibePage from "./components/vibes/VibePage";
+import InteractionsPage from "./components/vibes/interactions/InteractionsPage";
 import './i18n';
 
 function App() {
@@ -62,6 +63,7 @@ function App() {
         <Route path="/my-vibes" element={<UserVibes />} />
         <Route path="/vibes" element={<UserVibes />} />
         <Route path="/vibes/:id" element={<VibePage />} />
+        <Route path="/vibes/interactions" element={<InteractionsPage />} />
       </Routes>
       <Footer />
     </>

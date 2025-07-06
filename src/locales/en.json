@@ -159,6 +159,8 @@
       "copy": "Copy Link",
       "copied": "Copied!",
       "scan": "Scan to open Vibe",
-      "no_description": "No description."
+      "no_description": "No description.",
+      "delete": "Delete",
+      "delete_confirm": "Delete this Vibe? This cannot be undone."
      }
 }

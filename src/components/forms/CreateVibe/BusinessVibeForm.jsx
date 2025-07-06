@@ -71,7 +71,7 @@ export default function BusinessVibeForm() {
     const dto = {
       name,
       description,
-      type: "business",
+      type: "BUSINESS",
       fieldsDTO,
     };
 
@@ -386,7 +386,7 @@ export default function BusinessVibeForm() {
             description={description}
             photoFile={photoFile}
             contacts={contacts}
-            type="business"
+            type="BUSINESS"
             extraBlocks={extraBlocks}
           />
         </div>

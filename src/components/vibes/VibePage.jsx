@@ -103,6 +103,25 @@ export default function VibePage() {
         gap: 10,
       }}>
         <button
+          className="btn btn-primary btn-sm d-flex align-items-center"
+          style={{
+            borderRadius: 20,
+            boxShadow: "0 1px 4px #d6d7fc",
+            fontWeight: 500,
+            fontSize: 15,
+            gap: 7,
+            padding: "5px 14px"
+          }}
+          onClick={() => navigate(`/vibes/${id}/interactions`)}
+        >
+          <svg width="16" height="16" fill="none" stroke="#fff" strokeWidth="2" viewBox="0 0 20 20">
+            <circle cx="10" cy="10" r="6" />
+            <path d="M14 10h-4" />
+            <path d="M10 6v8" />
+          </svg>
+          Interactions
+        </button>
+        <button
           className="btn btn-light btn-sm d-flex align-items-center"
           style={{
             borderRadius: 20,

@@ -5,7 +5,7 @@ import PersonalVibeForm from "./PersonalVibeForm";
 import EventVibeForm from "./EventVibeForm";
 
 export default function CreateVibe() {
-  const [type, setType] = useState("business");
+  const [type, setType] = useState("BUSINESS");
   const navigate = useNavigate();
 
   return (
@@ -51,16 +51,16 @@ export default function CreateVibe() {
             value={type}
             onChange={(e) => setType(e.target.value)}
           >
-            <option value="business">Business</option>
-            <option value="personal">Personal</option>
-            <option value="event">Event</option>
+            <option value="BUSINESS">Business</option>
+            <option value="PERSONAL">Personal</option>
+            <option value="EVENT">Event</option>
           </select>
         </div>
 
         {/* Каждая форма сама заботится о своем layout */}
-        {type === "business" && <BusinessVibeForm />}
-        {type === "personal" && <PersonalVibeForm />}
-        {type === "event" && <EventVibeForm />}
+        {type === "BUSINESS" && <BusinessVibeForm />}
+        {type === "PERSONAL" && <PersonalVibeForm />}
+        {type === "EVENT" && <EventVibeForm />}
       </div>
     </div>
   );

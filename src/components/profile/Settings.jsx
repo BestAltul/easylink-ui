@@ -24,14 +24,36 @@ export default function Settings() {
 
   const handleDeleteAccount = () => setShowModal(true);
 
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
     setDeleting(true);
-    setTimeout(() => {
+
+    try {
+      const token = sessionStorage.getItem("jwt");
+      const res = await fetch("/api/v1/users/me", {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (res.ok) {
+        setDeleting(false);
+        setDeleteSuccess(true);
+        setShowModal(false);
+
+        // Удаляем токен и редиректим пользователя
+        sessionStorage.removeItem("jwt");
+        setTimeout(() => {
+          setDeleteSuccess(false);
+          navigate("/goodbye"); // Или "/" если нет прощальной страницы
+        }, 1500);
+      } else {
+        throw new Error("Server returned an error.");
+      }
+    } catch (err) {
       setDeleting(false);
-      setDeleteSuccess(true);
-      setShowModal(false);
-      setTimeout(() => setDeleteSuccess(false), 3000);
-    }, 1400);
+      alert("Error deleting account: " + err.message);
+    }
   };
 
   return (

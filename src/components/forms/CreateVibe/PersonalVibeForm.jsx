@@ -75,7 +75,7 @@ export default function PersonalVibeForm() {
     const dto = {
       name,
       description,
-      type: "personal",
+      type: "PERSONAL",
       fieldsDTO,
     };
 
@@ -382,7 +382,7 @@ export default function PersonalVibeForm() {
             description={description}
             photoFile={photoFile}
             contacts={contacts}
-            type="personal"
+            type="PERSONAL"
             extraBlocks={extraBlocks}
           />
         </div>

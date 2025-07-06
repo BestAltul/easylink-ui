@@ -1,33 +1,45 @@
+import CONTACT_TYPES from "./contactTypes";
+
 function parseFields(fieldsDTO = []) {
   const contacts = [];
   const extraBlocks = [];
   let name = "";
   let description = "";
 
+  // Получаем список ключей контактов для проверки
+  const contactKeys = CONTACT_TYPES.map(type => type.key.toLowerCase());
+
   fieldsDTO.forEach(field => {
+    const fieldLabel = field.label?.toLowerCase();
+
     // Имя пользователя
-    if (field.label?.toLowerCase() === "name" && field.value) {
+    if (fieldLabel === "name" && field.value) {
       name = field.value;
     }
-    // Контакты
-    if (
-      ["instagram", "whatsapp", "telegram", "phone", "email", "website"].includes(field.label?.toLowerCase())
-    ) {
+
+    // Контакты из CONTACT_TYPES
+    if (contactKeys.includes(fieldLabel)) {
       contacts.push({
-        type: field.label.toLowerCase(),
+        type: fieldLabel,
         value: field.value
       });
     }
+
     // Часы работы
-    if (field.label?.toLowerCase() === "hours") {
+    if (fieldLabel === "hours") {
       extraBlocks.push({
         label: "Hours",
         value: field.value
       });
     }
+
+    // Описание (если появится)
+    if (fieldLabel === "description") {
+      description = field.value;
+    }
   });
 
-  return { name, contacts, extraBlocks };
+  return { name, description, contacts, extraBlocks };
 }
 
 export default parseFields;

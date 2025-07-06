@@ -17,10 +17,8 @@
 .myvibe-card:hover,
 .myvibe-card:focus {
   transform: translateY(-10px) scale(1.035) rotate(-0.7deg);
-  box-shadow:
-    0 12px 40px 0 rgba(65,84,255,0.13),
-    0 2px 12px rgba(60,80,150,0.12);
-  filter: brightness(1.06) saturate(1.04);
+  box-shadow: 0 2px 12px rgba(40,48,70,0.10);  
+  filter: none; 
   outline: none;
 }
 

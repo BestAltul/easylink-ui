@@ -56,6 +56,25 @@ export default function MyVibes() {
     setTimeout(() => setCopied(false), 1500);
   }
 
+  // --- УДАЛЕНИЕ VIBE ---
+  function handleDelete(vibeId) {
+    if (!window.confirm(t("myvibes.delete_confirm") || "Delete this Vibe? This cannot be undone.")) return;
+    setLoading(true);
+    fetch(`/api/v3/vibes/${vibeId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to delete");
+        setVibes((prev) => prev.filter((v) => v.id !== vibeId));
+      })
+      .catch((err) => alert("Error: " + err.message))
+      .finally(() => setLoading(false));
+  }
+  // ---------------------
+
   const shareLink =
     shareVibe && window.location.origin + `/vibes/${shareVibe.id}`;
 
@@ -145,6 +164,53 @@ export default function MyVibes() {
                     title={t("myvibes.title")}
                     onClick={() => navigate(`/vibes/${vibe.id}`)}
                   >
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: 58,
+                        right: 12,
+                        zIndex: 12,
+                      }}
+                    >
+                      <button
+                        className="d-flex align-items-center delete-btn"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDelete(vibe.id);
+                        }}
+                        tabIndex={-1}
+                        title={t("myvibes.delete")}
+                        aria-label={t("myvibes.delete")}
+                        style={{
+                          background: "rgba(248, 65, 65, 0.09)",
+                          border: "none",
+                          borderRadius: "50%",
+                          boxShadow: "0 2px 8px rgba(0,0,0,0.07)",
+                          padding: 8,
+                          cursor: "pointer",
+                          transition: "box-shadow .18s, background .18s, transform .13s",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                        onMouseOver={e => e.currentTarget.style.background = "rgba(255,70,70,0.18)"}
+                        onMouseOut={e => e.currentTarget.style.background = "rgba(255, 70, 70, 0.09)"}
+                        onFocus={e => e.currentTarget.style.background = "rgba(255,70,70,0.18)"}
+                        onBlur={e => e.currentTarget.style.background = "rgba(255, 70, 70, 0.09)"}
+                      >
+                        <svg width="20" height="20" fill="none" viewBox="0 0 20 20">
+                          <g>
+                            <rect x="6" y="8" width="1.3" height="5" rx="0.5" fill="#ff4747"/>
+                            <rect x="9.35" y="8" width="1.3" height="5" rx="0.5" fill="#ff4747"/>
+                            <rect x="12.7" y="8" width="1.3" height="5" rx="0.5" fill="#ff4747"/>
+                            <path d="M4.5 6.5h11M8 6.5V5.5C8 4.67 8.67 4 9.5 4h1c.83 0 1.5.67 1.5 1.5v1" stroke="#ff4747" strokeWidth="1"/>
+                            <rect x="5.5" y="6.5" width="9" height="10" rx="2" stroke="#ff4747" strokeWidth="1"/>
+                          </g>
+                        </svg>
+                      </button>
+                    </div>
+
+                    {/* КНОПКА ШАРЕ */}
                     <div
                       style={{
                         position: "absolute",
@@ -335,7 +401,7 @@ export default function MyVibes() {
                         value={shareLink}
                         size={112}
                         bgColor="#ffffff"
-                        fgColor="#4154ff"
+                        fgColor="#222"
                         level="M"
                         style={{ margin: "0 auto", display: "block" }}
                       />

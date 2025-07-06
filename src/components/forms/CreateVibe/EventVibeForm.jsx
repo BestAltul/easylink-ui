@@ -81,7 +81,7 @@ export default function EventVibeForm() {
     const dto = {
       name,
       description,
-      type: "event",
+      type: "EVENT",
       fieldsDTO,
     };
 
@@ -366,7 +366,7 @@ export default function EventVibeForm() {
             description={description}
             photoFile={photoFile}
             contacts={contacts}
-            type="event"
+            type="EVENT"
             extraBlocks={extraBlocks}
           />
         </div>
