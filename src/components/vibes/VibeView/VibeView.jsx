@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import VibeActions from "./VibeActions";
-import VibePreview from "../VibePreview";
+import VibePreviewForCustomers from "../VibeViewForCustomers/VibePreviewForCustomers";
 import parseFields from "../../../data/parseFields";
 
-export default function VibePage() {
+export default function VibeView() {
   const { id } = useParams();
   const [vibe, setVibe] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -44,8 +44,8 @@ export default function VibePage() {
     <div className="container-fluid py-4">
       <div className="row justify-content-center g-4" style={{ minHeight: 450 }}>
         {/* Левая колонка */}
-        <div className="col-12 col-lg-6 d-flex align-items-stretch">
-          <VibePreview
+        <div className="col-12 col-lg-8 d-flex align-items-stretch">
+          <VibePreviewForCustomers
             id={vibe.id}
             name={vibe.name}
             description={vibe.description || description}
@@ -55,17 +55,7 @@ export default function VibePage() {
             extraBlocks={extraBlocks}
           />
         </div>
-        {/* Правая колонка — интерактив */}
-        <div className="col-12 col-lg-5 d-flex align-items-stretch">
-          <VibeActions
-            id={vibe.id}
-            subscribed={subscribed}
-            setSubscribed={setSubscribed}
-            token={token}
-            comments={comments}
-            setComments={setComments}
-          />
-        </div>
+
       </div>
     </div>
   );
