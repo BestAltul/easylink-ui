@@ -12,8 +12,8 @@ export default function FollowingTable({ following, t }) {
     <table className="table table-hover align-middle">
       <thead>
         <tr>
-          <th>{t("interactions.vibe_link")}</th>
-          <th>{t("interactions.offers_link")}</th>
+          <th>Vibe</th>
+          <th>Offer</th>
         </tr>
       </thead>
       <tbody>
