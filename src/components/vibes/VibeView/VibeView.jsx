@@ -9,29 +9,8 @@ export default function VibeView() {
   const [vibe, setVibe] = useState(null);
   const [loading, setLoading] = useState(true);
   const [subscribed, setSubscribed] = useState(false);
-  const [error, setError] = useState(null);
-  const [comments, setComments] = useState([]);
+  const [error, setError] = useState(null);  
   const token = sessionStorage.getItem("jwt");
-
-  // useEffect(() => {
-  //   setLoading(true);
-  //   Promise.all([
-  //     fetch(`/api/v3/vibes/${id}`, {
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         ...(token && { Authorization: `Bearer ${token}` }),
-  //       },
-  //     }).then((res) => res.ok ? res.json() : Promise.reject(res)),
-  //     fetch(`/api/v3/vibes/${id}/comments`).then(res => res.ok ? res.json() : [])
-  //   ])
-  //     .then(([data, commentsData]) => {
-  //       setVibe(data);
-  //       setSubscribed(!!data.subscribed);
-  //       setComments(commentsData);
-  //     })
-  //     .catch(() => setError("Vibe not found"))
-  //     .finally(() => setLoading(false));
-  // }, [id, token]);
 
   useEffect(() => {
     setLoading(true);
@@ -51,9 +30,11 @@ export default function VibeView() {
       .finally(() => setLoading(false));
   }, [id, token]);
 
-  if (loading) return <div className="text-center py-5">Загрузка...</div>;
+
+
+  if (loading) return <div className="text-center py-5">Loading...</div>;
   if (error)
-    return <div className="text-center py-5 text-danger">Ошибка: {error}</div>;
+    return <div className="text-center py-5 text-danger">Error: {error}</div>;
   if (!vibe) return null;
 
   // Здесь уже точно есть vibe!

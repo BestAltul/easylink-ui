@@ -6,6 +6,7 @@ import { QRCodeCanvas } from "qrcode.react";
 import { useLocation, useNavigate } from "react-router-dom";
 import useSubscribe from "../VibeViewForCustomers/UseSubscribe";
 import SelectVibeModalWithLogic from "../VibeViewForCustomers/SelectVibeModalWithLogic";
+import useCheckSubscription from "../VibeViewForCustomers/UseCheckSubscription";
 
 export default function VibeContentForCustomers({
   id,
@@ -17,11 +18,11 @@ export default function VibeContentForCustomers({
   extraBlocks,
 }) {
   const [showModal, setShowModal] = useState(false);
-  const [subscribed, setSubscribed] = useState(false);
+  //const [subscribed, setSubscribed] = useState(false);
   const token = sessionStorage.getItem("jwt");
   const navigate = useNavigate();
 
-  // console.log("Proverka redirectTo do ", redirectTo);
+  const { subscribed, loading: subscriptionLoading } = useCheckSubscription(subscriberVibeId, id);
 
   const handleOpenModal = () => {
     if (!token) {
@@ -32,9 +33,11 @@ export default function VibeContentForCustomers({
   };
 
   const handleSubscribed = () => {
-    setSubscribed(true);
+   // setSubscribed(true);
     setShowModal(false);
   };
+
+  
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);

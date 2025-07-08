@@ -7,6 +7,7 @@ export default function InteractionsPage() {
   const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
+  const { id: subscriberVibeId } = useParams();
 
   const [following, setFollowing] = useState([]);
   const token = sessionStorage.getItem("jwt");
@@ -41,7 +42,7 @@ export default function InteractionsPage() {
         <h5 className="mb-3" style={{ color: "#476dfe" }}>
           {t("interactions.following")}
         </h5>
-        <FollowingTable following={following} t={t} />
+        <FollowingTable following={following} t={t} subscriberVibeId={subscriberVibeId}/>
       </div>
     </div>
   );
