@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Avatar from "../tools/Avatar";
 import ExtraBlock from "../tools/ExtraBlock";
 import ContactButton from "../tools/ContactButton";
 import { QRCodeCanvas } from "qrcode.react";
+import { useLocation, useNavigate } from "react-router-dom";
+import useSubscribe from "../VibeViewForCustomers/UseSubscribe";
+import SelectVibeModalWithLogic from "../VibeViewForCustomers/SelectVibeModalWithLogic";
 
 export default function VibeContentForCustomers({
   id,
@@ -13,6 +16,36 @@ export default function VibeContentForCustomers({
   type,
   extraBlocks,
 }) {
+  const [showModal, setShowModal] = useState(false);
+  const [subscribed, setSubscribed] = useState(false);
+  const token = sessionStorage.getItem("jwt");
+  const navigate = useNavigate();
+
+  // console.log("Proverka redirectTo do ", redirectTo);
+
+  const handleOpenModal = () => {
+    if (!token) {
+      navigate(`/signin?redirectTo=/view/${id}&subscribe=true`);
+      return;
+    }
+    setShowModal(true);
+  };
+
+  const handleSubscribed = () => {
+    setSubscribed(true);
+    setShowModal(false);
+  };
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get("subscribe") === "true" && token) {
+      setShowModal(true);
+
+      params.delete("subscribe");
+      params.delete("redirectTo");
+      navigate(location.pathname, { replace: true });
+    }
+  }, [location.search, token]);
   return (
     <div className="d-flex flex-column align-items-center">
       <Avatar name={name} photoFile={photoFile} />
@@ -77,14 +110,22 @@ export default function VibeContentForCustomers({
               size={60}
             />
             <div style={{ fontSize: 12, color: "#aaa" }}>Share QR code</div>
-                  <button
-        className="btn btn-primary mt-3"
-        onClick={() => alert("Subscribed!")}
-      >
-        Subscribe
-      </button>
+            <button
+              className="btn btn-primary mt-3"
+              onClick={handleOpenModal}
+              disabled={subscribed}
+            >
+              {subscribed ? "Subscribed" : "Subscribe"}
+            </button>
+
+            {showModal && (
+              <SelectVibeModalWithLogic
+                targetVibeId={id}
+                onSubscribed={handleSubscribed}
+                onCancel={() => setShowModal(false)}
+              />
+            )}
           </>
-          
         ) : (
           <div
             className="qr-preview"

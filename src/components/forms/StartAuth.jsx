@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
+import { useLocation } from "react-router-dom";
 
 function StartAuth({ questions, setQuestions }) {
   const [email, setEmail] = useState("");
@@ -19,6 +20,11 @@ function StartAuth({ questions, setQuestions }) {
   const navigate = useNavigate();
   const inputRef = useRef();
   const { t } = useTranslation();
+
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const redirectTo = params.get("redirectTo");
+  const subscribe = params.get("subscribe");
 
   // Автофокус и автоподстановка ответа при смене шага
   useEffect(() => {
@@ -118,7 +124,18 @@ function StartAuth({ questions, setQuestions }) {
 
         if (token) {
           login({ username: email, token, timezone });
-          navigate("/profile");
+
+          console.log("proverka redirect", redirectTo);
+
+          if (redirectTo) {
+            if (subscribe === "true") {
+              navigate(`${redirectTo}?subscribe=true`);
+            } else {
+              navigate(redirectTo);
+            }
+          } else {
+            navigate("/profile");
+          }
         }
       } else {
         const contentType = res.headers.get("content-type") || "";
@@ -132,13 +149,21 @@ function StartAuth({ questions, setQuestions }) {
         }
 
         if (res.status === 423) {
-          toast.error(t("auth.blocked", { reason: errorData?.message || errorText }), {
-            position: "top-right",
-          });
+          toast.error(
+            t("auth.blocked", { reason: errorData?.message || errorText }),
+            {
+              position: "top-right",
+            }
+          );
         } else if (res.status === 401) {
-          toast.warn(t("auth.wrong_answers", { reason: errorData?.message || errorText }), {
-            position: "top-right",
-          });
+          toast.warn(
+            t("auth.wrong_answers", {
+              reason: errorData?.message || errorText,
+            }),
+            {
+              position: "top-right",
+            }
+          );
         } else {
           toast.error(t("auth.general_error", { status: res.status }), {
             position: "top-right",
@@ -173,22 +198,36 @@ function StartAuth({ questions, setQuestions }) {
       </div>
 
       {Array.isArray(questions) && questions.length > 0 && (
-        <div className="d-flex gap-4 align-items-start" style={{ minHeight: 380 }}>
+        <div
+          className="d-flex gap-4 align-items-start"
+          style={{ minHeight: 380 }}
+        >
           {/* Left: Steps nav */}
-          <ul className="list-group shadow-sm rounded-3" style={{ minWidth: 120 }}>
+          <ul
+            className="list-group shadow-sm rounded-3"
+            style={{ minWidth: 120 }}
+          >
             {questions.map((q, idx) => (
               <li
                 key={q.entryId}
-                className={`list-group-item d-flex align-items-center gap-2 border-0 rounded-2 my-1 px-3 py-2 ${idx === currentStep ? "bg-success bg-opacity-10" : ""}`}
+                className={`list-group-item d-flex align-items-center gap-2 border-0 rounded-2 my-1 px-3 py-2 ${
+                  idx === currentStep ? "bg-success bg-opacity-10" : ""
+                }`}
                 style={{
                   cursor: "pointer",
                   fontWeight: idx === currentStep ? 600 : 400,
-                  transition: "background 0.2s"
+                  transition: "background 0.2s",
                 }}
                 onClick={() => setCurrentStep(idx)}
               >
-                <i className={`bi bi-${answersList[idx]?.trim() ? "check-circle-fill text-success" : "circle"}`}></i>
-                <span style={{fontSize: 15}}>
+                <i
+                  className={`bi bi-${
+                    answersList[idx]?.trim()
+                      ? "check-circle-fill text-success"
+                      : "circle"
+                  }`}
+                ></i>
+                <span style={{ fontSize: 15 }}>
                   {t("auth.q_number", { num: idx + 1 })}
                 </span>
               </li>
@@ -203,7 +242,7 @@ function StartAuth({ questions, setQuestions }) {
                 className="progress-bar bg-success"
                 style={{
                   width: `${((currentStep + 1) / questions.length) * 100}%`,
-                  transition: "width 0.4s"
+                  transition: "width 0.4s",
                 }}
               />
             </div>
@@ -237,21 +276,37 @@ function StartAuth({ questions, setQuestions }) {
                     type={showPassword ? "text" : "password"}
                     className="form-control"
                     value={inputAnswer}
-                    onChange={e => setInputAnswer(e.target.value)}
+                    onChange={(e) => setInputAnswer(e.target.value)}
                     onKeyDown={handleKeyDown}
                     placeholder={t("auth.answer_placeholder")}
                     style={{ borderRadius: "14px 0 0 14px" }}
                   />
-                  <button className="btn btn-outline-secondary" type="button" onClick={() => setShowPassword(v => !v)}>
-                    <i className={`bi bi-eye${showPassword ? "-slash" : ""}`}></i>
+                  <button
+                    className="btn btn-outline-secondary"
+                    type="button"
+                    onClick={() => setShowPassword((v) => !v)}
+                  >
+                    <i
+                      className={`bi bi-eye${showPassword ? "-slash" : ""}`}
+                    ></i>
                   </button>
                 </div>
                 <div className="d-flex justify-content-between align-items-center mt-3">
-                  <button className="btn btn-outline-secondary px-3" onClick={handleBack} disabled={currentStep === 0}>
+                  <button
+                    className="btn btn-outline-secondary px-3"
+                    onClick={handleBack}
+                    disabled={currentStep === 0}
+                  >
                     <i className="bi bi-arrow-left"></i> {t("auth.back")}
                   </button>
-                  <button className="btn btn-success px-4" onClick={handleNext} disabled={!inputAnswer.trim()}>
-                    {currentStep === questions.length - 1 ? t("auth.login") : t("auth.next")}
+                  <button
+                    className="btn btn-success px-4"
+                    onClick={handleNext}
+                    disabled={!inputAnswer.trim()}
+                  >
+                    {currentStep === questions.length - 1
+                      ? t("auth.login")
+                      : t("auth.next")}
                     <i className="bi bi-arrow-right ms-2"></i>
                   </button>
                 </div>
