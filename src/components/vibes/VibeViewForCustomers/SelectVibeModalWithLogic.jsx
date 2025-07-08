@@ -26,6 +26,8 @@ export default function SelectVibeModalWithLogic({
       });
   }, []);
 
+  console.log("selectedMyVibeId", selectedMyVibeId);
+
   const handleConfirm = async () => {
     await subscribe(selectedMyVibeId);
     onSubscribed();

@@ -8,7 +8,7 @@ export default function useSubscribe(targetVibeId) {
 
   const subscribe = async (myVibeId) => {
     if (!token) {
-      navigate(`/login?redirectTo=/vibes/${targetVibeId}&subscribe=true`);
+      navigate(`/signin?redirectTo=/vibes/${targetVibeId}&subscribe=true`);
       return;
     }
 
