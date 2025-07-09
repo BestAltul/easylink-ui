@@ -42,7 +42,7 @@ export default function InteractionsPage() {
         <h5 className="mb-3" style={{ color: "#476dfe" }}>
           {t("interactions.following")}
         </h5>
-        <FollowingTable following={following} t={t} subscriberVibeId={subscriberVibeId}/>
+        <FollowingTable following={following} t={t} subscriberVibeId={id} />
       </div>
     </div>
   );

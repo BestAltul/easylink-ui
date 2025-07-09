@@ -1,5 +1,5 @@
 import React from "react";
-import VibeContent from "../VibeViewForCustomers/VibeContentForCustomers"
+import VibeContent from "../VibeViewForCustomers/VibeContentForCustomers";
 
 export default function VibePreviewForCustomers({
   id,
@@ -9,6 +9,7 @@ export default function VibePreviewForCustomers({
   contacts,
   type,
   extraBlocks,
+  mySubscriberVibeId,
 }) {
   return (
     <div
@@ -29,7 +30,7 @@ export default function VibePreviewForCustomers({
         contacts={contacts}
         type={type}
         extraBlocks={extraBlocks}
-        readOnly={true} // если поддерживается
+        subscriberVibeId={mySubscriberVibeId}
       />
     </div>
   );

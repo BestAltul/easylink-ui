@@ -58,7 +58,13 @@ export default function MyVibes() {
 
   // --- УДАЛЕНИЕ VIBE ---
   function handleDelete(vibeId) {
-    if (!window.confirm(t("myvibes.delete_confirm") || "Delete this Vibe? This cannot be undone.")) return;
+    if (
+      !window.confirm(
+        t("myvibes.delete_confirm") ||
+          "Delete this Vibe? This cannot be undone."
+      )
+    )
+      return;
     setLoading(true);
     fetch(`/api/v3/vibes/${vibeId}`, {
       method: "DELETE",
@@ -76,8 +82,8 @@ export default function MyVibes() {
   // ---------------------
 
   const shareLink =
-    shareVibe && window.location.origin + `/view/${shareVibe.id}`;
-
+    shareVibe &&
+    `${window.location.origin}/view/${shareVibe.id}?subscriberVibeId=${null}`;
   return (
     <div className="container py-5">
       <div className="d-flex align-items-center mb-4" style={{ minHeight: 54 }}>
@@ -188,23 +194,74 @@ export default function MyVibes() {
                           boxShadow: "0 2px 8px rgba(0,0,0,0.07)",
                           padding: 8,
                           cursor: "pointer",
-                          transition: "box-shadow .18s, background .18s, transform .13s",
+                          transition:
+                            "box-shadow .18s, background .18s, transform .13s",
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
                         }}
-                        onMouseOver={e => e.currentTarget.style.background = "rgba(255,70,70,0.18)"}
-                        onMouseOut={e => e.currentTarget.style.background = "rgba(255, 70, 70, 0.09)"}
-                        onFocus={e => e.currentTarget.style.background = "rgba(255,70,70,0.18)"}
-                        onBlur={e => e.currentTarget.style.background = "rgba(255, 70, 70, 0.09)"}
+                        onMouseOver={(e) =>
+                          (e.currentTarget.style.background =
+                            "rgba(255,70,70,0.18)")
+                        }
+                        onMouseOut={(e) =>
+                          (e.currentTarget.style.background =
+                            "rgba(255, 70, 70, 0.09)")
+                        }
+                        onFocus={(e) =>
+                          (e.currentTarget.style.background =
+                            "rgba(255,70,70,0.18)")
+                        }
+                        onBlur={(e) =>
+                          (e.currentTarget.style.background =
+                            "rgba(255, 70, 70, 0.09)")
+                        }
                       >
-                        <svg width="20" height="20" fill="none" viewBox="0 0 20 20">
+                        <svg
+                          width="20"
+                          height="20"
+                          fill="none"
+                          viewBox="0 0 20 20"
+                        >
                           <g>
-                            <rect x="6" y="8" width="1.3" height="5" rx="0.5" fill="#ff4747"/>
-                            <rect x="9.35" y="8" width="1.3" height="5" rx="0.5" fill="#ff4747"/>
-                            <rect x="12.7" y="8" width="1.3" height="5" rx="0.5" fill="#ff4747"/>
-                            <path d="M4.5 6.5h11M8 6.5V5.5C8 4.67 8.67 4 9.5 4h1c.83 0 1.5.67 1.5 1.5v1" stroke="#ff4747" strokeWidth="1"/>
-                            <rect x="5.5" y="6.5" width="9" height="10" rx="2" stroke="#ff4747" strokeWidth="1"/>
+                            <rect
+                              x="6"
+                              y="8"
+                              width="1.3"
+                              height="5"
+                              rx="0.5"
+                              fill="#ff4747"
+                            />
+                            <rect
+                              x="9.35"
+                              y="8"
+                              width="1.3"
+                              height="5"
+                              rx="0.5"
+                              fill="#ff4747"
+                            />
+                            <rect
+                              x="12.7"
+                              y="8"
+                              width="1.3"
+                              height="5"
+                              rx="0.5"
+                              fill="#ff4747"
+                            />
+                            <path
+                              d="M4.5 6.5h11M8 6.5V5.5C8 4.67 8.67 4 9.5 4h1c.83 0 1.5.67 1.5 1.5v1"
+                              stroke="#ff4747"
+                              strokeWidth="1"
+                            />
+                            <rect
+                              x="5.5"
+                              y="6.5"
+                              width="9"
+                              height="10"
+                              rx="2"
+                              stroke="#ff4747"
+                              strokeWidth="1"
+                            />
                           </g>
                         </svg>
                       </button>
@@ -390,7 +447,8 @@ export default function MyVibes() {
                     >
                       {copied ? (
                         <>
-                          <span className="me-2">&#10003;</span> {t("myvibes.copied")}
+                          <span className="me-2">&#10003;</span>{" "}
+                          {t("myvibes.copied")}
                         </>
                       ) : (
                         t("myvibes.copy")

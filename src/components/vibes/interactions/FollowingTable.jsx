@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-export default function FollowingTable({ following, t,subscriberVibeId  }) {
+export default function FollowingTable({ following, t, subscriberVibeId }) {
   if (following.length === 0) {
     return (
       <div className="text-muted">{t("interactions.following_empty")}</div>
@@ -20,7 +20,7 @@ export default function FollowingTable({ following, t,subscriberVibeId  }) {
         {following.map((f) => (
           <tr key={f.id}>
             <td>
-              <Link            
+              <Link
                 to={`/view/${f.id}?subscriberVibeId=${subscriberVibeId}`}
                 style={{ textDecoration: "none", fontWeight: 500 }}
               >

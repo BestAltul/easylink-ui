@@ -16,13 +16,19 @@ export default function VibeContentForCustomers({
   contacts,
   type,
   extraBlocks,
+  subscriberVibeId,
 }) {
   const [showModal, setShowModal] = useState(false);
-  //const [subscribed, setSubscribed] = useState(false);
+  const [subscribed, setSubscribed] = useState(false);
   const token = sessionStorage.getItem("jwt");
   const navigate = useNavigate();
 
-  const { subscribed, loading: subscriptionLoading } = useCheckSubscription(subscriberVibeId, id);
+  // we will need that later on when try to work with status
+  // const {
+  //   subscribed,
+  //   loading: subscriptionLoading,
+  //   setSubscribed,
+  // } = useCheckSubscription(subscriberVibeId, id);
 
   const handleOpenModal = () => {
     if (!token) {
@@ -32,12 +38,16 @@ export default function VibeContentForCustomers({
     setShowModal(true);
   };
 
+  useEffect(() => {
+    if (subscriberVibeId != null && id != null) {
+      setSubscribed(true);
+    }
+  }, [subscriberVibeId, id]);
+
   const handleSubscribed = () => {
-   // setSubscribed(true);
+    setSubscribed(true);
     setShowModal(false);
   };
-
-  
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
