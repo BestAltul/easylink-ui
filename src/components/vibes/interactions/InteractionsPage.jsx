@@ -2,27 +2,20 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import FollowingTable from "./FollowingTable";
+import useOffers from "../interactions/useOffers";
+import useFollowing from "../interactions/useFollowing";
 
 export default function InteractionsPage() {
   const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
-  const { id: subscriberVibeId } = useParams();
 
-  const [following, setFollowing] = useState([]);
   const token = sessionStorage.getItem("jwt");
 
-  useEffect(() => {
-    fetch(`/api/v3/interactions/${id}/following`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => setFollowing(data))
-      .catch(() => setFollowing([]));
-  }, [id, token]);
+  const following = useFollowing(id, token);
+  const offers = useOffers(id, token);
+
+  const [activeTab, setActiveTab] = useState("following");
 
   return (
     <div className="container py-5" style={{ maxWidth: 900 }}>
@@ -38,11 +31,42 @@ export default function InteractionsPage() {
         </h2>
       </div>
 
+      <ul className="nav nav-tabs mb-3">
+        <li className="nav-item">
+          <button
+            className={`nav-link ${activeTab === "offers" ? "active" : ""}`}
+            onClick={() => setActiveTab("offers")}
+          >
+            {t("Offers")}
+          </button>
+        </li>
+        <li className="nav-item">
+          <button
+            className={`nav-link ${activeTab === "following" ? "active" : ""}`}
+            onClick={() => setActiveTab("following")}
+          >
+            {t("Following")}
+          </button>
+        </li>
+      </ul>
+
       <div className="card p-4 shadow" style={{ borderRadius: 18 }}>
-        <h5 className="mb-3" style={{ color: "#476dfe" }}>
-          {t("interactions.following")}
-        </h5>
-        <FollowingTable following={following} t={t} subscriberVibeId={id} />
+        {activeTab === "offers" && (
+          <>
+            <h5 className="mb-3" style={{ color: "#476dfe" }}>
+              {t("Offers")}
+            </h5>
+            <OffersTable offers={offers} />
+          </>
+        )}
+        {activeTab === "following" && (
+          <>
+            <h5 className="mb-3" style={{ color: "#476dfe" }}>
+              {t("Following")}
+            </h5>
+            <FollowingTable following={following} t={t} subscriberVibeId={id} />
+          </>
+        )}
       </div>
     </div>
   );
