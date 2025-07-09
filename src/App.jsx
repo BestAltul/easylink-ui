@@ -22,7 +22,9 @@ import UserMapPage from "./components/pages/UserMapPage";
 import UserVibes from "./components/vibes/UserVibes";
 import VibePage from "./components/vibes/VibePage";
 import InteractionsPage from "./components/vibes/interactions/InteractionsPage";
+import InteractionsPageBasic from "./components/vibes/interactions/InteractionsPageBasic";
 import VibeView from "./components/vibes/VibeView/VibeView";
+import OfferAddNew from "./components/vibes/interactions/OfferAddNew";
 import './i18n';
 
 function App() {
@@ -65,7 +67,10 @@ function App() {
         <Route path="/vibes" element={<UserVibes />} />
         <Route path="/vibes/:id" element={<VibePage />} />
         <Route path="/vibes/:id/interactions" element={<InteractionsPage />} />
+        <Route path="/vibes/:id/interactions-basic" element={<InteractionsPageBasic />} />
         <Route path="/view/:id" element={<VibeView />} />
+        <Route path="/offers/new" element={<OfferAddNew />} />
+        
       </Routes>
       <Footer />
     </>

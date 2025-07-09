@@ -2,11 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import FollowingTable from "./FollowingTable";
-import OffersTable from "./OffersTable";
-import useOffers from "../interactions/useOffers";
 import useFollowing from "../interactions/useFollowing";
 
-export default function InteractionsPage() {
+export default function InteractionsPageBasics() {
   const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
@@ -14,7 +12,6 @@ export default function InteractionsPage() {
   const token = sessionStorage.getItem("jwt");
 
   const following = useFollowing(id, token);
-  const offers = useOffers(id, token);
 
   const [activeTab, setActiveTab] = useState("offers");
 
@@ -32,15 +29,7 @@ export default function InteractionsPage() {
         </h2>
       </div>
 
-      <ul className="nav nav-tabs mb-3">
-        <li className="nav-item">
-          <button
-            className={`nav-link ${activeTab === "offers" ? "active" : ""}`}
-            onClick={() => setActiveTab("offers")}
-          >
-            {t("Offers")}
-          </button>
-        </li>
+      <ul className="nav nav-tabs mb-3">        
         <li className="nav-item">
           <button
             className={`nav-link ${activeTab === "following" ? "active" : ""}`}
@@ -52,14 +41,7 @@ export default function InteractionsPage() {
       </ul>
 
       <div className="card p-4 shadow" style={{ borderRadius: 18 }}>
-        {activeTab === "offers" && (
-          <>
-            <h5 className="mb-3" style={{ color: "#476dfe" }}>
-              {t("Offers")}
-            </h5>
-            <OffersTable offers={offers} t={t} />
-          </>
-        )}
+       
         {activeTab === "following" && (
           <>
             <h5 className="mb-3" style={{ color: "#476dfe" }}>

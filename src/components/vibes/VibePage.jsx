@@ -118,7 +118,15 @@ export default function VibePage() {
             gap: 7,
             padding: "5px 14px",
           }}
-          onClick={() => navigate(`/vibes/${id}/interactions`)}
+
+          onClick={() => {
+            console.log("type",vibe.type);
+     if (vibe.type === "BUSINESS") {
+           navigate(`/vibes/${id}/interactions`);
+      } else {
+         navigate(`/vibes/${id}/interactions-basic`);
+        }
+}}
         >
           <svg
             width="16"
