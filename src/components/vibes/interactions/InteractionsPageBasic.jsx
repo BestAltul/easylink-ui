@@ -13,7 +13,7 @@ export default function InteractionsPageBasics() {
 
   const following = useFollowing(id, token);
 
-  const [activeTab, setActiveTab] = useState("offers");
+  const [activeTab, setActiveTab] = useState("following");
 
   return (
     <div className="container py-5" style={{ maxWidth: 900 }}>
@@ -29,7 +29,7 @@ export default function InteractionsPageBasics() {
         </h2>
       </div>
 
-      <ul className="nav nav-tabs mb-3">        
+      <ul className="nav nav-tabs mb-3">
         <li className="nav-item">
           <button
             className={`nav-link ${activeTab === "following" ? "active" : ""}`}
@@ -41,7 +41,6 @@ export default function InteractionsPageBasics() {
       </ul>
 
       <div className="card p-4 shadow" style={{ borderRadius: 18 }}>
-       
         {activeTab === "following" && (
           <>
             <h5 className="mb-3" style={{ color: "#476dfe" }}>

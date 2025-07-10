@@ -1,10 +1,11 @@
 // OfferAddNew.jsx
 import React, { useState } from "react";
 import axios from "axios";
+import { useLocation } from "react-router-dom";
 
 export default function OfferAddNew({ t = (s) => s }) {
-  const vibeId = "some-vibe-id-or-uuid"; // Замени на актуальный ID
-
+  const location = useLocation();
+  const subscriberVibeId = location.state?.vibeId;
   const [form, setForm] = useState({
     title: "",
     description: "",
@@ -14,8 +15,10 @@ export default function OfferAddNew({ t = (s) => s }) {
     decreaseStep: 0,
     decreaseIntervalMinutes: 0,
     active: true,
-    startTime: new Date().toISOString().slice(0, 16), // формат datetime-local
+    startTime: new Date().toISOString().slice(0, 16),
   });
+
+  console.log("id from OfferAddNew", subscriberVibeId);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -30,23 +33,26 @@ export default function OfferAddNew({ t = (s) => s }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-  await axios.post(
-    "/api/v3/offers",
-  {
-    ...form,
-    vibeId,
-    startTime: new Date(form.startTime).toISOString(),
-    initialDiscount: Number(form.initialDiscount),
-    currentDiscount: Number(form.currentDiscount),
-    decreaseStep: Number(form.decreaseStep),
-    decreaseIntervalMinutes: Number(form.decreaseIntervalMinutes),
-  },
-  {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  }
-);
+      await axios.post(
+        "/api/v3/offers",
+        {
+          vibeId: subscriberVibeId,
+          title: form.title,
+          description: form.description,
+          discountType: form.discountType,
+          initialDiscount: Number(form.initialDiscount),
+          currentDiscount: Number(form.currentDiscount),
+          decreaseStep: Number(form.decreaseStep),
+          decreaseIntervalMinutes: Number(form.decreaseIntervalMinutes),
+          active: true, // или false, как нужно
+          startTime: new Date(form.startTime).toISOString(),
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       alert(t("Offer created successfully"));
     } catch (err) {
@@ -128,7 +134,9 @@ export default function OfferAddNew({ t = (s) => s }) {
         </div>
 
         <div className="mb-2">
-          <label className="form-label">{t("Decrease Interval (minutes)")}</label>
+          <label className="form-label">
+            {t("Decrease Interval (minutes)")}
+          </label>
           <input
             type="number"
             className="form-control"

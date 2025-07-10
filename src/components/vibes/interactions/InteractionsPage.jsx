@@ -14,6 +14,7 @@ export default function InteractionsPage() {
   const token = sessionStorage.getItem("jwt");
 
   const following = useFollowing(id, token);
+
   const offers = useOffers(id, token);
 
   const [activeTab, setActiveTab] = useState("offers");
@@ -57,7 +58,7 @@ export default function InteractionsPage() {
             <h5 className="mb-3" style={{ color: "#476dfe" }}>
               {t("Offers")}
             </h5>
-            <OffersTable offers={offers} t={t} />
+            <OffersTable offers={offers} t={t} subscriberVibeId={id} />
           </>
         )}
         {activeTab === "following" && (
