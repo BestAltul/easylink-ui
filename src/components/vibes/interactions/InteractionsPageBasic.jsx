@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import FollowingTable from "./FollowingTable";
 import useFollowing from "../interactions/useFollowing";
+import useFollowingWithOffer from "../interactions/useFollowingWithOffer";
 
 export default function InteractionsPageBasics() {
   const { t } = useTranslation();
@@ -12,6 +13,10 @@ export default function InteractionsPageBasics() {
   const token = sessionStorage.getItem("jwt");
 
   const following = useFollowing(id, token);
+
+  const followingWithOffer = useFollowingWithOffer(id, token);
+
+  console.log("follo",followingWithOffer);
 
   const [activeTab, setActiveTab] = useState("following");
 
