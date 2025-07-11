@@ -22,7 +22,7 @@ export default function FollowingTable({ following, t, subscriberVibeId }) {
           <tr key={f.id}>
             <td>
               <Link
-                to={`/view/${f.id}?subscriberVibeId=${subscriberVibeId}`}
+                to={`/view/${f.targetVibeType}?subscriberVibeId=${subscriberVibeId}`}
                 style={{ textDecoration: "none", fontWeight: 500 }}
               >
                 {f.targetVibeName}{" "}
