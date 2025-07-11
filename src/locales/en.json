@@ -20,7 +20,9 @@
         "profile": "Profile",
         "about": "About",
         "review": "Review",
-        "log_out": "Log Out"
+        "log_out": "Log Out",
+        "early_subscribtion": "Join now",
+        "lifetime_offer":"Only first 100 users get lifetime free subscription"
     },
     "footer": {
         "terms": "Conditions of Use",
