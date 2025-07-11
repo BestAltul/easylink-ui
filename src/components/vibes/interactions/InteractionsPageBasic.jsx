@@ -16,8 +16,6 @@ export default function InteractionsPageBasics() {
 
   const followingWithOffer = useFollowingWithOffer(id, token);
 
-  console.log("follo",followingWithOffer);
-
   const [activeTab, setActiveTab] = useState("following");
 
   return (
@@ -51,7 +49,11 @@ export default function InteractionsPageBasics() {
             <h5 className="mb-3" style={{ color: "#476dfe" }}>
               {t("Following")}
             </h5>
-            <FollowingTable following={following} t={t} subscriberVibeId={id} />
+            <FollowingTable
+              following={followingWithOffer}
+              t={t}
+              subscriberVibeId={id}
+            />
           </>
         )}
       </div>

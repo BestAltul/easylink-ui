@@ -1,0 +1,26 @@
+.blink {
+  animation: blink-animation 1s steps(2, start) infinite;
+}
+
+@keyframes blink-animation {
+  to {
+    visibility: hidden;
+  }
+}
+.highlight {
+  animation: pulse 1.5s infinite;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 20, 147, 0.7); /* ярко-розовый */
+  }
+  70% {
+    box-shadow: 0 0 0 12px rgba(255, 20, 147, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 20, 147, 0);
+  }
+}

@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import "./Interactions.css";
 
 export default function FollowingTable({ following, t, subscriberVibeId }) {
   if (following.length === 0) {
@@ -24,7 +25,7 @@ export default function FollowingTable({ following, t, subscriberVibeId }) {
                 to={`/view/${f.id}?subscriberVibeId=${subscriberVibeId}`}
                 style={{ textDecoration: "none", fontWeight: 500 }}
               >
-                {f.name}{" "}
+                {f.targetVibeName}{" "}
                 <span
                   style={{
                     fontSize: 12,
@@ -32,16 +33,19 @@ export default function FollowingTable({ following, t, subscriberVibeId }) {
                     color: "#888",
                   }}
                 >
-                  ({f.type})
+                  ({f.targetVibeType})
                 </span>
               </Link>
             </td>
             <td>
               <Link
                 to={`/offers?vibeId=${f.id}`}
-                className="btn btn-outline-primary btn-sm"
+                className={`btn btn-outline-primary btn-sm ${
+                  f.count > 0 ? "highlight" : ""
+                }`}
               >
-                {t("interactions.view_offers")}
+                {t("Don't miss it! ")}
+                {f.count > 0 && ` (${f.count})`}
               </Link>
             </td>
           </tr>
