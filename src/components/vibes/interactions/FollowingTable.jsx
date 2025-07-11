@@ -22,7 +22,7 @@ export default function FollowingTable({ following, t, subscriberVibeId }) {
           <tr key={f.id}>
             <td>
               <Link
-                to={`/view/${f.targetVibeType}?subscriberVibeId=${subscriberVibeId}`}
+                to={`/view/${f.targetVibeId}?subscriberVibeId=${subscriberVibeId}`}
                 style={{ textDecoration: "none", fontWeight: 500 }}
               >
                 {f.targetVibeName}{" "}
@@ -39,7 +39,7 @@ export default function FollowingTable({ following, t, subscriberVibeId }) {
             </td>
             <td>
               <Link
-                to={`/offers?vibeId=${f.id}`}
+                to={`/offer-table-Users?vibeId=${f.targetVibeId}`}
                 className={`btn btn-outline-primary btn-sm ${
                   f.count > 0 ? "highlight" : ""
                 }`}

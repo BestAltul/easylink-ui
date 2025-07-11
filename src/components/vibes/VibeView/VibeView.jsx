@@ -28,7 +28,7 @@ export default function VibeView() {
         setVibe(data);
         setSubscribed(!!data.subscribed);
       })
-      .catch(() => setError("Vibe not found"))
+      .catch(() => setError("Vibe not found for "))
       .finally(() => setLoading(false));
   }, [id, token]);
 

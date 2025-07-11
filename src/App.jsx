@@ -25,7 +25,8 @@ import InteractionsPage from "./components/vibes/interactions/InteractionsPage";
 import InteractionsPageBasic from "./components/vibes/interactions/InteractionsPageBasic";
 import VibeView from "./components/vibes/VibeView/VibeView";
 import OfferAddNew from "./components/vibes/interactions/OfferAddNew";
-import './i18n';
+import OfferTableUsers from "./components/vibes/interactions/OffersTableForUsers";
+import "./i18n";
 
 function App() {
   const [questions, setQuestions] = useState([]);
@@ -67,10 +68,13 @@ function App() {
         <Route path="/vibes" element={<UserVibes />} />
         <Route path="/vibes/:id" element={<VibePage />} />
         <Route path="/vibes/:id/interactions" element={<InteractionsPage />} />
-        <Route path="/vibes/:id/interactions-basic" element={<InteractionsPageBasic />} />
+        <Route
+          path="/vibes/:id/interactions-basic"
+          element={<InteractionsPageBasic />}
+        />
         <Route path="/view/:id" element={<VibeView />} />
         <Route path="/offers/new" element={<OfferAddNew />} />
-        
+        <Route path="/offer-table-users" element={<OfferTableUsers />} />
       </Routes>
       <Footer />
     </>
