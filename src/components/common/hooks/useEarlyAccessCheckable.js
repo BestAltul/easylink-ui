@@ -1,32 +1,35 @@
 import { useState } from "react";
 import { useAuth } from "../../../context/AuthContext";
 
-export function useEarlyAccess() {
+export function useEarlyAccessCheckable() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [subscribed, setSubscribed] = useState(false);
+  const { user } = useAuth();
 
-  const { user, isAuthenticated, logout } = useAuth();
   const email = user?.username;
   const token = user?.token;
 
-  const requestEarlyAccess = async () => {
+  const checkEarlyAccess = async () => {
     setLoading(true);
     setError(null);
 
     const email = user?.username;
     const token = user?.token;
 
+    console.log("token from check", token);
+
     try {
       const response = await fetch(
-        `/api/v3/interactions/early-access?email=${encodeURIComponent(email)}`,
+        `/api/v3/interactions/early-access/status?email=${encodeURIComponent(
+          email
+        )}`,
         {
-          method: "POST",
+          method: "GET",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({ source: "header" }),
         }
       );
 
@@ -34,16 +37,16 @@ export function useEarlyAccess() {
         throw new Error("Request failed");
       }
 
-      setSubscribed(true);
-      //alert("✅ You’ve requested early access!");
+      const result = await response.json();
+
+      setSubscribed(result);
     } catch (err) {
-      console.error("Early access error:", err);
+      console.error("Early access check error:", err);
       setError(err);
-      alert("⚠️ Server error");
     } finally {
       setLoading(false);
     }
   };
 
-  return { requestEarlyAccess, loading, error, subscribed };
+  return { checkEarlyAccess, loading, error, subscribed };
 }
