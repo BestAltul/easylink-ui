@@ -48,5 +48,5 @@ export function useEarlyAccessCheckable() {
     }
   };
 
-  return { checkEarlyAccess, loading, error, subscribed };
+  return { checkEarlyAccess, loading, error, subscribed, setSubscribed };
 }

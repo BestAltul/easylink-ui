@@ -45,5 +45,5 @@ export function useEarlyAccess() {
     }
   };
 
-  return { requestEarlyAccess, loading, error, subscribed };
+  return { requestEarlyAccess, loading, error, subscribed, setSubscribed };
 }

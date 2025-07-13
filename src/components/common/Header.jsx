@@ -16,6 +16,7 @@ function Header() {
     loading: loadingSubscribe,
     error: errorSubscribe,
     subscribed: subscribedAfterRequest,
+    setSubscribed: setSubscribedAfterRequest,
   } = useEarlyAccess();
 
   const {
@@ -23,6 +24,7 @@ function Header() {
     loading: loadingCheck,
     error: errorCheck,
     subscribed: subscribedStatus,
+    setSubscribed: setSubscribedStatus,
   } = useEarlyAccessCheckable();
 
   useEffect(() => {
@@ -37,6 +39,8 @@ function Header() {
 
   const handleLogout = () => {
     logout();
+    setSubscribedAfterRequest(false);
+    setSubscribedStatus(false);
     navigate("/");
   };
 
@@ -68,18 +72,26 @@ function Header() {
           </span>
         </Link>
 
-        <div className="early-access-bubble">
+        <div
+          className={`early-access-bubble ${
+            subscribed ? "subscribed-green" : ""
+          }`}
+        >
           <div className="early-access-text">
-            {subscribed
-              ? "✅ Subscribed to early access!"
-              : t("header.lifetime_offer")}
+            {subscribed ? "✅ Subscribed!" : t("header.lifetime_offer")}
           </div>
 
           {subscribed ? (
-            <div className="subscribed-message">🎉 Thank you!</div>
+            <div className="subscribed-message"></div>
           ) : (
             <button
-              onClick={requestEarlyAccess}
+              onClick={() => {
+                if (!isAuthenticated) {
+                  navigate("/signin");
+                } else {
+                  requestEarlyAccess();
+                }
+              }}
               className="early-subscribe-highlighted"
               disabled={loadingSubscribe}
             >
