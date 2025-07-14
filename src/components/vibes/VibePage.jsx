@@ -241,9 +241,29 @@ export default function VibePage() {
               initialFields={vibe.fieldsDTO || []}
               initialDescription={vibe.description}
               onCancel={() => setEditing(false)}
-              onSave={(updatedVibe) => {
-                setVibe(updatedVibe);
-                setEditing(false);
+              onSave={async (updated) => {
+                // Тут отправляем PATCH/PUT на сервер
+                const response = await fetch(`/api/v3/vibes/${vibe.id}`, {
+                  method: "PUT", // Или PATCH, если твой backend это ждёт
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                  },
+                  body: JSON.stringify({
+                    id: vibe.id,
+                    description: updated.description,  // или updated.description
+                    fieldsDTO: updated.fieldsDTO,
+                  }),
+                });
+
+                if (response.ok) {
+                  // Получаем свежие данные
+                  const data = await response.json();
+                  setVibe(data);
+                  setEditing(false);
+                } else {
+                  alert("Ошибка сохранения! Проверь соединение или попробуй позже.");
+                }
               }}
             />
           </div>

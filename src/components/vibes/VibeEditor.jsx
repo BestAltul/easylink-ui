@@ -140,7 +140,7 @@ export default function VibeEditor({ initialFields, initialDescription, onCancel
                         transition: "background 0.2s, box-shadow 0.2s"
                       }}
                       onClick={() => addContact(type)}
-                      title={already ? "Already added" : `Add ${type.label}`}
+                      description={already ? "Already added" : `Add ${type.label}`}
                     >
                       <span style={{ fontSize: 20, marginRight: 4 }}>{iconMap[type.key]}</span>
                       {type.label}
@@ -281,7 +281,7 @@ function SortableField({ field, idx, onChange, onRemove }) {
           gap: 3,
         }}
         onClick={onRemove}
-        title="Delete"
+        description="Delete"
       >
         <FaTrash size={15} />
       </button>
