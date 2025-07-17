@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import FollowingTable from "./FollowingTable";
 import OffersTable from "./OffersTable";
-import useOffers from "../interactions/useOffers";
+import useGetOfferByVibeId from "./useGetOfferByVibeId";
 import useFollowing from "../interactions/useFollowing";
 
 export default function InteractionsPage() {
@@ -15,7 +15,7 @@ export default function InteractionsPage() {
 
   const following = useFollowing(id, token);
 
-  const offers = useOffers(id, token);
+  const offers = useGetOfferByVibeId(id, token);
 
   const [activeTab, setActiveTab] = useState("offers");
 

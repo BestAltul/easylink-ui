@@ -21,7 +21,7 @@ export default function VibePage() {
     fetch(`/api/v3/vibes/${id}`, {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        // Authorization: `Bearer ${token}`,
       },
     })
       .then((res) => res.json())
@@ -29,20 +29,6 @@ export default function VibePage() {
       .catch(() => setVibe(null))
       .finally(() => setLoading(false));
   }, [id, token]);
-
-  // --- УДАЛЕНИЕ VIBE ---
-  async function handleDelete() {
-    if (!window.confirm("Delete this Vibe? This cannot be undone.")) return;
-    setLoading(true);
-    try {
-      await deleteVibe(vibe.id, token);
-      navigate("/my-vibes");
-    } catch (err) {
-      alert("Error: " + err.message);
-      setLoading(false);
-    }
-  }
-  // ---------------------
 
   if (loading) return <div className="text-center my-5">Loading...</div>;
   if (!vibe)
@@ -76,7 +62,7 @@ export default function VibePage() {
             fontWeight: 500,
             boxShadow: "0 2px 8px rgba(70,110,255,0.06)",
             gap: 6,
-            minWidth: 120,
+            minWidth: 120, // Чтобы не прыгал заголовок при исчезновении кнопки
             zIndex: 2,
             position: "relative",
           }}
@@ -234,14 +220,15 @@ export default function VibePage() {
           />
         </div>
 
-        {/*Editor*/}
+        {/* Редактор (50% ширины) */}
         {editing && (
           <div
             className="card shadow"
             style={{
               flex: "0 0 100%",
-              maxWidth: 450,
-              marginLeft: -20,
+              maxWidth: 1000,
+              // marginTop: 10,
+              marginLeft: 22,
               borderRadius: 18,
               background: "#fff",
               zIndex: 2,
@@ -250,10 +237,8 @@ export default function VibePage() {
               alignItems: "center",
               justifyContent: "center",
               minHeight: 420,
-              padding: 0,
             }}
           >
-            <div style={{ width: "100%", padding: 32 /* регулировать тут! */ }}>
             <VibeEditor
               initialFields={vibe.fieldsDTO || []}
               initialDescription={vibe.description}
@@ -261,19 +246,20 @@ export default function VibePage() {
               onSave={async (updated) => {
                 // Тут отправляем PATCH/PUT на сервер
                 const response = await fetch(`/api/v3/vibes/${vibe.id}`, {
-                  method: "PUT",
+                  method: "PUT", // Или PATCH, если твой backend это ждёт
                   headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
                   },
                   body: JSON.stringify({
                     id: vibe.id,
-                    description: updated.description,
+                    description: updated.description,  // или updated.description
                     fieldsDTO: updated.fieldsDTO,
                   }),
                 });
 
                 if (response.ok) {
+                  // Получаем свежие данные
                   const data = await response.json();
                   setVibe(data);
                   setEditing(false);
@@ -282,11 +268,10 @@ export default function VibePage() {
                 }
               }}
             />
-            </div>
           </div>
         )}
 
-        {/* Панель Settings */}
+        {/* Панель Settings (можно вынести в отдельный компонент) */}
         {showSettings && (
           <div
             className="card shadow"
@@ -311,16 +296,11 @@ export default function VibePage() {
               />
             </div>
             <div className="p-3 text-muted" style={{ fontSize: 15 }}>
-              Здесь настройки вайба (скоро тут будет удаление, приватность и т.п.).
+              Здесь настройки вайба (скоро тут будет удаление, приватность и
+              т.п.).
             </div>
             <button
-              className="btn btn-outline-danger btn-sm mx-3 mb-2"
-              onClick={handleDelete}
-            >
-              Delete Vibe
-            </button>
-            <button
-              className="btn btn-outline-secondary btn-sm mx-3 mb-3"
+              className="btn btn-outline-danger btn-sm m-3"
               onClick={() => setShowSettings(false)}
             >
               Close

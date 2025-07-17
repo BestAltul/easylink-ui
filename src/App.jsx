@@ -23,10 +23,10 @@ import VibePage from "./features/vibes/VibePage";
 import VibeView from "./features/vibes/VibeView/VibeView";
 import InteractionsPage from "./features/vibes/interactions/InteractionsPage";
 import InteractionsPageBasic from "./features/vibes/interactions/InteractionsPageBasic";
-import OfferAddNew from "./features/vibes/interactions/OfferAddNew";
-import OffersTableForUsers from "./features/vibes/interactions/OffersTableForUsers";
-import VibePreviewForCustomers from "./features/VibeViewForCustomers/VibePreviewForCustomers";
-import VibePreview from "./features/vibes/components/VibePreview";
+import OfferForm from "./features/vibes/interactions/OfferForm";
+import ViewOfferForm from "./features/vibes/interactions//ViewOfferForm";
+import OfferTableUsers from "./features/vibes/interactions//OffersTableForUsers";
+import "./i18n";
 
 function App() {
   const [questions, setQuestions] = useState([]);
@@ -70,8 +70,10 @@ function App() {
           element={<InteractionsPageBasic />}
         />
         <Route path="/view/:id" element={<VibeView />} />
-        <Route path="/offers/new" element={<OfferAddNew />} />
-        <Route path="/offer-table-users" element={<OffersTableForUsers />} />
+        <Route path="/offers/new" element={<OfferForm />} />
+        <Route path="/offers/:id" element={<OfferForm />} />
+        <Route path="/offer-table-users" element={<OfferTableUsers />} />
+        <Route path="/view-offer-form/:id" element={<ViewOfferForm />} />
       </Routes>
       <Footer />
     </>

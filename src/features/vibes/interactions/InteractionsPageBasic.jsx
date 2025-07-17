@@ -4,7 +4,6 @@ import { useTranslation } from "react-i18next";
 import FollowingTable from "./FollowingTable";
 import useFollowing from "../interactions/useFollowing";
 import useFollowingWithOffer from "../interactions/useFollowingWithOffer";
-
 export default function InteractionsPageBasics() {
   const { t } = useTranslation();
   const { id } = useParams();
