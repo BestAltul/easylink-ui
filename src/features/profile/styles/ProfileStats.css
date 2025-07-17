@@ -1,0 +1,43 @@
+
+.profile-stat-card {
+    transition: transform 0.15s cubic-bezier(.29,2.07,.58,.91), box-shadow 0.15s;
+    cursor: pointer;
+    outline: none;
+    padding: 0.45rem 1.1rem; /* стало меньше */
+    min-width: 88px;         /* уменьшено */
+    min-height: 58px;        /* уменьшено */
+    border-radius: 9px;
+    background: #fff;
+    box-shadow: 0 0 10px rgba(0,0,0,0.06);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+  .profile-stat-card:active,
+  .profile-stat-card:focus,
+  .profile-stat-card:hover {
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 6px 18px rgba(80,80,160,0.13);
+}
+.profile-stat-icon {
+    font-size: 1.05rem;      /* уменьшено */
+    filter: drop-shadow(0 1.5px 2px rgba(0,0,0,0.06));
+    transition: transform 0.25s;
+    margin-bottom: 0.11rem;  /* меньше отступ */
+}
+.profile-stat-streak:hover .profile-stat-icon {
+    transform: rotate(-10deg) scale(1.13);
+}
+.profile-stat-value {
+    font-size: 1.14rem;      /* меньше */
+    font-weight: 700;
+    margin-bottom: 0.09rem;  /* меньше */
+}
+.profile-stat-label {
+    color: #525252;
+    font-weight: 500;
+    font-size: 0.87rem;      /* меньше */
+    letter-spacing: 0.03em;
+}
+

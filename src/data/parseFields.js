@@ -14,6 +14,7 @@ function parseFields(fieldsDTO = []) {
     // Имя пользователя
     if (fieldLabel === "name" && field.value) {
       name = field.value;
+      return;
     }
 
     // Контакты из CONTACT_TYPES
@@ -22,12 +23,12 @@ function parseFields(fieldsDTO = []) {
         type: fieldLabel,
         value: field.value
       });
+      return;
     }
 
     // Часы работы
     if (fieldLabel === "hours") {
       let hoursValue = field.value;
-      // Если это строка, пытаемся парсить
       if (typeof hoursValue === "string") {
         try {
           hoursValue = JSON.parse(hoursValue);
@@ -40,11 +41,22 @@ function parseFields(fieldsDTO = []) {
         type: "hours",
         value: hoursValue
       });
+      return;
     }
 
-    // Описание (если появится)
+    // Описание
     if (fieldLabel === "description") {
       description = field.value;
+      return;
+    }
+
+    // --- Custom fields (всё что не попало в условия выше) ---
+    if (field.value) {
+      extraBlocks.push({
+        label: field.label || "Custom",
+        type: field.type || "custom",
+        value: field.value
+      });
     }
   });
 

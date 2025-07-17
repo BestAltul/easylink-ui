@@ -1,32 +1,32 @@
 import React, { useState } from "react";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route, useNavigate, Navigate } from "react-router-dom";
 import "./App.css";
-import Profile from "./components/profile/Profile";
-import SignUp from "./components/forms/SignUp";
-import StartAuth from "./components/forms/StartAuth";
-import Header from "./components/common/Header";
-import Review from "./components/pages/Review";
-import Footer from "./components/common/Footer";
-import About from "./components/pages/About";
-import Home from "./components/pages/Home";
-import BusinessVibeExample from "./components/vibes/BusinessVibeExample";
-import ConferenceVibeExample from "./components/vibes/ConferenceVibeExample";
-import CreateVibe from "./components/forms/CreateVibe/CreateVibe";
+import Header from "./shared/ui/Header";
+import Footer from "./shared/ui/Footer";
+import NarrowPage from "./components/common/NarrowPage";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import PersonalVibeExample from "./components/vibes/PersonalVibeExample";
-import Settings from "./components/profile/Settings";
-import NarrowPage from "./components/common/NarrowPage";
-import { Navigate } from "react-router-dom";
-import UserMapPage from "./components/pages/UserMapPage";
-import UserVibes from "./components/vibes/UserVibes";
-import VibePage from "./components/vibes/VibePage";
-import InteractionsPage from "./components/vibes/interactions/InteractionsPage";
-import InteractionsPageBasic from "./components/vibes/interactions/InteractionsPageBasic";
-import VibeView from "./components/vibes/VibeView/VibeView";
-import OfferAddNew from "./components/vibes/interactions/OfferAddNew";
-import OfferTableUsers from "./components/vibes/interactions/OffersTableForUsers";
 import "./i18n";
+
+// ===== Features/Pages imports =====
+import Profile from "./features/profile/Profile";
+import Settings from "./features/profile/Settings";
+import SignUp from "./features/auth/SignUp";
+import StartAuth from "./features/auth/StartAuth";
+import Home from "./pages/Home";
+import About from "./pages/About";
+import UserMapPage from "./pages/UserMapPage";
+import Review from "./features/review/Review";
+import CreateVibe from "./features/vibes/forms/CreateVibe";
+import UserVibes from "./features/vibes/UserVibes";
+import VibePage from "./features/vibes/VibePage";
+import VibeView from "./features/vibes/VibeView/VibeView";
+import InteractionsPage from "./features/vibes/interactions/InteractionsPage";
+import InteractionsPageBasic from "./features/vibes/interactions/InteractionsPageBasic";
+import OfferAddNew from "./features/vibes/interactions/OfferAddNew";
+import OffersTableForUsers from "./features/vibes/interactions/OffersTableForUsers";
+import VibePreviewForCustomers from "./features/VibeViewForCustomers/VibePreviewForCustomers";
+import VibePreview from "./features/vibes/components/VibePreview";
 
 function App() {
   const [questions, setQuestions] = useState([]);
@@ -58,9 +58,6 @@ function App() {
         />
         <Route path="/login" element={<Navigate to="/signin" />} />
         <Route path="/review" element={<Review />} />
-        <Route path="/business-vibes" element={<BusinessVibeExample />} />
-        <Route path="/conference-vibes" element={<ConferenceVibeExample />} />
-        <Route path="/personal-vibes" element={<PersonalVibeExample />} />
         <Route path="/create-vibe" element={<CreateVibe />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/map" element={<UserMapPage />} />
@@ -74,7 +71,7 @@ function App() {
         />
         <Route path="/view/:id" element={<VibeView />} />
         <Route path="/offers/new" element={<OfferAddNew />} />
-        <Route path="/offer-table-users" element={<OfferTableUsers />} />
+        <Route path="/offer-table-users" element={<OffersTableForUsers />} />
       </Routes>
       <Footer />
     </>

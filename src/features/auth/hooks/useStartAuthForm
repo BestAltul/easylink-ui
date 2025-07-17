@@ -1,0 +1,131 @@
+import { useState, useEffect, useRef } from "react";
+import { toast } from "react-toastify";
+import { verifyEmailAPI, checkAnswersAPI } from "../../../api/authService";
+
+export function useStartAuthForm({ questions, setQuestions, login, navigate, t, subscribe, redirectTo, user }) {
+  const [email, setEmail] = useState("");
+  const [inputAnswer, setInputAnswer] = useState("");
+  const [answersList, setAnswersList] = useState([]);
+  const [authResult, setAuthResult] = useState("");
+  const [currentStep, setCurrentStep] = useState(0);
+  const [showPassword, setShowPassword] = useState(false);
+  const inputRef = useRef();
+
+  useEffect(() => {
+    setInputAnswer(answersList[currentStep] || "");
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [currentStep, answersList]);
+
+  const verifyEmail = async (inputEmail) => {
+    if (!inputEmail.trim()) return;
+
+    try {
+      const data = await verifyEmailAPI(inputEmail);
+      if (data === null) {
+        setQuestions([]);
+        setAnswersList([]);
+        toast.error(t("auth.email_not_found"), { position: "top-right" });
+      } else {
+        setQuestions(data);
+        setAnswersList(new Array(data.length).fill(""));
+        setCurrentStep(0);
+      }
+    } catch {
+      toast.error(t("auth.error_verifying_email"), { position: "top-right" });
+    }
+  };
+
+  const handleNext = () => {
+    const trimmed = inputAnswer.trim();
+    if (!trimmed) return;
+
+    const updatedAnswers = [...answersList];
+    updatedAnswers[currentStep] = trimmed;
+    setAnswersList(updatedAnswers);
+
+    if (currentStep < questions.length - 1) {
+      setCurrentStep(currentStep + 1);
+    } else {
+      setInputAnswer("");
+      checkAnswers(updatedAnswers);
+    }
+  };
+
+  const handleBack = () => {
+    if (currentStep > 0) {
+      setCurrentStep(currentStep - 1);
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleNext();
+    }
+  };
+
+  const checkAnswers = async (finalAnswers) => {
+    if (finalAnswers.length !== questions.length) {
+      toast.warn(t("auth.answer_exactly", { count: questions.length }), {
+        position: "top-right",
+      });
+      return;
+    }
+
+    try {
+      const answers = questions.map((q, i) => ({
+        entryId: q.entryId,
+        answer: finalAnswers[i] || "",
+      }));
+
+      const timezone = user?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+      const data = await checkAnswersAPI(email, answers, timezone);
+
+      const token = data["Authentication successful"];
+
+      toast.success(t("auth.success"), { position: "top-right" });
+      setAuthResult(t("auth.success"));
+
+      sessionStorage.setItem("jwt", token);
+
+      if (token) {
+        login({ username: email, token, timezone });
+
+        if (redirectTo) {
+          if (subscribe === "true") {
+            navigate(`${redirectTo}?subscribe=true`);
+          } else {
+            navigate(redirectTo);
+          }
+        } else {
+          navigate("/profile");
+        }
+      }
+    } catch (err) {
+      if (err.status === 423) {
+        toast.error(t("auth.blocked", { reason: err.message }), { position: "top-right" });
+      } else if (err.status === 401) {
+        toast.warn(t("auth.wrong_answers", { reason: err.message }), { position: "top-right" });
+      } else {
+        toast.error(t("auth.general_error", { status: err.status }), { position: "top-right" });
+      }
+    }
+  };
+
+  return {
+    email, setEmail,
+    inputAnswer, setInputAnswer,
+    answersList,
+    authResult,
+    currentStep, setCurrentStep,
+    showPassword, setShowPassword,
+    inputRef,
+    verifyEmail,
+    handleNext,
+    handleBack,
+    handleKeyDown,
+  };
+}

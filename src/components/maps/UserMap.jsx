@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import mockVibes from "../../data/mockVibes";
-import VibeMainInfo from "../vibes/VibeMainInfo";
+import VibeMainInfo from "./VibeMainInfo";
 
 mapboxgl.accessToken = "pk.eyJ1IjoiYXJzY2hoIiwiYSI6ImNtYzg0ZmY3YTFqaWcybXB2OWFvOTlza3kifQ.rvZoV7fy9VMTlmrS8R5QlQ";
 
