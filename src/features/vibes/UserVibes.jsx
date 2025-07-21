@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { QRCodeCanvas } from "qrcode.react";
 import "./UserVibes.css";
 import { useTranslation } from "react-i18next";
-import { getUserVibes, deleteVibe } from "../../api/vibeApi"; 
+import { getUserVibes, deleteVibe } from "../../api/vibeApi";
 
 function Loader() {
   return (
@@ -22,7 +22,7 @@ export default function MyVibes() {
   const [shareVibe, setShareVibe] = useState(null);
   const [copied, setCopied] = useState(false);
   const navigate = useNavigate();
-  const token = sessionStorage.getItem("jwt");
+  const token = localStorage.getItem("jwt");
 
   useEffect(() => {
     setLoading(true);

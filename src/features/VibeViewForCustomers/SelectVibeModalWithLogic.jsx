@@ -14,7 +14,7 @@ export default function SelectVibeModalWithLogic({
   useEffect(() => {
     fetch("/api/v3/vibes", {
       headers: {
-        Authorization: `Bearer ${sessionStorage.getItem("jwt")}`,
+        Authorization: `Bearer ${localStorage.getItem("jwt")}`,
       },
     })
       .then((res) => (res.ok ? res.json() : []))

@@ -4,7 +4,7 @@ import VibePreview from "./components/VibePreview";
 import VibeEditor from "./VibeEditor";
 import parseFields from "../../data/parseFields";
 import { useParams, useNavigate } from "react-router-dom";
-import { deleteVibe } from "../../api/vibeApi"; 
+import { deleteVibe } from "../../api/vibeApi";
 
 export default function VibePage() {
   const { id } = useParams();
@@ -14,7 +14,7 @@ export default function VibePage() {
   const [showSettings, setShowSettings] = useState(false);
   const navigate = useNavigate();
 
-  const token = sessionStorage.getItem("jwt");
+  const token = localStorage.getItem("jwt");
 
   useEffect(() => {
     setLoading(true);
@@ -253,7 +253,7 @@ export default function VibePage() {
                   },
                   body: JSON.stringify({
                     id: vibe.id,
-                    description: updated.description,  // или updated.description
+                    description: updated.description, // или updated.description
                     fieldsDTO: updated.fieldsDTO,
                   }),
                 });
@@ -264,7 +264,9 @@ export default function VibePage() {
                   setVibe(data);
                   setEditing(false);
                 } else {
-                  alert("Ошибка сохранения! Проверь соединение или попробуй позже.");
+                  alert(
+                    "Ошибка сохранения! Проверь соединение или попробуй позже."
+                  );
                 }
               }}
             />

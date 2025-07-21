@@ -7,8 +7,6 @@ import useCreateOffer from "./useCreateOffer";
 import useUpdateOffer from "./useUpdateOffer";
 import PageLayout from "../../../components/common/PageLayout";
 
-
-
 export default function OfferForm() {
   const location = useLocation();
   const subscriberVibeId = location.state?.vibeId;
@@ -18,7 +16,7 @@ export default function OfferForm() {
 
   const [changedFields, setChangedFields] = useState({});
 
-  const token = sessionStorage.getItem("jwt");
+  const token = localStorage.getItem("jwt");
 
   const { createOffer, loading } = useCreateOffer(token);
 

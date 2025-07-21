@@ -28,7 +28,7 @@ export default function Settings() {
     setDeleting(true);
 
     try {
-      const token = sessionStorage.getItem("jwt");
+      const token = localStorage.getItem("jwt");
       const res = await fetch("/api/v1/users/me", {
         method: "DELETE",
         headers: {
@@ -42,7 +42,7 @@ export default function Settings() {
         setShowModal(false);
 
         // Удаляем токен и редиректим пользователя
-        sessionStorage.removeItem("jwt");
+        localStorage.removeItem("jwt");
         setTimeout(() => {
           setDeleteSuccess(false);
           navigate("/goodbye"); // Или "/" если нет прощальной страницы
@@ -79,7 +79,10 @@ export default function Settings() {
       </div>
 
       {/* Privacy */}
-      <div className="p-4 bg-light rounded-4 shadow-sm mb-4 animate-slideUp" style={{ animationDelay: ".06s" }}>
+      <div
+        className="p-4 bg-light rounded-4 shadow-sm mb-4 animate-slideUp"
+        style={{ animationDelay: ".06s" }}
+      >
         <h5 className="mb-3">🔐 Privacy</h5>
         <div className="form-check form-switch mb-2">
           <input
@@ -100,7 +103,10 @@ export default function Settings() {
       </div>
 
       {/* Appearance */}
-      <div className="p-4 bg-light rounded-4 shadow-sm mb-4 animate-slideUp" style={{ animationDelay: ".10s" }}>
+      <div
+        className="p-4 bg-light rounded-4 shadow-sm mb-4 animate-slideUp"
+        style={{ animationDelay: ".10s" }}
+      >
         <h5 className="mb-3">🎨 Appearance</h5>
         <select
           className="form-select mb-2"
@@ -113,11 +119,16 @@ export default function Settings() {
           <option value="dark">Dark mode</option>
         </select>
         <br />
-        <small className="text-muted ms-1">Your theme preference is saved locally.</small>
+        <small className="text-muted ms-1">
+          Your theme preference is saved locally.
+        </small>
       </div>
 
       {/* Notifications */}
-      <div className="p-4 bg-light rounded-4 shadow-sm mb-4 animate-slideUp" style={{ animationDelay: ".16s" }}>
+      <div
+        className="p-4 bg-light rounded-4 shadow-sm mb-4 animate-slideUp"
+        style={{ animationDelay: ".16s" }}
+      >
         <h5 className="mb-3">🔔 Notifications</h5>
         <div className="form-check form-switch mb-2">
           <input
@@ -132,7 +143,9 @@ export default function Settings() {
             Receive emails
           </label>
         </div>
-        <small className="text-muted ms-1">Updates and important info will come to your email.</small>
+        <small className="text-muted ms-1">
+          Updates and important info will come to your email.
+        </small>
         <div className="form-check form-switch mt-2">
           <input
             className="form-check-input"
@@ -146,11 +159,16 @@ export default function Settings() {
             Receive SMS alerts
           </label>
         </div>
-        <small className="text-muted ms-1">Enable for urgent alerts (like account changes).</small>
+        <small className="text-muted ms-1">
+          Enable for urgent alerts (like account changes).
+        </small>
       </div>
 
       {/* Danger zone */}
-      <div className="p-4 border border-danger rounded-4 animate-slideUp" style={{ animationDelay: ".24s", background: "#fff7f7" }}>
+      <div
+        className="p-4 border border-danger rounded-4 animate-slideUp"
+        style={{ animationDelay: ".24s", background: "#fff7f7" }}
+      >
         <h5 className="text-danger mb-3">❌ Danger Zone</h5>
         <button
           className="btn btn-outline-danger"
@@ -158,7 +176,11 @@ export default function Settings() {
           disabled={deleting || deleteSuccess}
           style={{ minWidth: 180, fontWeight: 500 }}
         >
-          {deleting ? "Deleting..." : deleteSuccess ? "Account deleted!" : "Delete My Account"}
+          {deleting
+            ? "Deleting..."
+            : deleteSuccess
+            ? "Account deleted!"
+            : "Delete My Account"}
         </button>
         <div className="text-muted mt-2" style={{ fontSize: "0.92em" }}>
           Warning: This action is irreversible.
@@ -170,7 +192,9 @@ export default function Settings() {
         <div className="modal-backdrop-custom">
           <div className="modal-content-custom animate-fadein">
             <h5 className="mb-3 text-danger">Delete your account?</h5>
-            <div className="mb-3">Are you sure you want to permanently delete your account?</div>
+            <div className="mb-3">
+              Are you sure you want to permanently delete your account?
+            </div>
             <div className="d-flex gap-3 justify-content-end">
               <button
                 className="btn btn-outline-secondary"

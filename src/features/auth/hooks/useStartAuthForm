@@ -2,7 +2,16 @@ import { useState, useEffect, useRef } from "react";
 import { toast } from "react-toastify";
 import { verifyEmailAPI, checkAnswersAPI } from "../../../api/authService";
 
-export function useStartAuthForm({ questions, setQuestions, login, navigate, t, subscribe, redirectTo, user }) {
+export function useStartAuthForm({
+  questions,
+  setQuestions,
+  login,
+  navigate,
+  t,
+  subscribe,
+  redirectTo,
+  user,
+}) {
   const [email, setEmail] = useState("");
   const [inputAnswer, setInputAnswer] = useState("");
   const [answersList, setAnswersList] = useState([]);
@@ -80,7 +89,8 @@ export function useStartAuthForm({ questions, setQuestions, login, navigate, t, 
         answer: finalAnswers[i] || "",
       }));
 
-      const timezone = user?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
+      const timezone =
+        user?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
 
       const data = await checkAnswersAPI(email, answers, timezone);
 
@@ -89,7 +99,8 @@ export function useStartAuthForm({ questions, setQuestions, login, navigate, t, 
       toast.success(t("auth.success"), { position: "top-right" });
       setAuthResult(t("auth.success"));
 
-      sessionStorage.setItem("jwt", token);
+      //sessionStorage.setItem("jwt", token);
+      localStorage.setItem("jwt", token);
 
       if (token) {
         login({ username: email, token, timezone });
@@ -106,22 +117,32 @@ export function useStartAuthForm({ questions, setQuestions, login, navigate, t, 
       }
     } catch (err) {
       if (err.status === 423) {
-        toast.error(t("auth.blocked", { reason: err.message }), { position: "top-right" });
+        toast.error(t("auth.blocked", { reason: err.message }), {
+          position: "top-right",
+        });
       } else if (err.status === 401) {
-        toast.warn(t("auth.wrong_answers", { reason: err.message }), { position: "top-right" });
+        toast.warn(t("auth.wrong_answers", { reason: err.message }), {
+          position: "top-right",
+        });
       } else {
-        toast.error(t("auth.general_error", { status: err.status }), { position: "top-right" });
+        toast.error(t("auth.general_error", { status: err.status }), {
+          position: "top-right",
+        });
       }
     }
   };
 
   return {
-    email, setEmail,
-    inputAnswer, setInputAnswer,
+    email,
+    setEmail,
+    inputAnswer,
+    setInputAnswer,
     answersList,
     authResult,
-    currentStep, setCurrentStep,
-    showPassword, setShowPassword,
+    currentStep,
+    setCurrentStep,
+    showPassword,
+    setShowPassword,
     inputRef,
     verifyEmail,
     handleNext,

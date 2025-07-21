@@ -69,7 +69,7 @@ export function useBusinessVibeForm(navigate) {
 
     try {
       setLoading(true);
-      const token = sessionStorage.getItem("jwt");
+      const token = localStorage.getItem("jwt");
       await createVibe(dto, token);
       alert("Vibe created!");
       navigate("/my-vibes");
@@ -81,16 +81,26 @@ export function useBusinessVibeForm(navigate) {
   };
 
   return {
-    name, setName,
-    description, setDescription,
-    photoFile, setPhotoFile,
-    contacts, setContacts,
-    showModal, setShowModal,
-    extraBlocks, setExtraBlocks,
-    showBlockModal, setShowBlockModal,
+    name,
+    setName,
+    description,
+    setDescription,
+    photoFile,
+    setPhotoFile,
+    contacts,
+    setContacts,
+    showModal,
+    setShowModal,
+    extraBlocks,
+    setExtraBlocks,
+    showBlockModal,
+    setShowBlockModal,
     loading,
-    addContact, handleContactChange, removeContact,
-    handleBlockChange, removeBlock,
+    addContact,
+    handleContactChange,
+    removeContact,
+    handleBlockChange,
+    removeBlock,
     handleSubmit,
   };
 }

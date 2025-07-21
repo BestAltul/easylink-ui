@@ -12,7 +12,7 @@ export default function VibeView() {
   const [loading, setLoading] = useState(true);
   const [subscribed, setSubscribed] = useState(false);
   const [error, setError] = useState(null);
-  const token = sessionStorage.getItem("jwt");
+  const token = localStorage.getItem("jwt");
 
   useEffect(() => {
     setLoading(true);

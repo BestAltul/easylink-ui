@@ -13,7 +13,7 @@ export default function OffersTableForUsers() {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  const token = sessionStorage.getItem("jwt");
+  const token = localStorage.getItem("jwt");
   const offers = useOffers(vibeId, token);
 
   const handleRowClick = (id) => {
@@ -59,4 +59,3 @@ export default function OffersTableForUsers() {
     </PageLayout>
   );
 }
-

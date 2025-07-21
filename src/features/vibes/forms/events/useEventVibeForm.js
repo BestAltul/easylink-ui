@@ -67,7 +67,7 @@ export function useEventVibeForm(navigate) {
 
     try {
       setLoading(true);
-      const token = sessionStorage.getItem("jwt");
+      const token = localStorage.getItem("jwt");
       await createVibe(dto, token);
       alert("Event Vibe created!");
       navigate("/my-vibes");
@@ -79,16 +79,26 @@ export function useEventVibeForm(navigate) {
   };
 
   return {
-    name, setName,
-    description, setDescription,
-    photoFile, setPhotoFile,
-    contacts, setContacts,
-    showModal, setShowModal,
-    extraBlocks, setExtraBlocks,
-    showBlockModal, setShowBlockModal,
+    name,
+    setName,
+    description,
+    setDescription,
+    photoFile,
+    setPhotoFile,
+    contacts,
+    setContacts,
+    showModal,
+    setShowModal,
+    extraBlocks,
+    setExtraBlocks,
+    showBlockModal,
+    setShowBlockModal,
     loading,
-    addContact, handleContactChange, removeContact,
-    handleBlockChange, removeBlock,
+    addContact,
+    handleContactChange,
+    removeContact,
+    handleBlockChange,
+    removeBlock,
     handleSubmit,
   };
 }

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function useSubscribe(targetVibeId) {
   const navigate = useNavigate();
-  const token = sessionStorage.getItem("jwt");
+  const token = localStorage.getItem("jwt");
   const [subscribed, setSubscribed] = useState(false);
 
   const subscribe = async (myVibeId) => {

@@ -11,7 +11,7 @@ export default function InteractionsPage() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const token = sessionStorage.getItem("jwt");
+  const token = localStorage.getItem("jwt");
 
   const following = useFollowing(id, token);
 

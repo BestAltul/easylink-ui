@@ -7,7 +7,6 @@ import { QRCodeCanvas } from "qrcode.react";
 import SelectVibeModalWithLogic from "./SelectVibeModalWithLogic";
 import { useTranslation } from "react-i18next";
 
-
 export default function VibeContentForCustomers({
   id,
   name,
@@ -21,7 +20,7 @@ export default function VibeContentForCustomers({
   const [showModal, setShowModal] = useState(false);
   const [subscribed, setSubscribed] = useState(false);
   const { t } = useTranslation();
-  const token = sessionStorage.getItem("jwt");
+  const token = localStorage.getItem("jwt");
   const navigate = useNavigate();
   const location = useLocation();
 

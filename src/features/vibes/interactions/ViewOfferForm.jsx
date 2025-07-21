@@ -4,10 +4,10 @@ import useGetOffer from "../interactions/useGetOffer";
 import PageLayout from "../../../components/common/PageLayout";
 import { useTranslation } from "react-i18next";
 
-export default function ViewOfferView() {
+export default function ViewOfferForm() {
   const { id } = useParams();
   const { t } = useTranslation();
-  const token = sessionStorage.getItem("jwt");
+  const token = localStorage.getItem("jwt");
 
   const { offer } = useGetOffer(id, token);
 

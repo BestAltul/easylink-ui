@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 export default function useCheckSubscription(subscriberVibeId, targetVibeId) {
   const [subscribed, setSubscribed] = useState(false);
   const [loading, setLoading] = useState(true);
-  const token = sessionStorage.getItem("jwt");
+  const token = localStorage.getItem("jwt");
 
   useEffect(() => {
     if (!token || !subscriberVibeId || !targetVibeId) return;
