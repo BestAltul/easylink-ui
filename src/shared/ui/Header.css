@@ -1,0 +1,140 @@
+/* сбросим дефолтные отступы, COMMENTED NOW */
+/* * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+} */
+
+/* #root {
+  width: 100%;
+  padding: 2rem;
+  text-align: center;
+} */
+
+/* ------------------------------HEADER-------------------------- */
+.header {
+  max-width: 1280px; /*Just like it used to be*/
+  margin: 1.5rem auto 0 auto;
+  width: 100%;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-radius: 15px;
+}
+
+/* ------------------------------HEADER'S LINKS-------------------- */
+.header__container {
+  max-width: 1100px;
+  height: 85px; /* header's height */
+  margin: 0 auto;
+  display: flex;
+  align-items: center; /* center vertically */
+  justify-content: space-between;
+  padding: 0 1rem; /* horizontal indents */
+}
+
+/* -------------------------------LOGO------------------------------ */
+.logo {
+  display: flex;
+  align-items: center;
+  font-size: 2rem;
+  font-weight: bold;
+  color: #007bff;
+  text-decoration: none;
+  transition: color 0.2s;
+  height: 20px;
+}
+.logo img {
+  width: 28px; /* уменьшил размер иконки */
+  height: 28px;
+  object-fit: contain;
+  display: block;
+}
+.logo:hover {
+  color: #0056a3;
+}
+.nav {
+  display: flex;
+  gap: 1rem;
+}
+.nav a {
+  color: #333;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.nav a:hover {
+  color: #007bff;
+}
+
+.logout-btn {
+  background: none;
+  border: none;
+  color: #333;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0;
+}
+
+.logout-btn:hover {
+  color: #007bff;
+  text-decoration: underline;
+}
+.early-access-bubble {
+  background-color: #ffeaea; /* light red background */
+  border: 2px solid red;
+  border-radius: 8px;
+  padding: 12px 16px;
+  box-shadow: 0 4px 12px rgba(255, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-left: 32px;
+  max-width: 260px;
+  position: relative;
+  text-transform: uppercase;
+}
+
+.early-access-bubble::after {
+  /* remove tail */
+  content: none;
+}
+
+.early-access-text {
+  font-size: 1rem;
+  font-weight: 700;
+  color: red;
+  margin-bottom: 8px;
+}
+
+.early-subscribe-highlighted {
+  background-color: red;
+  color: white;
+  padding: 6px 16px;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.early-subscribe-highlighted:hover {
+  background-color: darkred;
+}
+
+.subscribed-green {
+  background-color: #e6f9e6; /* light green background */
+  border: 2px solid #4caf50;
+  color: #2e7d32; /* dark green text */
+}
+
+.subscribed-green .early-access-text,
+.subscribed-green .subscribed-message {
+  color: #2e7d32;
+}
+
+.subscribed-green .subscribed-message {
+  font-weight: bold;
+}

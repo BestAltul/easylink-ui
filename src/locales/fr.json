@@ -1,0 +1,173 @@
+{
+  "home": {
+    "welcome": "Bienvenue sur EasyLink",
+    "subtitle": "Votre solution moderne pour une gestion sécurisée et simple de l'identité.",
+    "curious": "Vous voulez savoir comment EasyLink facilite votre vie numérique ?",
+    "learn_more": "En savoir plus",
+    "get_started": "Commencer",
+    "why": "Pourquoi EasyLink ?",
+    "secure_title": "Sécurité par conception",
+    "secure_text": "Vos données sont protégées par une authentification et un chiffrement multicouches.",
+    "fast_title": "Accès ultra-rapide",
+    "fast_text": "Connectez-vous en quelques secondes, sans mots de passe complexes ni codes.",
+    "friendly_title": "Facile à utiliser",
+    "friendly_text": "Conçu pour tous — simple, intuitif et agréablement facile à utiliser."
+  },
+  "header": {
+    "home": "Accueil",
+    "sign_up": "S'inscrire",
+    "log_in": "Se connecter",
+    "profile": "Profil",
+    "about": "À propos",
+    "review": "Avis",
+    "log_out": "Déconnexion"
+  },
+  "footer": {
+    "terms": "Conditions d'utilisation",
+    "privacy": "Politique de confidentialité",
+    "ads": "Publicités personnalisées",
+    "copyright": "Tous droits réservés."
+  },
+  "about": {
+    "title": "Qu'est-ce qu'EasyLink ?",
+    "subtitle": "Une façon moderne et rapide de se connecter et de créer votre propre Vibe numérique.",
+    "steps": [
+      {
+        "title": "Sans mot de passe",
+        "text": "Connectez-vous avec vos associations personnelles — pas de mot de passe, de code, ni d’email. Juste ce qui compte pour vous."
+      },
+      {
+        "title": "Privé et sécurisé",
+        "text": "Vos données sont chiffrées et jamais partagées. Vous seul contrôlez l'accès."
+      },
+      {
+        "title": "Authentification rapide",
+        "text": "Accès instantané grâce à vos réponses — plus besoin de codes ou de réinitialiser des mots de passe."
+      },
+      {
+        "title": "Votre Vibe, vos règles",
+        "text": "Votre Vibe numérique vous appartient. Partagez contacts, liens et plus selon vos envies."
+      }
+    ],
+    "cta": "Essayez de créer votre Vibe !",
+    "mission_title": "Notre mission",
+    "mission": "EasyLink a été créé pour ceux qui privilégient la simplicité et la confidentialité. Oubliez les dizaines de mots de passe et de données inutiles — votre univers numérique, sous votre contrôle."
+  },
+  "signup": {
+    "progress_step": "Étape {{step}} sur {{total}}",
+    "progress_done": "Presque terminé !",
+    "title": "Inscription EasyLink",
+    "step1_info": "Saisissez votre e-mail pour créer un compte.",
+    "step1_label": "Email",
+    "step1_invalid": "Saisissez une adresse email valide",
+    "step1_next": "Suivant",
+    "step2_info": "Combien de verrous de mémoire voulez-vous ajouter ? Plus = plus sûr !",
+    "step2_label": "Choisissez le nombre de verrous de mémoire :",
+    "step3_info": "Trouvez une question à laquelle seul vous connaissez la réponse. Elle sera utilisée pour une connexion sans mot de passe !",
+    "step3_question": "Question",
+    "step3_custom": "Écrivez la vôtre",
+    "step3_custom_label": "Question personnalisée",
+    "step3_hint": "Indice (pour vous aider à vous souvenir)",
+    "step3_hint_placeholder": "Cela vous aidera à retrouver la réponse",
+    "step3_back": "Retour",
+    "step3_next": "Suivant",
+    "step3_answer": "Réponse",
+    "step3_create": "Créer",
+    "step3_of": "sur {{total}}",
+    "step3_select": "Sélectionner",
+    "questions_preview_title": "Votre mémoire est protégée 🔐",
+    "questions_preview_q": "Q :",
+    "questions_preview_hint": "Indice :",
+    "questions_preview_answer": "Réponse : ••••",
+    "finish_create": "Créer un compte",
+    "toast_fill_all": "Veuillez remplir tous les champs",
+    "toast_email_required": "Email requis",
+    "toast_error": "Erreur lors de l'inscription",
+    "toast_fail": "Inscription échouée"
+  },
+  "auth": {
+    "title": "Connexion",
+    "email_label": "Email :",
+    "email_placeholder": "Entrez votre email",
+    "email_not_found": "❌ Email introuvable",
+    "error_verifying_email": "⚠️ Erreur lors de la vérification de l'email",
+    "answer_exactly": "❗ Veuillez saisir exactement {{count}} réponses.",
+    "success": "Succès",
+    "blocked": "🚫 Bloqué : {{reason}}",
+    "wrong_answers": "❗ Mauvaises réponses : {{reason}}",
+    "general_error": "❌ Erreur : {{status}}",
+    "error_checking_answers": "⚠️ Erreur lors de la vérification des réponses : {{error}}",
+    "q_number": "Q{{num}}",
+    "progress": "Répondez à la question {{current}} sur {{total}}",
+    "case_insensitive": "Non sensible à la casse. Vous seul connaissez votre réponse.",
+    "answer_placeholder": "Tapez votre réponse",
+    "back": "Retour",
+    "next": "Suivant",
+    "login": "Se connecter",
+    "no_account": "Pas encore de compte ?",
+    "signup": "Inscrivez-vous"
+  },
+  "review": {
+    "title": "Avis des utilisateurs",
+    "leave": "Laissez un avis",
+    "placeholder": "Votre retour sur EasyLink...",
+    "submit": "Envoyer",
+    "thank_you": "Merci pour votre avis ! 💬",
+    "must_login": "Vous devez être connecté pour publier un avis.",
+    "anonymous": "Anonyme"
+  },
+  "profile": {
+    "welcome": "Bon retour, {{name}} !",
+    "dashboard": "Voici votre tableau de bord personnel. Gérez vos intérêts, passe-temps, groupes et communautés — et partagez ce qui compte à travers différents types de Vibes.",
+    "vibes": "Vibes",
+    "friends": "Amis",
+    "streak": "Série : {{count}}j",
+    "cards": [
+      {
+        "title": "❤️ Mes Vibes",
+        "text": "Consultez les Vibes que vous avez déjà créés !",
+        "button": "Voir mes Vibes"
+      },
+      {
+        "title": "💙 Créer un nouveau Vibe",
+        "text": "Ajoutez un Vibe personnel, professionnel ou événementiel à votre compte.",
+        "button": "Créer un Vibe"
+      }
+    ],
+    "sidebar": {
+      "edit": "Modifier",
+      "settings": "Paramètres",
+      "logout": "Déconnexion"
+    },
+    "user_name": "Nom d'utilisateur"
+  },
+  "myvibes": {
+    "back": "Retour au profil",
+    "title": "Mes Vibes",
+    "create": "+ Créer un nouveau Vibe",
+    "loading": "Chargement des Vibes...",
+    "no_vibes": "Aucun Vibe trouvé.",
+    "no_vibes_hint": "Créez votre premier Vibe !",
+    "share": "Partager",
+    "share_title": "Partagez votre Vibe",
+    "share_subtitle": "Envoyez le lien de votre Vibe ou affichez le QR code !",
+    "copy": "Copier le lien",
+    "copied": "Copié !",
+    "scan": "Scannez pour ouvrir le Vibe",
+    "no_description": "Pas de description.",
+    "delete_error": "Erreur lors de la suppression du Vibe",
+    "delete_success": "Vibe supprimé !"
+  },
+  "interactions": {
+    "back": "← Retour",
+    "title": "Interactions",
+    "loading_vibe": "Chargement du vibe...",
+    "not_found": "Vibe introuvable.",
+    "no_name": "Sans nom",
+    "info_text": "Ceci est votre vibe. Ci-dessous — vos abonnements et vos abonnés.",
+    "following": "Abonnements",
+    "followers": "Abonnés",
+    "following_empty": "Vous ne suivez encore personne.",
+    "followers_empty": "Personne ne vous suit encore."
+  }
+}

@@ -1,0 +1,123 @@
+.blink {
+  animation: blink-animation 1s steps(2, start) infinite;
+}
+
+@keyframes blink-animation {
+  to {
+    visibility: hidden;
+  }
+}
+.highlight {
+  animation: pulse 1.5s infinite;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 20, 147, 0.7); /* ярко-розовый */
+  }
+  70% {
+    box-shadow: 0 0 0 12px rgba(255, 20, 147, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 20, 147, 0);
+  }
+}
+
+.compact-table th,
+.compact-table td {
+  padding-top: 6px;
+  padding-bottom: 6px;
+  font-size: 0.9rem;
+}
+
+.compact-table tr {
+  line-height: 1.2;
+}
+
+.compact-table tbody tr:hover {
+  background-color: #f8f9fa;
+  cursor: pointer;
+}
+
+.table-wrapper {
+  margin-top: 40px; /* сверху */
+  margin-left: 20px; /* слева */
+  margin-right: 20px; /* справа */
+}
+
+@media (min-width: 768px) {
+  .table-wrapper {
+    margin-left: 60px; /* на больших экранах — больше */
+    margin-right: 60px;
+  }
+}
+
+.page-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.page-content {
+  flex: 1;
+}
+footer {
+  text-align: center;
+  padding: 10px;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.table-wrapper {
+  margin-top: 40px;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.compact-table th,
+.compact-table td {
+  padding-top: 6px;
+  padding-bottom: 6px;
+  font-size: 0.9rem;
+}
+
+.compact-table tr {
+  line-height: 1.2;
+}
+
+.compact-table tbody tr:hover {
+  background-color: #f8f9fa;
+  cursor: pointer;
+}
+
+.table-wrapper {
+  margin-top: 40px;
+  margin-left: 40px;
+  margin-right: 40px;
+}
+
+.card-table {
+  background: white;
+  border: 1px solid #ddd; /* светлая рамка */
+  border-radius: 12px; /* скругление углов */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* мягкая тень */
+  overflow: hidden; /* чтобы скругления применялись к таблице */
+}
+
+.card-table table {
+  margin: 0;
+}
+
+.compact-table th,
+.compact-table td {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  font-size: 0.95rem;
+}
+
+.compact-table tbody tr:hover {
+  background-color: #f8f9fa;
+  cursor: pointer;
+}

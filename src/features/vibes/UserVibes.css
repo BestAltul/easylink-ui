@@ -1,0 +1,40 @@
+.myvibe-card {
+  background: white;
+  border-radius: 18px;
+  box-shadow: 0 2px 12px rgba(40,48,70,0.10);
+  padding: 22px 20px 18px;
+  width: 260px;
+  min-height: 180px;
+  cursor: pointer;
+  opacity: 1;
+  transition:
+    transform 0.18s cubic-bezier(.48,.07,.75,.95),
+    box-shadow 0.20s cubic-bezier(.48,.07,.75,.95),
+    filter .25s cubic-bezier(.48,.07,.75,.95),
+    opacity .3s;
+}
+
+.myvibe-card:hover,
+.myvibe-card:focus {
+  transform: translateY(-10px) scale(1.035) rotate(-0.7deg);
+  box-shadow: 0 2px 12px rgba(40,48,70,0.10);  
+  filter: none; 
+  outline: none;
+}
+
+.myvibe-card:focus-visible {
+  box-shadow:
+    0 12px 40px 0 rgba(65,84,255,0.13),
+    0 2px 12px rgba(60,80,150,0.12),
+    0 0 0 3px #d6e0ff;
+}
+
+/* mobile */
+@media (max-width: 768px) {
+  .myvibe-card {
+    width: 94vw;
+    padding: 16px 8px 13px;
+    font-size: 15px;
+    box-shadow: 0 2px 9px rgba(40,48,70,0.10);
+  }
+}
