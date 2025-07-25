@@ -1,18 +1,14 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import "bootstrap/dist/css/bootstrap.min.css";
-import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import axios from "axios";
+import "bootstrap/dist/css/bootstrap.min.css";
+import VibeSearch from "../components/common/VibeSearch";
 
 export default function Home() {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
   const { t } = useTranslation();
-
-  const [code, setCode] = useState("");
-  const [error, setError] = useState("");
 
   const handleClick = () => {
     if (isAuthenticated) {
@@ -22,47 +18,10 @@ export default function Home() {
     }
   };
 
-  const handleSearch = async () => {
-    setError("");
-    if (!/^\d{4,5}$/.test(code)) {
-      setError("Please enter a valid 4–5 digit code");
-      return;
-    }
-
-    try {
-      const res = await axios.get(`/api/v3/vibes/by-code/${code}`);
-      navigate(`/view/${res.data.id}`);
-    } catch (err) {
-      setError("Vibe not found");
-    }
-  };
-
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") handleSearch();
-  };
-
   return (
     <div className="container text-center py-5">
       {/* 🔍 Vibe Code Search */}
-      <div
-        className="d-flex justify-content-end align-items-center mb-4"
-        style={{ gap: 12 }}
-      >
-        <input
-          type="text"
-          className="form-control"
-          placeholder="Enter 4–5 digit Vibe code"
-          value={code}
-          onChange={(e) => setCode(e.target.value)}
-          onKeyDown={handleKeyDown}
-          style={{ maxWidth: 240 }}
-          autoFocus
-        />
-        <button className="btn btn-primary" onClick={handleSearch}>
-          Search
-        </button>
-      </div>
-      {error && <div className="text-danger mb-4">{error}</div>}
+      <VibeSearch />
 
       {/* Heading and CTA */}
       <h1
@@ -112,10 +71,7 @@ export default function Home() {
             text: t("home.friendly_text"),
           },
         ].map((item, idx) => (
-          <div
-            key={idx}
-            className="col-md-4 mb-4 d-flex justify-content-center"
-          >
+          <div key={idx} className="col-md-4 mb-4 d-flex justify-content-center">
             <div
               className="card p-4 shadow-sm"
               style={{
@@ -130,10 +86,7 @@ export default function Home() {
                   {item.emoji}
                 </div>
                 <h5 className="card-title mb-2">{item.title}</h5>
-                <p
-                  className="card-text"
-                  style={{ fontSize: "0.95rem", color: "#555" }}
-                >
+                <p className="card-text" style={{ fontSize: "0.95rem", color: "#555" }}>
                   {item.text}
                 </p>
               </div>
