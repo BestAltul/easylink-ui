@@ -8,6 +8,7 @@ import ProfileStats from "./components/ProfileStats";
 import getProfileCards from "./utils/profileCardsConfig";
 import useHasVibes from "../../components/common/hooks/useHasVibes";
 import { useEffect } from "react";
+import VibeSearch from "../../components/common/VibeSearch";
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -27,7 +28,6 @@ export default function Profile() {
   return (
     <>
       <Sidebar user={user} logout={logout} />
-
       <main className="py-5 px-4" style={{ marginLeft: "60px" }}>
         <div className="mx-auto" style={{ maxWidth: "1200px" }}>
           <div className="text-center bg-light p-5 rounded shadow mb-5 animate-slideUp">
@@ -38,13 +38,16 @@ export default function Profile() {
             </h2>
             <p className="lead text-muted">{t("profile.dashboard")}</p>
           </div>
-
+          <div className="d-flex justify-content-center mb-4">
+            <VibeSearch />
+          </div>
+          {/* 
           <ProfileStats
             // vibesCount={vibesCount}
             friendsCount={user?.friendsCount ?? 0}
             streak={user?.streak ?? 0}
             t={t}
-          />
+          /> */}
 
           <ProfileCards cards={profileCards} />
         </div>
