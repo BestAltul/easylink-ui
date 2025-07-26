@@ -68,7 +68,10 @@ function StartAuth({ questions, setQuestions }) {
       </div>
 
       {Array.isArray(questions) && questions.length > 0 && (
-        <div className="d-flex gap-4 align-items-start" style={{ minHeight: 380 }}>
+        <div
+          className="d-flex gap-4 align-items-start"
+          style={{ minHeight: 380 }}
+        >
           <StepsNav
             questions={questions}
             currentStep={currentStep}
@@ -78,7 +81,10 @@ function StartAuth({ questions, setQuestions }) {
           />
 
           <div className="flex-grow-1 position-relative">
-            <ProgressBar currentStep={currentStep} totalSteps={questions.length} />
+            <ProgressBar
+              currentStep={currentStep}
+              totalSteps={questions.length}
+            />
 
             <AnimatePresence mode="wait">
               <QuestionCard
@@ -113,7 +119,14 @@ function StartAuth({ questions, setQuestions }) {
       <p className="text-center mt-3">
         {t("auth.no_account")}{" "}
         <button
-          onClick={() => navigate("/signup")}
+          onClick={() => {
+            const newParams = new URLSearchParams();
+            if (redirectTo) newParams.set("redirectTo", redirectTo);
+            if (subscribe === "true") newParams.set("subscribe", "true");
+
+            const query = newParams.toString();
+            navigate(query ? `/signup?${query}` : "/signup");
+          }}
           className="btn btn-link p-0"
           style={{ textDecoration: "underline", fontWeight: "500" }}
         >

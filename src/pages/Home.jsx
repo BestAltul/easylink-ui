@@ -1,9 +1,9 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import "bootstrap/dist/css/bootstrap.min.css";
-import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import "bootstrap/dist/css/bootstrap.min.css";
+import VibeSearch from "../components/common/VibeSearch";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -20,16 +20,23 @@ export default function Home() {
 
   return (
     <div className="container text-center py-5">
-      <h1 className="mb-3" style={{ fontWeight: "700", fontSize: "3rem", animation: "fadeIn 1s" }}>
-        {t('home.welcome')}
+      {/* 🔍 Vibe Code Search */}
+      <VibeSearch />
+
+      {/* Heading and CTA */}
+      <h1
+        className="mb-3"
+        style={{ fontWeight: "700", fontSize: "3rem", animation: "fadeIn 1s" }}
+      >
+        {t("home.welcome")}
       </h1>
       <p className="lead mb-4" style={{ animation: "fadeIn 1.5s" }}>
-        {t('home.subtitle')}
+        {t("home.subtitle")}
       </p>
       <p className="text-muted" style={{ animation: "fadeIn 2s" }}>
-        {t('home.curious')}{" "}
+        {t("home.curious")}{" "}
         <Link to="/about" className="text-primary">
-          {t('home.learn_more')}
+          {t("home.learn_more")}
         </Link>
       </p>
       <button
@@ -37,12 +44,15 @@ export default function Home() {
         className="btn btn-primary px-5 py-3 mt-4"
         style={{ fontSize: "1.25rem", animation: "fadeIn 2.5s" }}
       >
-        {t('home.get_started')}
+        {t("home.get_started")}
       </button>
 
       {/* Features Section */}
-      <div className="row mt-5 justify-content-center" style={{ animation: "fadeIn 2s" }}>
-        <h2 className="mb-5 text-center">{t('home.why')}</h2>
+      <div
+        className="row mt-5 justify-content-center"
+        style={{ animation: "fadeIn 2s" }}
+      >
+        <h2 className="mb-5 text-center">{t("home.why")}</h2>
 
         {[
           {
@@ -72,7 +82,9 @@ export default function Home() {
               }}
             >
               <div className="card-body d-flex flex-column align-items-center text-center">
-                <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>{item.emoji}</div>
+                <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>
+                  {item.emoji}
+                </div>
                 <h5 className="card-title mb-2">{item.title}</h5>
                 <p className="card-text" style={{ fontSize: "0.95rem", color: "#555" }}>
                   {item.text}
@@ -81,7 +93,7 @@ export default function Home() {
             </div>
           </div>
         ))}
-        
+
         <style>
           {`
             .card:hover {

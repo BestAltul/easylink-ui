@@ -8,12 +8,18 @@ import StepEmail from "./components/steps/StepEmail";
 import StepChooseQuestionsCount from "./components/steps/StepChooseQuestionsCount";
 import StepAddQuestion from "./components/steps/StepAddQuestion";
 import StepPreview from "./components/steps/StepPreview";
+import { useLocation } from "react-router-dom";
 
 function SignUp() {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  const form = useSignUpForm(navigate, t);
+  const form = useSignUpForm(navigate, t, redirectTo, subscribe);
+
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const redirectTo = params.get("redirectTo");
+  const subscribe = params.get("subscribe");
 
   const STEP_LABELS = [
     t("signup.step1_label"),
@@ -78,7 +84,10 @@ function SignUp() {
               className="mb-5 text-center fw-bold"
               style={{ fontSize: 40, width: "100%" }}
             >
-              {t("signup.title")} <span role="img" aria-label="lock">🔒</span>
+              {t("signup.title")}{" "}
+              <span role="img" aria-label="lock">
+                🔒
+              </span>
             </h2>
             <div style={{ width: "100%", maxWidth: 720 }}>{renderStep()}</div>
           </div>
