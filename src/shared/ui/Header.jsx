@@ -6,6 +6,7 @@ import "./Header.css";
 import LanguageSwitcher from "./LanguageSwitcher";
 import { useEarlyAccess } from "../../components/common/hooks/useEarlyAccess";
 import { useEarlyAccessCheckable } from "../../components/common/hooks/useEarlyAccessCheckable";
+import EarlyAccessBadge from "./EarlyAccessBadge";
 
 function Header() {
   const { isAuthenticated, logout } = useAuth();
@@ -72,33 +73,13 @@ function Header() {
           </span>
         </Link>
 
-        <div
-          className={`early-access-bubble ${
-            subscribed ? "subscribed-green" : ""
-          }`}
-        >
-          <div className="early-access-text">
-            {subscribed ? "✅ Subscribed!" : t("header.lifetime_offer")}
-          </div>
-
-          {subscribed ? (
-            <div className="subscribed-message"></div>
-          ) : (
-            <button
-              onClick={() => {
-                if (!isAuthenticated) {
-                  navigate("/signin");
-                } else {
-                  requestEarlyAccess();
-                }
-              }}
-              className="early-subscribe-highlighted"
-              disabled={loadingSubscribe}
-            >
-              {loadingSubscribe ? "Loading..." : t("header.early_subscribtion")}
-            </button>
-          )}
-        </div>
+        <EarlyAccessBadge
+          isAuthenticated={isAuthenticated}
+          subscribed={subscribed}
+          requestEarlyAccess={requestEarlyAccess}
+          loadingSubscribe={loadingSubscribe}
+          navigate={navigate} 
+        />
 
         <nav
           className="nav"

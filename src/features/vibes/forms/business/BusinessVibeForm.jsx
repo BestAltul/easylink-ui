@@ -1,36 +1,45 @@
-// src/features/vibes/forms/BusinessVibeForm.jsx
-
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
 import CONTACT_TYPES from "../../../../data/contactTypes.js";
 import VibePreview from "../../components/VibePreview.jsx";
 import iconMap from "../../../../data/contactIcons.jsx";
 import { FaGlobe } from "react-icons/fa";
 import INFO_BLOCK_TYPES from "../../../../data/infoBlockTypes.js";
-import HoursBlock from "../../../../components/InfoBlocks/HoursBlock";
-import { useBusinessVibeForm } from "./useBusinessVibeForm.js";
+import HoursBlock from "../../../../components/InfoBlocks/HoursBlock.jsx";
+import { useNavigate } from "react-router-dom";
+import { useBusinessVibeForm } from "./useBusinessVibeForm"; 
 
-export default function BusinessVibeForm() {
+export default function BusinessVibeForm({ initialData = {}, mode = "create", onSave, onCancel }) {
   const navigate = useNavigate();
   const {
-    name, setName,
-    description, setDescription,
-    photoFile, setPhotoFile,
-    contacts, setContacts,
-    showModal, setShowModal,
-    extraBlocks, setExtraBlocks,
-    showBlockModal, setShowBlockModal,
+    name,
+    setName,
+    description,
+    setDescription,
+    photoFile,
+    setPhotoFile,
+    contacts,
+    setContacts,
+    showModal,
+    setShowModal,
+    extraBlocks,
+    setExtraBlocks,
+    showBlockModal,
+    setShowBlockModal,
     loading,
-    addContact, handleContactChange, removeContact,
-    handleBlockChange, removeBlock,
+    addContact,
+    handleContactChange,
+    removeContact,
+    handleBlockChange,
+    removeBlock,
     handleSubmit,
-  } = useBusinessVibeForm(navigate);
+  } = useBusinessVibeForm({ navigate, initialData, mode, onSave });
 
   return (
     <div
       className="d-flex flex-column flex-lg-row gap-5 align-items-start justify-content-center w-100"
       style={{ maxWidth: 1200, margin: "0 auto" }}
     >
+      {/* Форма */}
       <div style={{ flex: "1 1 500px", maxWidth: 540, minWidth: 320 }}>
         <form
           className="bg-light p-4 rounded-4 shadow"
@@ -49,6 +58,7 @@ export default function BusinessVibeForm() {
               required
             />
           </div>
+
           {/* Description */}
           <div className="mb-3">
             <label className="form-label">Description</label>
@@ -60,15 +70,14 @@ export default function BusinessVibeForm() {
               rows={2}
             />
           </div>
+
           {/* Contacts */}
           <div className="mb-3">
             <label className="form-label">Contacts</label>
-            {contacts.length === 0 && (
-              <div className="mb-2 text-muted" style={{ fontSize: 15 }}>
-                No contacts added yet.
-              </div>
+            {(contacts?.length ?? 0) === 0 && (
+              <div className="mb-2 text-muted">No contacts added yet.</div>
             )}
-            {contacts.map((c, i) => (
+            {Array.isArray(contacts) && contacts.map((c, i) => (
               <div className="input-group mb-2" key={i}>
                 <span
                   className="input-group-text"
@@ -109,6 +118,7 @@ export default function BusinessVibeForm() {
               + Add Contact
             </button>
           </div>
+
           {/* Info Blocks */}
           <div className="mb-3">
             <label className="form-label">Additional Info</label>
@@ -139,8 +149,7 @@ export default function BusinessVibeForm() {
                     type={block.type === "birthday" ? "date" : "text"}
                     className="form-control"
                     placeholder={
-                      INFO_BLOCK_TYPES.find((b) => b.key === block.type)
-                        ?.placeholder || "Enter info"
+                      INFO_BLOCK_TYPES.find((b) => b.key === block.type)?.placeholder || "Enter info"
                     }
                     value={typeof block.value === "string" ? block.value : ""}
                     onChange={(e) => handleBlockChange(i, e.target.value)}
@@ -158,6 +167,7 @@ export default function BusinessVibeForm() {
               );
             })}
           </div>
+
           {/* Photo/Logo */}
           <div className="mb-3">
             <label className="form-label">Photo / Logo</label>
@@ -169,12 +179,36 @@ export default function BusinessVibeForm() {
             />
             <div className="form-text">PNG or JPG, up to 2MB</div>
           </div>
-          <button type="submit" className="btn btn-primary w-100 mt-3" disabled={loading}>
-            {loading ? "Creating..." : "Create Business Card"}
-          </button>
+
+          {/* Submit / Cancel */}
+          <div className="d-flex gap-2 mt-3">
+            {mode === "edit" && (
+              <button
+                type="button"
+                className="btn btn-outline-secondary w-50"
+                onClick={onCancel}
+                disabled={loading}
+              >
+                Cancel
+              </button>
+            )}
+            <button
+              type="submit"
+              className="btn btn-primary w-100"
+              disabled={loading}
+            >
+              {loading
+                ? mode === "edit"
+                  ? "Saving..."
+                  : "Creating..."
+                : mode === "edit"
+                ? "Save Changes"
+                : "Create Business Card"}
+            </button>
+          </div>
         </form>
 
-        {/* Modal for Contact Types */}
+        {/* Contact Modal */}
         {showModal && (
           <div
             className="modal d-block"
@@ -218,10 +252,7 @@ export default function BusinessVibeForm() {
                   ))}
                 </div>
                 <div className="modal-footer">
-                  <button
-                    className="btn btn-secondary"
-                    onClick={() => setShowModal(false)}
-                  >
+                  <button className="btn btn-secondary" onClick={() => setShowModal(false)}>
                     Cancel
                   </button>
                 </div>
@@ -230,7 +261,7 @@ export default function BusinessVibeForm() {
           </div>
         )}
 
-        {/* Modal for Info Blocks */}
+        {/* Info Block Modal */}
         {showBlockModal && (
           <div
             className="modal d-block"
@@ -274,8 +305,7 @@ export default function BusinessVibeForm() {
                         setShowBlockModal(false);
                       }}
                       disabled={
-                        extraBlocks.some((b) => b.type === block.key) &&
-                        block.key !== "custom"
+                        extraBlocks.some((b) => b.type === block.key) && block.key !== "custom"
                       }
                     >
                       {block.label}
@@ -283,10 +313,7 @@ export default function BusinessVibeForm() {
                   ))}
                 </div>
                 <div className="modal-footer">
-                  <button
-                    className="btn btn-secondary"
-                    onClick={() => setShowBlockModal(false)}
-                  >
+                  <button className="btn btn-secondary" onClick={() => setShowBlockModal(false)}>
                     Cancel
                   </button>
                 </div>
@@ -295,7 +322,8 @@ export default function BusinessVibeForm() {
           </div>
         )}
       </div>
-      {/* Правая колонка: Превью */}
+
+      {/* Preview */}
       <div
         style={{
           flex: "1 1 400px",
