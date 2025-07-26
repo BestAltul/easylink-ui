@@ -11,7 +11,7 @@ const PERSONAL_INFO_BLOCKS = [
   { key: "birthday", label: "Birthday", placeholder: "YYYY-MM-DD" },
 ];
 
-export default function PersonalVibeForm() {
+export default function PersonalVibeForm({ initialData = {}, mode = "create", onSave, onCancel }) {
   const navigate = useNavigate();
   const {
     name, setName,
@@ -26,7 +26,7 @@ export default function PersonalVibeForm() {
     addContact, handleContactChange, removeContact,
     handleBlockChange, removeBlock,
     handleSubmit,
-  } = usePersonalVibeForm(navigate);
+  } = usePersonalVibeForm({ navigate, initialData, mode, onSave, onCancel });
 
   return (
     <div className="d-flex flex-column flex-lg-row gap-5 align-items-start justify-content-center w-100" style={{ maxWidth: 1200, margin: "0 auto" }}>
@@ -97,9 +97,32 @@ export default function PersonalVibeForm() {
             <input type="file" className="form-control" accept="image/*" onChange={(e) => setPhotoFile(e.target.files[0])} />
             <div className="form-text">PNG or JPG, up to 2MB</div>
           </div>
-          <button type="submit" className="btn btn-primary w-100 mt-3" disabled={loading}>
-            {loading ? "Creating..." : "Create Personal Card"}
-          </button>
+          {/* Submit / Cancel */}
+          <div className="d-flex gap-2 mt-3">
+            {mode === "edit" && (
+              <button
+                type="button"
+                className="btn btn-outline-secondary w-50"
+                onClick={onCancel}
+                disabled={loading}
+              >
+                Cancel
+              </button>
+            )}
+            <button
+              type="submit"
+              className="btn btn-primary w-100"
+              disabled={loading}
+            >
+              {loading
+                ? mode === "edit"
+                  ? "Saving..."
+                  : "Creating..."
+                : mode === "edit"
+                ? "Save Changes"
+                : "Create Business Card"}
+            </button>
+          </div>
         </form>
         {/* Modal for Contact Types */}
         {showModal && (
@@ -148,11 +171,20 @@ export default function PersonalVibeForm() {
         )}
       </div>
       {/* Правая колонка: превью */}
-      <div style={{ flex: "1 1 400px", minWidth: 300, maxWidth: 460 }} className="d-none d-lg-block">
-        <div className="sticky-top" style={{ top: 90, zIndex: 1 }}>
-          <VibePreview name={name} description={description} photoFile={photoFile} contacts={contacts} type="PERSONAL" extraBlocks={extraBlocks} />
+      {mode === "create" | mode == "edit" && (
+        <div style={{ flex: "1 1 400px", minWidth: 300, maxWidth: 460 }} className="d-none d-lg-block">
+          <div className="sticky-top" style={{ top: 90, zIndex: 1 }}>
+            <VibePreview
+              name={name}
+              description={description}
+              photoFile={photoFile}
+              contacts={contacts}
+              type="PERSONAL"
+              extraBlocks={extraBlocks}
+            />
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

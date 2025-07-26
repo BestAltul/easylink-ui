@@ -56,11 +56,10 @@ export default function CreateVibe() {
             <option value="EVENT">Event</option>
           </select>
         </div>
-
         {/* Каждая форма сама заботится о своем layout */}
-        {type === "BUSINESS" && <BusinessVibeForm />}
-        {type === "PERSONAL" && <PersonalVibeForm />}
-        {type === "EVENT" && <EventVibeForm />}
+        {type === "BUSINESS" && <BusinessVibeForm mode="create" />}
+        {type === "PERSONAL" && <PersonalVibeForm mode="create" />}
+        {type === "EVENT" && <EventVibeForm mode="create" />}
       </div>
     </div>
   );
