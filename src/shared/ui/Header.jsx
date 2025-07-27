@@ -68,7 +68,7 @@ function Header() {
           <span
             style={{ color: "#007bff", fontWeight: "bold", fontSize: "2rem" }}
           >
-            EasyLink
+            YMK
           </span>
         </Link>
 

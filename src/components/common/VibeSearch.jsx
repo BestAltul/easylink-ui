@@ -15,14 +15,12 @@ export default function VibeSearch() {
     }
     try {
       const res = await axios.get(`/api/v3/vibes/visibility/${code}`);
-      console.log("ew",res);
+      console.log("ew", res);
       navigate(`/view/${res.data.id}`);
     } catch (err) {
       setError("Vibe not found");
     }
   };
-
-  
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") handleSearch();
@@ -30,8 +28,8 @@ export default function VibeSearch() {
 
   return (
     <div
-      className="d-flex justify-content-end align-items-center mb-4"
-      style={{ gap: 12, maxWidth: 300 }}
+      className="d-flex justify-content-center align-items-center mb-4"
+      style={{ gap: 12, width: "100%", maxWidth: 600, margin: "0 auto" }}
     >
       <input
         type="text"
