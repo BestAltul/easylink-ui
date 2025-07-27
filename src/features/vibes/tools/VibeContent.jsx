@@ -3,6 +3,7 @@ import Avatar from "./Avatar";
 import ExtraBlock from "./ExtraBlock";
 import ContactButton from "./ContactButton";
 import { QRCodeCanvas } from "qrcode.react";
+import useVisibilityToggle from "../useVisibilityToggle.jsx";
 
 export default function VibeContent({
   id,
@@ -12,9 +13,35 @@ export default function VibeContent({
   contacts,
   type,
   extraBlocks,
+  visible,
+  publicCode,
 }) {
+  console.log("Inital visible, code", visible, publicCode);
+  const [vibeVisible, code, visibilityButton] = useVisibilityToggle(
+    id,
+    visible,
+    publicCode
+  );
+
   return (
     <div className="d-flex flex-column align-items-center">
+      <div className="mb-3 w-100 px-3">
+        <div className="d-flex align-items-center gap-3">
+          <div className="d-flex align-items-center gap-2">
+            {visibilityButton}
+            {vibeVisible && code && (
+              <div
+                className="text-primary fw-bold d-flex align-items-center"
+                style={{ fontSize: "1.15rem" }}
+              >
+                <span style={{ marginRight: 4 }}>Share code:</span>
+                <strong>{code}</strong>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
       <Avatar name={name} photoFile={photoFile} />
       <h3 className="mb-0" style={{ fontWeight: 700 }}>
         {name || "Your Name"}
