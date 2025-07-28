@@ -4,6 +4,7 @@ import ExtraBlock from "./ExtraBlock";
 import ContactButton from "./ContactButton";
 import { QRCodeCanvas } from "qrcode.react";
 import useVisibilityToggle from "../useVisibilityToggle.jsx";
+import { useTranslation } from "react-i18next";
 
 export default function VibeContent({
   id,
@@ -16,7 +17,8 @@ export default function VibeContent({
   visible,
   publicCode,
 }) {
-  console.log("Inital visible, code", visible, publicCode);
+  const { t } = useTranslation();
+
   const [vibeVisible, code, visibilityButton] = useVisibilityToggle(
     id,
     visible,
@@ -34,7 +36,9 @@ export default function VibeContent({
                 className="text-primary fw-bold d-flex align-items-center"
                 style={{ fontSize: "1.15rem" }}
               >
-                <span style={{ marginRight: 4 }}>Share code:</span>
+                <span style={{ marginRight: 4 }}>
+                  {t("vibe_content.share_code_label")}
+                </span>
                 <strong>{code}</strong>
               </div>
             )}
@@ -44,13 +48,13 @@ export default function VibeContent({
 
       <Avatar name={name} photoFile={photoFile} />
       <h3 className="mb-0" style={{ fontWeight: 700 }}>
-        {name || "Your Name"}
+        {name || t("vibe_content.your_name")}
       </h3>
       <div
         className="text-primary mb-2"
         style={{ fontWeight: 600, textTransform: "uppercase" }}
       >
-        {type?.charAt(0).toUpperCase() + type?.slice(1) || "Business"}
+        {type?.charAt(0).toUpperCase() + type?.slice(1) || t("vibe_content.default_type")}
       </div>
       <div
         style={{
@@ -66,7 +70,7 @@ export default function VibeContent({
         }}
       >
         {description || (
-          <span style={{ color: "#bbb" }}>Description goes here...</span>
+          <span style={{ color: "#bbb" }}>{t("vibe_content.default_description")}</span>
         )}
       </div>
       <div
@@ -85,10 +89,11 @@ export default function VibeContent({
           ))
         ) : (
           <span className="text-muted" style={{ fontSize: 15 }}>
-            No contacts yet
+            {t("vibe_content.no_contacts")}
           </span>
         )}
       </div>
+
       {extraBlocks && extraBlocks.length > 0 && (
         <div className="w-100 mt-2">
           {extraBlocks.map((block, i) => (
@@ -96,6 +101,7 @@ export default function VibeContent({
           ))}
         </div>
       )}
+
       <div className="mt-4 text-center">
         {id ? (
           <>
@@ -103,7 +109,9 @@ export default function VibeContent({
               value={`${window.location.origin}/vibes/${id}`}
               size={60}
             />
-            <div style={{ fontSize: 12, color: "#aaa" }}>Share QR code</div>
+            <div style={{ fontSize: 12, color: "#aaa" }}>
+              {t("vibe_content.share_qr")}
+            </div>
           </>
         ) : (
           <div
@@ -120,7 +128,7 @@ export default function VibeContent({
               fontSize: 18,
               color: "#aaa",
             }}
-            title="QR code will appear after creating the Vibe"
+            title={t("vibe_content.qr_hint")}
           >
             QR
           </div>

@@ -3,6 +3,7 @@ import { BsClipboard } from "react-icons/bs";
 import { FaTelegramPlane, FaWhatsapp, FaInstagram } from "react-icons/fa";
 import { QRCodeCanvas } from "qrcode.react";
 import { createPortal } from "react-dom";
+import { useTranslation } from "react-i18next";
 
 export default function ShareModal({
   show,
@@ -11,6 +12,8 @@ export default function ShareModal({
   copied,
   onCopy,
 }) {
+  const { t } = useTranslation();
+
   if (!show) return null;
 
   return createPortal(
@@ -45,9 +48,9 @@ export default function ShareModal({
           style={{ top: 10, right: 10 }}
           onClick={onClose}
         />
-        <h5>Share your Vibe</h5>
+        <h5>{t("share_modal.title")}</h5>
         <div className="text-muted" style={{ fontSize: 15 }}>
-          Отправь ссылку, QR или отправь в мессенджер!
+          {t("share_modal.subtitle")}
         </div>
         <input
           className="form-control my-2"
@@ -66,11 +69,12 @@ export default function ShareModal({
         >
           {copied ? (
             <>
-              <span className="me-2">&#10003;</span> Copied!
+              <span className="me-2">&#10003;</span>{" "}
+              {t("share_modal.copied_button")}
             </>
           ) : (
             <>
-              <BsClipboard /> Copy Link
+              <BsClipboard /> {t("share_modal.copy_button")}
             </>
           )}
         </button>
@@ -82,7 +86,7 @@ export default function ShareModal({
             className="btn btn-outline-primary d-flex align-items-center gap-2"
             onClick={() => onCopy(false)}
           >
-            <FaTelegramPlane /> Telegram
+            <FaTelegramPlane /> {t("share_modal.telegram")}
           </a>
           <a
             href={`https://wa.me/?text=${encodeURIComponent(shareUrl)}`}
@@ -91,7 +95,7 @@ export default function ShareModal({
             className="btn btn-outline-success d-flex align-items-center gap-2"
             onClick={() => onCopy(false)}
           >
-            <FaWhatsapp /> WhatsApp
+            <FaWhatsapp /> {t("share_modal.whatsapp")}
           </a>
           <a
             href={`https://www.instagram.com/?url=${encodeURIComponent(
@@ -102,13 +106,13 @@ export default function ShareModal({
             className="btn btn-outline-danger d-flex align-items-center gap-2"
             onClick={() => onCopy(false)}
           >
-            <FaInstagram /> Instagram
+            <FaInstagram /> {t("share_modal.instagram")}
           </a>
         </div>
         <div className="text-center my-3">
           <QRCodeCanvas value={shareUrl} size={112} />
           <div style={{ fontSize: 12, color: "#888", marginTop: 7 }}>
-            Отсканируй, чтобы открыть Vibe
+            {t("share_modal.qr_note")}
           </div>
         </div>
       </div>

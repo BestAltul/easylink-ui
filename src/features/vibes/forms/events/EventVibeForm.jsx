@@ -4,22 +4,23 @@ import VibePreview from "../../components/VibePreview";
 import iconMap from "../../../../data/contactIcons.jsx";
 import { FaGlobe } from "react-icons/fa";
 import { useEventVibeForm } from "./useEventVibeForm";
+import { useTranslation } from "react-i18next";
 
 const EVENT_INFO_BLOCKS = [
   { key: "date", label: "Event Date", placeholder: "YYYY-MM-DD" },
   { key: "location", label: "Location", placeholder: "Venue / City" },
-  { key: "organizer", label: "Organizer", placeholder: "Organizer Name" },
+  { key: "organizer", label: "Organizer", placeholder: "Organizer Name" }
 ];
 
 export default function EventVibeForm({
-  
   mode = "create",
   initialData = {},
   onCancel,
-  onSave,
+  onSave
 }) {
-  
   const navigate = useNavigate();
+  const { t } = useTranslation();
+
   const {
     name, setName,
     description, setDescription,
@@ -31,29 +32,43 @@ export default function EventVibeForm({
     loading,
     addContact, handleContactChange, removeContact,
     handleBlockChange, removeBlock,
-    handleSubmit,
+    handleSubmit
   } = useEventVibeForm({ navigate, initialData, mode, onSave });
 
   return (
     <div className="d-flex flex-column flex-lg-row gap-5 align-items-start justify-content-center w-100" style={{ maxWidth: 1200, margin: "0 auto" }}>
       <div style={{ flex: "1 1 500px", maxWidth: 540, minWidth: 320 }}>
         <form className="bg-light p-4 rounded-4 shadow" style={{ width: "100%" }} onSubmit={handleSubmit}>
-          {/* Event Name */}
           <div className="mb-3">
-            <label className="form-label">Event Name</label>
-            <input type="text" className="form-control" placeholder="Enter event name" value={name} onChange={(e) => setName(e.target.value)} required />
+            <label className="form-label">{t("event_form.name_label")}</label>
+            <input
+              type="text"
+              className="form-control"
+              placeholder={t("event_form.name_placeholder")}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
           </div>
 
-          {/* Description */}
           <div className="mb-3">
-            <label className="form-label">Description</label>
-            <textarea className="form-control" placeholder="Describe your event..." value={description} onChange={(e) => setDescription(e.target.value)} rows={2} />
+            <label className="form-label">{t("event_form.desc_label")}</label>
+            <textarea
+              className="form-control"
+              placeholder={t("event_form.desc_placeholder")}
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              rows={2}
+            />
           </div>
 
-          {/* Contacts */}
           <div className="mb-3">
-            <label className="form-label">Contacts</label>
-            {contacts.length === 0 && <div className="mb-2 text-muted" style={{ fontSize: 15 }}>No contacts added yet.</div>}
+            <label className="form-label">{t("event_form.contacts_label")}</label>
+            {contacts.length === 0 && (
+              <div className="mb-2 text-muted" style={{ fontSize: 15 }}>
+                {t("event_form.no_contacts")}
+              </div>
+            )}
             {contacts.map((c, i) => (
               <div className="input-group mb-2" key={i}>
                 <span className="input-group-text" title={c.label || c.type}>
@@ -67,35 +82,41 @@ export default function EventVibeForm({
                   onChange={(e) => handleContactChange(i, e.target.value)}
                   required
                 />
-                <button type="button" className="btn btn-outline-danger" onClick={() => removeContact(i)} title="Remove">×</button>
+                <button type="button" className="btn btn-outline-danger" onClick={() => removeContact(i)} title={t("event_form.remove_button_title")}>×</button>
               </div>
             ))}
             <button type="button" className="btn btn-outline-primary w-100" onClick={() => setShowModal(true)}>
-              + Add Contact
+              {t("event_form.add_contact")}
             </button>
           </div>
 
-          {/* Info Blocks */}
           <div className="mb-3">
-            <label className="form-label">Event Details</label>
-            <button type="button" className="btn btn-outline-secondary w-100 mb-2" onClick={() => setShowBlockModal(true)}>+ Add Info Block</button>
+            <label className="form-label">{t("event_form.info_label")}</label>
+            <button type="button" className="btn btn-outline-secondary w-100 mb-2" onClick={() => setShowBlockModal(true)}>
+              {t("event_form.add_info_block")}
+            </button>
             {extraBlocks.map((block, i) => (
               <div className="input-group mb-2" key={i}>
                 <span className="input-group-text" style={{ minWidth: 80 }}>{block.label}</span>
-                <input type={block.type === "date" ? "date" : "text"} className="form-control" placeholder={block.placeholder || ""} value={block.value} onChange={(e) => handleBlockChange(i, e.target.value)} required />
-                <button type="button" className="btn btn-outline-danger" onClick={() => removeBlock(i)} title="Remove">×</button>
+                <input
+                  type={block.type === "date" ? "date" : "text"}
+                  className="form-control"
+                  placeholder={block.placeholder || ""}
+                  value={block.value}
+                  onChange={(e) => handleBlockChange(i, e.target.value)}
+                  required
+                />
+                <button type="button" className="btn btn-outline-danger" onClick={() => removeBlock(i)} title={t("event_form.remove_button_title")}>×</button>
               </div>
             ))}
           </div>
 
-          {/* Photo */}
           <div className="mb-3">
-            <label className="form-label">Event Photo / Poster</label>
+            <label className="form-label">{t("event_form.photo_label")}</label>
             <input type="file" className="form-control" accept="image/*" onChange={(e) => setPhotoFile(e.target.files[0])} />
-            <div className="form-text">PNG or JPG, up to 2MB</div>
+            <div className="form-text">{t("event_form.photo_hint")}</div>
           </div>
 
-          {/* Submit / Cancel */}
           <div className="d-flex gap-2 mt-3">
             {mode === "edit" && (
               <button
@@ -104,7 +125,7 @@ export default function EventVibeForm({
                 onClick={onCancel}
                 disabled={loading}
               >
-                Cancel
+                {t("event_form.cancel")}
               </button>
             )}
             <button
@@ -114,28 +135,27 @@ export default function EventVibeForm({
             >
               {loading
                 ? mode === "edit"
-                  ? "Saving..."
-                  : "Creating..."
+                  ? t("event_form.saving")
+                  : t("event_form.creating")
                 : mode === "edit"
-                ? "Save Changes"
-                : "Create Business Card"}
+                ? t("event_form.save_button")
+                : t("event_form.create_button")}
             </button>
           </div>
         </form>
 
-        {/* Contact Modal */}
         {showModal && (
           <div className="modal d-block" tabIndex={-1} style={{ background: "rgba(0,0,0,0.25)", position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh", zIndex: 1000 }}>
             <div className="modal-dialog">
               <div className="modal-content">
                 <div className="modal-header">
-                  <h5 className="modal-title">Add contact type</h5>
+                  <h5 className="modal-title">{t("event_form.modal_contact_title")}</h5>
                 </div>
                 <div className="modal-body">
                   <input
                     className="form-control mb-2"
                     type="text"
-                    placeholder="Contact type (e.g. instagram, phone)"
+                    placeholder={t("event_form.modal_contact_placeholder")}
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
                         e.preventDefault();
@@ -147,33 +167,44 @@ export default function EventVibeForm({
                       }
                     }}
                   />
-                  <div className="text-muted">Press Enter to add</div>
+                  <div className="text-muted">{t("event_form.modal_contact_hint")}</div>
                 </div>
                 <div className="modal-footer">
-                  <button className="btn btn-secondary" onClick={() => setShowModal(false)}>Cancel</button>
+                  <button className="btn btn-secondary" onClick={() => setShowModal(false)}>
+                    {t("event_form.cancel")}
+                  </button>
                 </div>
               </div>
             </div>
           </div>
         )}
 
-        {/* Info Block Modal */}
         {showBlockModal && (
           <div className="modal d-block" tabIndex={-1} style={{ background: "rgba(0,0,0,0.22)", position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh", zIndex: 1010 }}>
             <div className="modal-dialog">
               <div className="modal-content">
                 <div className="modal-header">
-                  <h5 className="modal-title">Add Info Block</h5>
+                  <h5 className="modal-title">{t("event_form.modal_info_title")}</h5>
                 </div>
                 <div className="modal-body d-flex flex-wrap gap-2">
                   {EVENT_INFO_BLOCKS.map((block) => (
-                    <button key={block.key} className="btn btn-light" style={{ minWidth: 110, height: 50, display: "flex", alignItems: "center", justifyContent: "center" }} onClick={() => { setExtraBlocks([...extraBlocks, { type: block.key, label: block.label, value: "", placeholder: block.placeholder }]); setShowBlockModal(false); }} disabled={extraBlocks.some((b) => b.type === block.key)}>
+                    <button key={block.key} className="btn btn-light" style={{ minWidth: 110, height: 50, display: "flex", alignItems: "center", justifyContent: "center" }} onClick={() => {
+                      setExtraBlocks([...extraBlocks, {
+                        type: block.key,
+                        label: block.label,
+                        value: "",
+                        placeholder: block.placeholder
+                      }]);
+                      setShowBlockModal(false);
+                    }} disabled={extraBlocks.some((b) => b.type === block.key)}>
                       {block.label}
                     </button>
                   ))}
                 </div>
                 <div className="modal-footer">
-                  <button className="btn btn-secondary" onClick={() => setShowBlockModal(false)}>Cancel</button>
+                  <button className="btn btn-secondary" onClick={() => setShowBlockModal(false)}>
+                    {t("event_form.cancel")}
+                  </button>
                 </div>
               </div>
             </div>
@@ -181,7 +212,6 @@ export default function EventVibeForm({
         )}
       </div>
 
-      {/* Preview */}
       <div style={{ flex: "1 1 400px", minWidth: 320, maxWidth: 480 }} className="d-none d-lg-block">
         <div className="sticky-top" style={{ top: 90, zIndex: 1 }}>
           <VibePreview
