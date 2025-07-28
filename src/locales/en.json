@@ -112,7 +112,8 @@
     "next": "Next",
     "login": "Login",
     "no_account": "Don't have an account?",
-    "signup": "Sign up"
+    "signup": "Sign up",
+    "continue": "next"
   },
   "review": {
     "title": "What People Say",

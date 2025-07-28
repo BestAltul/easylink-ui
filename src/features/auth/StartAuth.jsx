@@ -53,18 +53,27 @@ function StartAuth({ questions, setQuestions }) {
       <h2 className="mb-4">{t("auth.title")}</h2>
 
       <div className="mb-3">
-        <label className="form-label">{t("auth.email_label")}</label>
-        <input
-          type="email"
-          className="form-control shadow-sm"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          onBlur={() => verifyEmail(email)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") verifyEmail(email);
-          }}
-          placeholder={t("auth.email_placeholder")}
-        />
+        <div className="d-flex align-items-center">
+          <input
+            type="email"
+            className="form-control shadow-sm"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") verifyEmail(email);
+            }}
+            placeholder="Enter your email"
+            style={{ maxWidth: "400px" }}
+          />
+
+          <button
+            type="button"
+            className="btn btn-primary ms-2"
+            onClick={() => verifyEmail(email)}
+          >
+            Next
+          </button>
+        </div>
       </div>
 
       {Array.isArray(questions) && questions.length > 0 && (
