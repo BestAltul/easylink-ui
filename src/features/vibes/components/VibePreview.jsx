@@ -2,6 +2,7 @@ import React from "react";
 import { BsShareFill } from "react-icons/bs";
 import ShareModal from "../tools/ShareModal";
 import VibeContent from "../tools/VibeContent";
+import { trackEvent } from "@/services/amplitude";
 
 export default function VibePreview({
   id,
@@ -43,7 +44,15 @@ export default function VibePreview({
         <button
           className="btn btn-light shadow-sm"
           style={{ borderRadius: 99 }}
-          onClick={() => setShowShare(true)}
+          onClick={() => {
+            trackEvent("Vibe Share Button Clicked", {
+              vibeId: id,
+              name,
+              publicCode,
+              location: "VibePreview",
+            });
+            setShowShare(true);
+          }}
         >
           <BsShareFill size={20} style={{ color: "#627bf7" }} />
         </button>

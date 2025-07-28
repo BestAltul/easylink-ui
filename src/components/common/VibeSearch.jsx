@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useTranslation } from "react-i18next";
+import { trackEvent } from '@/services/amplitude';
 
 export default function VibeSearch() {
   const { t } = useTranslation();
@@ -13,13 +14,16 @@ export default function VibeSearch() {
     setError("");
     if (!/^\d{4,5}$/.test(code)) {
       setError(t("vibe_search.invalid_code"));
+      trackEvent("Vibe Search Failed", { reason: "invalid_format", code });
       return;
     }
     try {
       const res = await axios.get(`/api/v3/vibes/visibility/${code}`);
+      trackEvent("Vibe Search Success", { code });
       navigate(`/view/${res.data.id}`);
     } catch (err) {
       setError(t("vibe_search.not_found"));
+      trackEvent("Vibe Search Failed", { reason: "not_found", code });
     }
   };
 
