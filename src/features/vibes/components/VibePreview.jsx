@@ -11,6 +11,8 @@ export default function VibePreview({
   contacts,
   type,
   extraBlocks,
+  visible,
+  publicCode,
 }) {
   const [showShare, setShowShare] = React.useState(false);
   const [copied, setCopied] = React.useState(false);
@@ -65,6 +67,8 @@ export default function VibePreview({
         contacts={contacts}
         type={type}
         extraBlocks={extraBlocks}
+        visible={visible}
+        publicCode={publicCode}
       />
     </div>
   );
