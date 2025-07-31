@@ -83,6 +83,7 @@ export function usePersonalVibeForm({ navigate, initialData = {}, mode = "create
         await onSave(dto); // UPDATE
       } else {
         const token = localStorage.getItem("jwt");
+        сonsole.log("with DTO:", dto);
         await createVibe(dto, token); // CREATE
         alert("Vibe created!");
         navigate("/my-vibes");

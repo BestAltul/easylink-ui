@@ -319,15 +319,15 @@ export default function BusinessVibeForm({ initialData = {}, mode = "create", on
         )}
       </div>
 
-      <div
+      {/* <div
         style={{
           flex: "1 1 400px",
           minWidth: 300,
           maxWidth: 460,
         }}
         className="d-none d-lg-block"
-      >
-        <div className="sticky-top" style={{ top: 90, zIndex: 1 }}>
+      > */}
+        {/* <div className="sticky-top" style={{ top: 90, zIndex: 1 }}>
           <VibePreview
             name={name}
             description={description}
@@ -336,8 +336,8 @@ export default function BusinessVibeForm({ initialData = {}, mode = "create", on
             type="BUSINESS"
             extraBlocks={extraBlocks}
           />
-        </div>
+        </div> */}
       </div>
-    </div>
+   // </div>
   );
 }

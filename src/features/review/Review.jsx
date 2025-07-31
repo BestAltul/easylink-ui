@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useTranslation } from "react-i18next";
+import ReviewCard from "./ReviewCard";
 
 function Review() {
   const [text, setText] = useState("");
@@ -22,7 +23,6 @@ function Review() {
 
   const API_URL = "/api/v3/reviews";
 
-  // Универсальная функция загрузки отзывов
   const loadReviews = () => {
     fetch(API_URL)
       .then((res) => res.json())
@@ -30,7 +30,6 @@ function Review() {
       .catch((err) => console.error("Error fetching reviews:", err));
   };
 
-  // Загрузка при монтировании компонента
   useEffect(() => {
     loadReviews();
   }, []);
@@ -41,11 +40,15 @@ function Review() {
       return;
     }
     e.preventDefault();
+
     if (text.trim()) {
       const newReview = {
         username: user.username,
         content: text,
         createdAt: new Date().toISOString(),
+        rating: 5, // можно сделать возможность выбора рейтинга позже
+        location: user.location || "Unknown",
+        avatarUrl: user.avatarUrl || "https://via.placeholder.com/64",
       };
 
       fetch(API_URL, {
@@ -57,7 +60,7 @@ function Review() {
       })
         .then((res) => res.json())
         .then(() => {
-          loadReviews(); // подгружаем свежие отзывы
+          loadReviews();
           setSubmitted(true);
           setText("");
           setTimeout(() => setSubmitted(false), 3000);
@@ -69,53 +72,21 @@ function Review() {
 
   return (
     <div className="container d-flex justify-content-center py-5">
-      <div
-        className="bg-white rounded-4 shadow p-4"
-        style={{
-          maxWidth: "800px",
-          width: "100%",
-          backgroundColor: "#f8f9fa",
-          fontFamily: "Segoe UI, sans-serif",
-        }}
-      >
+      <div className="w-100" style={{ maxWidth: "800px" }}>
         <h2 className="text-center mb-4">{t("review.title")}</h2>
 
-        <div className="mb-4" style={{ maxHeight: "300px", overflowY: "auto" }}>
+        <div style={{ maxHeight: "400px", overflowY: "auto" }}>
           {reviews.map((review, index) => (
-            <div key={index} className="mb-3 w-100">
-              <div
-                className="text-start"
-                style={{
-                  fontSize: "0.85rem",
-                  color: "#2e7d32",
-                  marginBottom: "0.2rem",
-                }}
-              >
-                {review.username || t("review.anonymous")}
-              </div>
-              <div
-                style={{
-                  fontSize: "0.75rem",
-                  color: "#999",
-                  textAlign: "left",
-                }}
-              >
-                {new Date(review.createdAt).toLocaleString()}
-              </div>
-              <div
-                style={{
-                  backgroundColor: "#d9fdd3",
-                  borderRadius: "15px",
-                  padding: "0.75rem 1rem",
-                  width: "100%",
-                  boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-                }}
-              >
-                <span style={{ fontSize: "0.95rem", color: "#333" }}>
-                  {review.content}
-                </span>
-              </div>
-              <div ref={reviewsEndRef} />
+            <div key={index}>
+              <ReviewCard
+                avatarUrl={review.avatarUrl || "https://via.placeholder.com/64"}
+                text={review.content}
+                rating={review.rating || 5}
+                author={review.username || t("review.anonymous")}
+                date={review.createdAt || new Date().toLocaleDateString()}
+                location={review.location || ""}
+              />
+              <div ref={index === reviews.length - 1 ? reviewsEndRef : null} />
             </div>
           ))}
         </div>
