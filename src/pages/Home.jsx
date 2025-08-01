@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "react-i18next";
 import "bootstrap/dist/css/bootstrap.min.css";
 import VibeSearch from "../components/common/VibeSearch";
+import { trackEvent } from '@/services/amplitude';
 
 export default function Home() {
   const navigate = useNavigate();
@@ -11,6 +12,11 @@ export default function Home() {
   const { t } = useTranslation();
 
   const handleClick = () => {
+    trackEvent('Clicked Get Started', {
+      isAuthenticated,
+      destination: isAuthenticated ? '/profile' : '/signup',
+    });
+
     if (isAuthenticated) {
       navigate("/profile");
     } else {

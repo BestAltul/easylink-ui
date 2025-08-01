@@ -5,6 +5,9 @@ import { QRCodeCanvas } from "qrcode.react";
 import "./UserVibes.css";
 import { useTranslation } from "react-i18next";
 import { getUserVibes, deleteVibe } from "../../api/vibeApi";
+import ShareModal from "./tools/ShareModal"; 
+import { trackEvent } from "@/services/amplitude";
+
 
 function Loader() {
   return (
@@ -263,7 +266,6 @@ export default function MyVibes() {
                       </button>
                     </div>
 
-                    {/* КНОПКА ШАРЕ */}
                     <div
                       style={{
                         position: "absolute",
@@ -284,6 +286,7 @@ export default function MyVibes() {
                         }}
                         onClick={(e) => {
                           e.stopPropagation();
+                          trackEvent("Share Button Clicked", { location: "UserVibes", vibeId: vibe.id });
                           handleShare(vibe);
                         }}
                         tabIndex={-1}
@@ -376,102 +379,13 @@ export default function MyVibes() {
                   </div>
                 ))}
               </AnimatePresence>
-
-              {/* Share Modal */}
-              {shareVibe && (
-                <div
-                  style={{
-                    position: "fixed",
-                    top: 0,
-                    left: 0,
-                    width: "100vw",
-                    height: "100vh",
-                    background: "rgba(34,42,75,.22)",
-                    zIndex: 1111,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                  onClick={closeShare}
-                >
-                  <motion.div
-                    initial={{ scale: 0.9, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    exit={{ scale: 0.9, opacity: 0 }}
-                    transition={{ duration: 0.19 }}
-                    className="card shadow-lg p-4"
-                    style={{
-                      minWidth: 320,
-                      maxWidth: 370,
-                      borderRadius: 18,
-                      position: "relative",
-                    }}
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <button
-                      className="btn-close position-absolute"
-                      style={{ top: 10, right: 10 }}
-                      onClick={closeShare}
-                    />
-                    <div className="mb-3">
-                      <h5>{t("myvibes.share_title")}</h5>
-                      <div className="text-muted" style={{ fontSize: 15 }}>
-                        {t("myvibes.share_subtitle")}
-                      </div>
-                    </div>
-                    <input
-                      className="form-control mb-2"
-                      value={shareLink}
-                      readOnly
-                      style={{
-                        fontSize: 15,
-                        background: "#f5f7fb",
-                        borderRadius: 12,
-                        fontWeight: 500,
-                        cursor: "pointer",
-                      }}
-                      onClick={(e) => {
-                        e.target.select();
-                        handleCopy(shareLink);
-                      }}
-                    />
-                    <button
-                      className={`btn w-100 mb-2 ${
-                        copied ? "btn-success" : "btn-outline-primary"
-                      }`}
-                      onClick={() => handleCopy(shareLink)}
-                    >
-                      {copied ? (
-                        <>
-                          <span className="me-2">&#10003;</span>{" "}
-                          {t("myvibes.copied")}
-                        </>
-                      ) : (
-                        t("myvibes.copy")
-                      )}
-                    </button>
-                    <div className="text-center my-3">
-                      <QRCodeCanvas
-                        value={shareLink}
-                        size={112}
-                        bgColor="#ffffff"
-                        fgColor="#222"
-                        level="M"
-                        style={{ margin: "0 auto", display: "block" }}
-                      />
-                      <div
-                        style={{
-                          fontSize: 12,
-                          color: "#888",
-                          marginTop: 7,
-                        }}
-                      >
-                        {t("myvibes.scan")}
-                      </div>
-                    </div>
-                  </motion.div>
-                </div>
-              )}
+              <ShareModal
+                show={!!shareVibe}
+                onClose={closeShare}
+                shareUrl={shareLink}
+                copied={copied}
+                onCopy={handleCopy}
+              />
             </div>
           </div>
         )}

@@ -6,6 +6,7 @@ import "./Header.css";
 import LanguageSwitcher from "./LanguageSwitcher";
 import { useEarlyAccess } from "../../components/common/hooks/useEarlyAccess";
 import { useEarlyAccessCheckable } from "../../components/common/hooks/useEarlyAccessCheckable";
+import { trackEvent } from '@/services/amplitude';
 
 function Header() {
   const { isAuthenticated, logout } = useAuth();
@@ -38,6 +39,7 @@ function Header() {
   console.log("My status: ", subscribed);
 
   const handleLogout = () => {
+    trackEvent('Logout Clicked', { page: 'header' });
     logout();
     setSubscribedAfterRequest(false);
     setSubscribedStatus(false);
@@ -47,7 +49,7 @@ function Header() {
   return (
     <header className="header">
       <div className="header__container">
-        {/* ЛОГОТИП */}
+        {/* LOGO */}
         <Link
           to="/"
           className="logo"
@@ -104,17 +106,63 @@ function Header() {
           className="nav"
           style={{ display: "flex", alignItems: "center", gap: 16 }}
         >
-          <Link to="/">{t("header.home")}</Link>
-          {!isAuthenticated && <Link to="/signup">{t("header.sign_up")}</Link>}
-          {!isAuthenticated && <Link to="/signin">{t("header.log_in")}</Link>}
-          {isAuthenticated && <Link to="/profile">{t("header.profile")}</Link>}
-          <Link to="/about">{t("header.about")}</Link>
-          <Link to="/review">{t("header.review")}</Link>
+          <Link
+            to="/"
+            onClick={() => trackEvent("Header Home Clicked")}
+          >
+            {t("header.home")}
+          </Link>
+
+          {!isAuthenticated && (
+            <Link
+              to="/signup"
+              onClick={() => trackEvent("Header Sign Up Clicked")}
+            >
+              {t("header.sign_up")}
+            </Link>
+          )}
+
+          {!isAuthenticated && (
+            <Link
+              to="/signin"
+              onClick={() => trackEvent("Header Sign In Clicked")}
+            >
+              {t("header.log_in")}
+            </Link>
+          )}
+
           {isAuthenticated && (
-            <button onClick={handleLogout} className="logout-btn">
+            <Link
+              to="/profile"
+              onClick={() => trackEvent("Header Profile Clicked")}
+            >
+              {t("header.profile")}
+            </Link>
+          )}
+
+          <Link
+            to="/about"
+            onClick={() => trackEvent("Header About Clicked")}
+          >
+            {t("header.about")}
+          </Link>
+
+          <Link
+            to="/review"
+            onClick={() => trackEvent("Header Review Clicked")}
+          >
+            {t("header.review")}
+          </Link>
+
+          {isAuthenticated && (
+            <button
+              onClick={handleLogout}
+              className="logout-btn"
+            >
               {t("header.log_out")}
             </button>
           )}
+
           <LanguageSwitcher />
         </nav>
       </div>

@@ -4,6 +4,7 @@ import { FaTelegramPlane, FaWhatsapp, FaInstagram } from "react-icons/fa";
 import { QRCodeCanvas } from "qrcode.react";
 import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
+import { trackEvent } from '@/services/amplitude';
 
 export default function ShareModal({
   show,
@@ -59,13 +60,17 @@ export default function ShareModal({
           onClick={(e) => {
             e.target.select();
             onCopy(shareUrl);
+            trackEvent('Link Copied', { method: 'input_click' });
           }}
         />
         <button
           className={`btn w-100 mb-2 ${
             copied ? "btn-success" : "btn-outline-primary"
           }`}
-          onClick={() => onCopy(shareUrl)}
+          onClick={() => {
+            onCopy(shareUrl);
+            trackEvent('Link Copied', { method: 'button' });
+          }}
         >
           {copied ? (
             <>
@@ -84,27 +89,36 @@ export default function ShareModal({
             target="_blank"
             rel="noopener noreferrer"
             className="btn btn-outline-primary d-flex align-items-center gap-2"
-            onClick={() => onCopy(false)}
+            onClick={() => {
+              onCopy(false);
+              trackEvent('Share Clicked', { method: 'telegram' });
+            }}
           >
             <FaTelegramPlane /> {t("share_modal.telegram")}
           </a>
+
           <a
             href={`https://wa.me/?text=${encodeURIComponent(shareUrl)}`}
             target="_blank"
             rel="noopener noreferrer"
             className="btn btn-outline-success d-flex align-items-center gap-2"
-            onClick={() => onCopy(false)}
+            onClick={() => {
+              onCopy(false);
+              trackEvent('Share Clicked', { method: 'whatsapp' });
+            }}
           >
             <FaWhatsapp /> {t("share_modal.whatsapp")}
           </a>
+
           <a
-            href={`https://www.instagram.com/?url=${encodeURIComponent(
-              shareUrl
-            )}`}
+            href={`https://www.instagram.com/?url=${encodeURIComponent(shareUrl)}`}
             target="_blank"
             rel="noopener noreferrer"
             className="btn btn-outline-danger d-flex align-items-center gap-2"
-            onClick={() => onCopy(false)}
+            onClick={() => {
+              onCopy(false);
+              trackEvent('Share Clicked', { method: 'instagram' });
+            }}
           >
             <FaInstagram /> {t("share_modal.instagram")}
           </a>
