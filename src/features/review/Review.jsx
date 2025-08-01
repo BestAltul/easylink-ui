@@ -7,6 +7,7 @@ function Review() {
   const [text, setText] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [reviews, setReviews] = useState([]);
+  const [rating, setRating] = useState(5);
   const { user, isAuthenticated } = useAuth();
   const reviewsEndRef = useRef(null);
   const { t } = useTranslation();
@@ -35,18 +36,19 @@ function Review() {
   }, []);
 
   const handleSubmit = (e) => {
+    e.preventDefault();
+
     if (!isAuthenticated) {
       alert(t("review.must_login"));
       return;
     }
-    e.preventDefault();
 
     if (text.trim()) {
       const newReview = {
         username: user.username,
         content: text,
         createdAt: new Date().toISOString(),
-        rating: 5, // можно сделать возможность выбора рейтинга позже
+        rating: rating,
         location: user.location || "Unknown",
         avatarUrl: user.avatarUrl || "https://via.placeholder.com/64",
       };
@@ -63,6 +65,7 @@ function Review() {
           loadReviews();
           setSubmitted(true);
           setText("");
+          setRating(5);
           setTimeout(() => setSubmitted(false), 3000);
           scrollToBottom(true);
         })
@@ -100,6 +103,22 @@ function Review() {
             className="form-control mb-3 shadow-sm"
             style={{ height: "120px", resize: "none" }}
           />
+
+          <div className="mb-3">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <span
+                key={star}
+                className={
+                  star <= rating ? "text-warning fs-3" : "text-muted fs-3"
+                }
+                style={{ cursor: "pointer" }}
+                onClick={() => setRating(star)}
+              >
+                &#9733;
+              </span>
+            ))}
+          </div>
+
           <button type="submit" className="btn btn-success px-4">
             {t("review.submit")}
           </button>

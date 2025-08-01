@@ -1,17 +1,17 @@
-import React from 'react';
+import React from "react";
 
-const ReviewCard = ({ 
-  avatarUrl = 'https://via.placeholder.com/64', 
-  text, 
-  rating = 5, 
-  author, 
+const ReviewCard = ({
+  avatarUrl = "https://via.placeholder.com/64",
+  text,
+  rating = 5,
+  author,
   location,
-  date
+  date,
 }) => {
   const stars = [];
   for (let i = 1; i <= 5; i++) {
     stars.push(
-      <span key={i} className={i <= rating ? 'text-warning' : 'text-muted'}>
+      <span key={i} className={i <= rating ? "text-warning" : "text-muted"}>
         &#9733;
       </span>
     );
@@ -26,7 +26,7 @@ const ReviewCard = ({
     : "";
 
   return (
-    <div className="card mb-3" style={{ maxWidth: '540px' }}>
+    <div className="card mb-3 border-0" style={{ maxWidth: "540px" }}>
       <div className="row g-0 align-items-center">
         {/* <div className="col-md-2 text-center">
           <img src={avatarUrl} alt="User avatar" className="img-fluid rounded-circle" />
@@ -37,15 +37,14 @@ const ReviewCard = ({
             <div className="mb-2">{stars}</div>
             <h6 className="card-subtitle mb-0">{author}</h6>
             <h6 className="card-subtitle mb-0">
-              <small className="text-muted">{formattedDate}</small>     
+              <small className="text-muted">{formattedDate}</small>
             </h6>
-            <small className="text-muted">{location}</small>            
+            <small className="text-muted">{location}</small>
           </div>
         </div>
       </div>
     </div>
   );
 };
-
 
 export default ReviewCard;

@@ -23,9 +23,9 @@ import VibePage from "./features/vibes/VibePage";
 import VibeView from "./features/vibes/VibeView/VibeView";
 import InteractionsPage from "./features/vibes/interactions/InteractionsPage";
 import InteractionsPageBasic from "./features/vibes/interactions/InteractionsPageBasic";
-import OfferForm from "./features/vibes/interactions/OfferForm";
-import ViewOfferForm from "./features/vibes/interactions//ViewOfferForm";
-import OfferTableUsers from "./features/vibes/interactions//OffersTableForUsers";
+import OfferForm from "./features/vibes/offers/OfferForm";
+import ViewOfferForm from "./features/vibes/offers/ViewOfferForm";
+import OfferTableUsers from "./features/vibes/offers/OffersTableForUsers";
 import "./i18n";
 
 function App() {
