@@ -39,7 +39,7 @@ export default function VibePreview({
         position: "relative",
       }}
     >
-      {/* Share button */}
+      Share button
       <div style={{ position: "absolute", top: 16, right: 16 }}>
         <button
           className="btn btn-light shadow-sm"

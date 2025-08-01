@@ -1,6 +1,6 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import useGetOffer from "../interactions/useGetOffer";
+import useGetOffer from "./useGetOffer";
 import PageLayout from "../../../components/common/PageLayout";
 import { useTranslation } from "react-i18next";
 

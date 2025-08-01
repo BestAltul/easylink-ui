@@ -276,7 +276,7 @@ export default function PersonalVibeForm({ initialData = {}, mode = "create", on
         )}
       </div>
 
-      {mode === "create" || mode === "edit" ? (
+      {/* {mode === "create" || mode === "edit" ? (
         <div style={{ flex: "1 1 400px", minWidth: 300, maxWidth: 460 }} className="d-none d-lg-block">
           <div className="sticky-top" style={{ top: 90, zIndex: 1 }}>
             <VibePreview
@@ -289,7 +289,7 @@ export default function PersonalVibeForm({ initialData = {}, mode = "create", on
             />
           </div>
         </div>
-      ) : null}
+      ) : null} */}
     </div>
   );
 }

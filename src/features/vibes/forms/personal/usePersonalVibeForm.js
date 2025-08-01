@@ -1,7 +1,13 @@
 import { useState } from "react";
 import { createVibe } from "@/api/vibeApi";
 
-export function usePersonalVibeForm({ navigate, initialData = {}, mode = "create", onSave, onCancel }) {
+export function usePersonalVibeForm({
+  navigate,
+  initialData = {},
+  mode = "create",
+  onSave,
+  onCancel,
+}) {
   const [name, setName] = useState(initialData.name || "");
   const [description, setDescription] = useState(initialData.description || "");
   const [photoFile, setPhotoFile] = useState(initialData.photo || null);
@@ -14,10 +20,13 @@ export function usePersonalVibeForm({ navigate, initialData = {}, mode = "create
 
   const addContact = (type) => {
     if (contacts.some((c) => c.type === type)) return setShowModal(false);
-    setContacts([...contacts, {
-      type,
-      value: ""
-    }]);
+    setContacts([
+      ...contacts,
+      {
+        type,
+        value: "",
+      },
+    ]);
     setShowModal(false);
   };
 
@@ -66,7 +75,7 @@ export function usePersonalVibeForm({ navigate, initialData = {}, mode = "create
         };
         if (b.id) dto.id = b.id;
         return dto;
-      })
+      }),
     ];
 
     const dto = {
