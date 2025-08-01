@@ -24,6 +24,4 @@ dist-ssr
 *.sw?
 
 vite.config.js
-
-# Environment files
 .env
