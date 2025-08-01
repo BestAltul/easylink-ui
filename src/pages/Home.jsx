@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "react-i18next";
 import "bootstrap/dist/css/bootstrap.min.css";
 import VibeSearch from "../components/common/VibeSearch";
+import { trackEvent } from '@/services/amplitude';
 
 export default function Home() {
   const navigate = useNavigate();
@@ -11,6 +12,11 @@ export default function Home() {
   const { t } = useTranslation();
 
   const handleClick = () => {
+    trackEvent('Clicked Get Started', {
+      isAuthenticated,
+      destination: isAuthenticated ? '/profile' : '/signup',
+    });
+
     if (isAuthenticated) {
       navigate("/profile");
     } else {
@@ -20,9 +26,6 @@ export default function Home() {
 
   return (
     <div className="container text-center py-5">
-      {/* 🔍 Vibe Code Search */}
-      <VibeSearch />
-
       {/* Heading and CTA */}
       <h1
         className="mb-3"
@@ -52,9 +55,16 @@ export default function Home() {
         className="row mt-5 justify-content-center"
         style={{ animation: "fadeIn 2s" }}
       >
-        <h2 className="mb-5 text-center">{t("home.why")}</h2>
+        {/* 🔍 Vibe Code Search */}
+        {/* 🔍 Vibe Code Search */}
+        <div className="d-flex justify-content-center my-4">
+          <div style={{ width: "100%", maxWidth: "420px" }}>
+            <VibeSearch />
+          </div>
+        </div>
 
-        {[
+        {/* <h2 className="mb-5 text-center">{t("home.why")}</h2> */}
+        {/* {[
           {
             emoji: "🔒",
             title: t("home.secure_title"),
@@ -71,7 +81,10 @@ export default function Home() {
             text: t("home.friendly_text"),
           },
         ].map((item, idx) => (
-          <div key={idx} className="col-md-4 mb-4 d-flex justify-content-center">
+          <div
+            key={idx}
+            className="col-md-4 mb-4 d-flex justify-content-center"
+          >
             <div
               className="card p-4 shadow-sm"
               style={{
@@ -86,14 +99,16 @@ export default function Home() {
                   {item.emoji}
                 </div>
                 <h5 className="card-title mb-2">{item.title}</h5>
-                <p className="card-text" style={{ fontSize: "0.95rem", color: "#555" }}>
+                <p
+                  className="card-text"
+                  style={{ fontSize: "0.95rem", color: "#555" }}
+                >
                   {item.text}
                 </p>
               </div>
             </div>
           </div>
-        ))}
-
+        ))} */}
         <style>
           {`
             .card:hover {

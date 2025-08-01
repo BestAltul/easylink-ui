@@ -1,26 +1,28 @@
 {
   "home": {
-    "welcome": "Bienvenue sur EasyLink",
-    "subtitle": "Votre solution moderne pour une gestion sécurisée et simple de l'identité.",
-    "curious": "Vous voulez savoir comment EasyLink facilite votre vie numérique ?",
+    "welcome": "Bienvenue sur YMK",
+    "subtitle": "Votre solution moderne pour une gestion d'identité sécurisée et sans effort.",
+    "curious": "Curieux de savoir comment YMK améliore votre vie numérique ?",
     "learn_more": "En savoir plus",
     "get_started": "Commencer",
-    "why": "Pourquoi EasyLink ?",
+    "why": "Pourquoi YMK ?",
     "secure_title": "Sécurité par conception",
     "secure_text": "Vos données sont protégées par une authentification et un chiffrement multicouches.",
     "fast_title": "Accès ultra-rapide",
-    "fast_text": "Connectez-vous en quelques secondes, sans mots de passe complexes ni codes.",
+    "fast_text": "Connectez-vous en quelques secondes, sans mot de passe complexe.",
     "friendly_title": "Facile à utiliser",
-    "friendly_text": "Conçu pour tous — simple, intuitif et agréablement facile à utiliser."
+    "friendly_text": "Conçu pour tous — simple, intuitif et agréable à utiliser."
   },
   "header": {
     "home": "Accueil",
     "sign_up": "S'inscrire",
-    "log_in": "Se connecter",
+    "log_in": "Connexion",
     "profile": "Profil",
     "about": "À propos",
     "review": "Avis",
-    "log_out": "Déconnexion"
+    "log_out": "Déconnexion",
+    "early_subscribtion": "ABONNEMENT À VIE GRATUIT - MAINTENANT UNIQUEMENT",
+    "lifetime_offer": "Les 100 premiers utilisateurs bénéficient d’un abonnement à vie gratuit"
   },
   "footer": {
     "terms": "Conditions d'utilisation",
@@ -29,46 +31,46 @@
     "copyright": "Tous droits réservés."
   },
   "about": {
-    "title": "Qu'est-ce qu'EasyLink ?",
-    "subtitle": "Une façon moderne et rapide de se connecter et de créer votre propre Vibe numérique.",
+    "title": "Qu'est-ce qu'YMK ?",
+    "subtitle": "Un moyen rapide et moderne de vous connecter et créer votre Vibe numérique.",
     "steps": [
       {
-        "title": "Sans mot de passe",
-        "text": "Connectez-vous avec vos associations personnelles — pas de mot de passe, de code, ni d’email. Juste ce qui compte pour vous."
+        "title": "Sans mots de passe",
+        "text": "Connectez-vous avec vos propres associations — pas de mot de passe, code ou email. Juste ce qui vous parle."
       },
       {
         "title": "Privé et sécurisé",
-        "text": "Vos données sont chiffrées et jamais partagées. Vous seul contrôlez l'accès."
+        "text": "Vos données sont chiffrées et jamais partagées. Vous seul contrôlez l’accès."
       },
       {
         "title": "Authentification rapide",
-        "text": "Accès instantané grâce à vos réponses — plus besoin de codes ou de réinitialiser des mots de passe."
+        "text": "Accès rapide grâce à vos réponses — pas de code ou de réinitialisation."
       },
       {
         "title": "Votre Vibe, vos règles",
-        "text": "Votre Vibe numérique vous appartient. Partagez contacts, liens et plus selon vos envies."
+        "text": "Votre Vibe numérique, c’est vous. Partagez ce que vous voulez, comme vous le voulez."
       }
     ],
     "cta": "Essayez de créer votre Vibe !",
     "mission_title": "Notre mission",
-    "mission": "EasyLink a été créé pour ceux qui privilégient la simplicité et la confidentialité. Oubliez les dizaines de mots de passe et de données inutiles — votre univers numérique, sous votre contrôle."
+    "mission": "YMK a été créé pour ceux qui valorisent la simplicité et la confidentialité. Oubliez les dizaines de mots de passe — reprenez le contrôle de votre univers numérique."
   },
   "signup": {
     "progress_step": "Étape {{step}} sur {{total}}",
     "progress_done": "Presque terminé !",
-    "title": "Inscription EasyLink",
-    "step1_info": "Saisissez votre e-mail pour créer un compte.",
+    "title": "Inscription à YMK",
+    "step1_info": "Entrez votre email pour créer un compte.",
     "step1_label": "Email",
-    "step1_invalid": "Saisissez une adresse email valide",
+    "step1_invalid": "Veuillez entrer une adresse email valide",
     "step1_next": "Suivant",
-    "step2_info": "Combien de verrous de mémoire voulez-vous ajouter ? Plus = plus sûr !",
-    "step2_label": "Choisissez le nombre de verrous de mémoire :",
-    "step3_info": "Trouvez une question à laquelle seul vous connaissez la réponse. Elle sera utilisée pour une connexion sans mot de passe !",
+    "step2_info": "Combien de verrous mémoire souhaitez-vous ajouter ? Plus = plus sûr !",
+    "step2_label": "Choisissez le nombre de verrous :",
+    "step3_info": "Pensez à une question dont vous seul connaissez la réponse. Elle servira à la connexion sans mot de passe.",
     "step3_question": "Question",
-    "step3_custom": "Écrivez la vôtre",
+    "step3_custom": "Écrire votre propre question",
     "step3_custom_label": "Question personnalisée",
-    "step3_hint": "Indice (pour vous aider à vous souvenir)",
-    "step3_hint_placeholder": "Cela vous aidera à retrouver la réponse",
+    "step3_hint": "Indice (pour vous en souvenir)",
+    "step3_hint_placeholder": "Cela vous aidera à vous souvenir de la réponse",
     "step3_back": "Retour",
     "step3_next": "Suivant",
     "step3_answer": "Réponse",
@@ -79,59 +81,59 @@
     "questions_preview_q": "Q :",
     "questions_preview_hint": "Indice :",
     "questions_preview_answer": "Réponse : ••••",
-    "finish_create": "Créer un compte",
+    "finish_create": "Créer le compte",
     "toast_fill_all": "Veuillez remplir tous les champs",
-    "toast_email_required": "Email requis",
-    "toast_error": "Erreur lors de l'inscription",
-    "toast_fail": "Inscription échouée"
+    "toast_email_required": "L’email est requis",
+    "toast_error": "Erreur d'inscription",
+    "toast_fail": "Échec de l'inscription"
   },
   "auth": {
     "title": "Connexion",
     "email_label": "Email :",
     "email_placeholder": "Entrez votre email",
     "email_not_found": "❌ Email introuvable",
-    "error_verifying_email": "⚠️ Erreur lors de la vérification de l'email",
-    "answer_exactly": "❗ Veuillez saisir exactement {{count}} réponses.",
+    "error_verifying_email": "⚠️ Erreur lors de la vérification de l’email",
+    "answer_exactly": "❗ Entrez exactement {{count}} réponses.",
     "success": "Succès",
     "blocked": "🚫 Bloqué : {{reason}}",
-    "wrong_answers": "❗ Mauvaises réponses : {{reason}}",
+    "wrong_answers": "❗ Réponses incorrectes : {{reason}}",
     "general_error": "❌ Erreur : {{status}}",
-    "error_checking_answers": "⚠️ Erreur lors de la vérification des réponses : {{error}}",
+    "error_checking_answers": "⚠️ Erreur lors de la vérification : {{error}}",
     "q_number": "Q{{num}}",
     "progress": "Répondez à la question {{current}} sur {{total}}",
-    "case_insensitive": "Non sensible à la casse. Vous seul connaissez votre réponse.",
+    "case_insensitive": "Sans distinction de casse. Vous seul connaissez la réponse.",
     "answer_placeholder": "Tapez votre réponse",
     "back": "Retour",
     "next": "Suivant",
-    "login": "Se connecter",
+    "login": "Connexion",
     "no_account": "Pas encore de compte ?",
     "signup": "Inscrivez-vous"
   },
   "review": {
-    "title": "Avis des utilisateurs",
-    "leave": "Laissez un avis",
-    "placeholder": "Votre retour sur EasyLink...",
+    "title": "Ce que disent les utilisateurs",
+    "leave": "Laisser un avis",
+    "placeholder": "Votre retour sur YMK...",
     "submit": "Envoyer",
     "thank_you": "Merci pour votre avis ! 💬",
-    "must_login": "Vous devez être connecté pour publier un avis.",
+    "must_login": "Vous devez être connecté pour laisser un avis.",
     "anonymous": "Anonyme"
   },
   "profile": {
     "welcome": "Bon retour, {{name}} !",
-    "dashboard": "Voici votre tableau de bord personnel. Gérez vos intérêts, passe-temps, groupes et communautés — et partagez ce qui compte à travers différents types de Vibes.",
+    "dashboard": "Voici votre tableau de bord personnel. Gérez vos intérêts, loisirs, groupes et communautés — et partagez ce qui compte grâce à vos Vibes.",
     "vibes": "Vibes",
     "friends": "Amis",
     "streak": "Série : {{count}}j",
     "cards": [
       {
         "title": "❤️ Mes Vibes",
-        "text": "Consultez les Vibes que vous avez déjà créés !",
+        "text": "Voir les vibes que vous avez déjà créées !",
         "button": "Voir mes Vibes"
       },
       {
-        "title": "💙 Créer un nouveau Vibe",
-        "text": "Ajoutez un Vibe personnel, professionnel ou événementiel à votre compte.",
-        "button": "Créer un Vibe"
+        "title": "💙 Créer une nouvelle Vibe",
+        "text": "Ajoutez une Vibe personnelle, professionnelle ou d'événement.",
+        "button": "Créer une Vibe"
       }
     ],
     "sidebar": {
@@ -144,30 +146,159 @@
   "myvibes": {
     "back": "Retour au profil",
     "title": "Mes Vibes",
-    "create": "+ Créer un nouveau Vibe",
+    "create": "+ Créer une nouvelle Vibe",
     "loading": "Chargement des Vibes...",
-    "no_vibes": "Aucun Vibe trouvé.",
-    "no_vibes_hint": "Créez votre premier Vibe !",
+    "no_vibes": "Aucune Vibe trouvée.",
+    "no_vibes_hint": "Créez votre première Vibe !",
     "share": "Partager",
-    "share_title": "Partagez votre Vibe",
-    "share_subtitle": "Envoyez le lien de votre Vibe ou affichez le QR code !",
+    "share_title": "Partager votre Vibe",
+    "share_subtitle": "Envoyez le lien ou montrez le QR code !",
     "copy": "Copier le lien",
     "copied": "Copié !",
-    "scan": "Scannez pour ouvrir le Vibe",
+    "scan": "Scannez pour ouvrir la Vibe",
     "no_description": "Pas de description.",
-    "delete_error": "Erreur lors de la suppression du Vibe",
-    "delete_success": "Vibe supprimé !"
+    "delete": "Supprimer",
+    "delete_confirm": "Supprimer cette Vibe ? Cette action est irréversible."
   },
   "interactions": {
     "back": "← Retour",
     "title": "Interactions",
-    "loading_vibe": "Chargement du vibe...",
+    "loading_vibe": "Chargement de la Vibe…",
     "not_found": "Vibe introuvable.",
     "no_name": "Sans nom",
-    "info_text": "Ceci est votre vibe. Ci-dessous — vos abonnements et vos abonnés.",
+    "info_text": "Ceci est votre Vibe. Voyez ci‑dessous qui vous suit et qui vous suivez.",
     "following": "Abonnements",
     "followers": "Abonnés",
     "following_empty": "Vous ne suivez encore personne.",
     "followers_empty": "Personne ne vous suit encore."
+  },
+  "vibe": {
+    "back": "Retour aux Vibes",
+    "title": "Vibe",
+    "interactions": "Interactions",
+    "edit": "Modifier",
+    "settings": "Paramètres",
+    "not_found": "Vibe introuvable.",
+    "loading": "Chargement…",
+    "settings_panel_title": "Paramètres",
+    "settings_panel_text": "Ici se trouveront les paramètres de la Vibe (suppression, confidentialité, etc.).",
+    "settings_panel_close": "Fermer",
+    "error_no_id": "Erreur : ID de la Vibe manquant.",
+    "error_save": "Échec de la sauvegarde !"
+  },
+  "share_modal": {
+    "title": "Partager votre Vibe",
+    "subtitle": "Envoyez le lien, le QR ou via messagerie !",
+    "copy_button": "Copier le lien",
+    "copied_button": "Copié !",
+    "telegram": "Telegram",
+    "whatsapp": "WhatsApp",
+    "instagram": "Instagram",
+    "qr_note": "Scannez pour ouvrir la Vibe"
+  },
+  "business_form": {
+    "name_label": "Nom de l’entreprise",
+    "name_placeholder": "CoffeeSpace",
+    "desc_label": "Description",
+    "desc_placeholder": "Café du centre‑ville de Toronto. Le meilleur latte de la ville !",
+    "contacts_label": "Contacts",
+    "no_contacts": "Aucun contact ajouté pour le moment.",
+    "add_contact": "+ Ajouter un contact",
+    "additional_info": "Infos supplémentaires",
+    "add_info_block": "+ Ajouter un bloc d’info",
+    "photo_label": "Photo / Logo",
+    "photo_hint": "PNG ou JPG, jusqu’à 2 Mo",
+    "cancel": "Annuler",
+    "creating": "Création…",
+    "create_button": "Créer la carte professionnelle",
+    "saving": "Enregistrement…",
+    "save_button": "Enregistrer les modifications",
+    "modal_contact_title": "Ajouter un type de contact",
+    "modal_info_title": "Ajouter un bloc d’info",
+    "modal_cancel": "Annuler",
+    "remove_button_title": "Supprimer"
+  },
+  "event_form": {
+    "name_label": "Nom de l’événement",
+    "name_placeholder": "Entrez le nom de l’événement",
+    "desc_label": "Description",
+    "desc_placeholder": "Décrivez votre événement…",
+    "contacts_label": "Contacts",
+    "no_contacts": "Aucun contact ajouté pour le moment.",
+    "add_contact": "+ Ajouter un contact",
+    "info_label": "Détails de l’événement",
+    "add_info_block": "+ Ajouter un bloc d’info",
+    "photo_label": "Photo / Affiche de l’événement",
+    "photo_hint": "PNG ou JPG, jusqu’à 2 Mo",
+    "cancel": "Annuler",
+    "creating": "Création…",
+    "create_button": "Créer la carte de l’événement",
+    "saving": "Enregistrement…",
+    "save_button": "Enregistrer les modifications",
+    "modal_contact_title": "Ajouter un type de contact",
+    "modal_contact_placeholder": "Type de contact (ex. instagram, téléphone)",
+    "modal_contact_hint": "Appuyez sur Entrée pour ajouter",
+    "modal_info_title": "Ajouter un bloc d’info",
+    "remove_button_title": "Supprimer"
+  },
+  "personal_form": {
+    "alert_title": "Vibe personnelle",
+    "alert_desc": "est destinée à un usage privé et non commercial uniquement.",
+    "alert_warn": "N’utilisez pas ce type pour les affaires ou la promotion.",
+    "name_label": "Votre nom",
+    "name_placeholder": "Votre nom",
+    "bio_label": "Bio",
+    "bio_placeholder": "Parlez de vous…",
+    "contacts_label": "Contacts",
+    "no_contacts": "Aucun contact ajouté pour le moment.",
+    "add_contact": "+ Ajouter un contact",
+    "additional_info": "Infos supplémentaires",
+    "add_info_block": "+ Ajouter un bloc d’info",
+    "photo_label": "Photo / Avatar",
+    "photo_hint": "PNG ou JPG, jusqu’à 2 Mo",
+    "cancel": "Annuler",
+    "creating": "Création…",
+    "create_button": "Créer la carte personnelle",
+    "saving": "Enregistrement…",
+    "save_button": "Enregistrer les modifications",
+    "modal_contact_title": "Ajouter un type de contact",
+    "modal_info_title": "Ajouter un bloc d’info",
+    "remove_button_title": "Supprimer"
+  },
+  "extra_block": {
+    "not_specified": "non spécifié",
+    "weekdays": {
+      "monday": "Lundi",
+      "tuesday": "Mardi",
+      "wednesday": "Mercredi",
+      "thursday": "Jeudi",
+      "friday": "Vendredi",
+      "saturday": "Samedi",
+      "sunday": "Dimanche"
+    }
+  },
+  "vibe_content": {
+    "share_code_label": "Code de partage :",
+    "your_name": "Votre nom",
+    "default_type": "Entreprise",
+    "default_description": "La description va ici…",
+    "no_contacts": "Aucun contact",
+    "share_qr": "Partager le QR code",
+    "qr_hint": "Le QR code apparaîtra après création de la Vibe"
+  },
+  "create_vibe": {
+    "back": "Retour au profil",
+    "title": "Créer votre carte numérique",
+    "type_label": "Type de carte",
+    "type_business": "Entreprise",
+    "type_personal": "Personnel",
+    "type_event": "Événement"
+  },
+  "vibe_search": {
+    "placeholder": "Entrez un code Vibe de 4 à 5 chiffres",
+    "button": "Rechercher",
+    "invalid_code": "Veuillez entrer un code Vibe valide de 4 à 5 chiffres",
+    "not_found": "Vibe introuvable"
   }
 }
+

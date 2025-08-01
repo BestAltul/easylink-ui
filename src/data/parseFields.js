@@ -13,15 +13,24 @@ function parseFields(fieldsDTO = []) {
 
     // Имя пользователя
     if (fieldLabel === "name" && field.value) {
-      name = field.value;
+      contacts.push({
+        id: field.id,
+        type: "name",
+        value: field.value,
+        label: field.label,
+        vibeId: field.vibeId,
+        fromBackend: true
+      });
       return;
     }
 
     // Контакты из CONTACT_TYPES
     if (contactKeys.includes(fieldLabel)) {
       contacts.push({
+        id: field.id,
         type: fieldLabel,
-        value: field.value
+        value: field.value,
+        fromBackend: true
       });
       return;
     }
@@ -37,9 +46,11 @@ function parseFields(fieldsDTO = []) {
         }
       }
       extraBlocks.push({
-        label: "Hours",
-        type: "hours",
-        value: hoursValue
+        id: field.id,
+        label: field.label || "Custom",
+        type: field.type || "custom",
+        value: hoursValue,
+        fromBackend: true
       });
       return;
     }
@@ -50,12 +61,14 @@ function parseFields(fieldsDTO = []) {
       return;
     }
 
-    // --- Custom fields (всё что не попало в условия выше) ---
+    // Custom InfoBlock
     if (field.value) {
       extraBlocks.push({
+        id: field.id,
         label: field.label || "Custom",
         type: field.type || "custom",
-        value: field.value
+        value: field.value,
+        fromBackend: true
       });
     }
   });

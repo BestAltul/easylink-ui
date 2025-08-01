@@ -1,65 +1,76 @@
 import { useState } from "react";
 import { createVibe } from "../../vibeService";
 
-export function usePersonalVibeForm(navigate) {
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [photoFile, setPhotoFile] = useState(null);
-  const [contacts, setContacts] = useState([]);
+export function usePersonalVibeForm({ navigate, initialData = {}, mode = "create", onSave, onCancel }) {
+  const [name, setName] = useState(initialData.name || "");
+  const [description, setDescription] = useState(initialData.description || "");
+  const [photoFile, setPhotoFile] = useState(initialData.photo || null);
+  const [contacts, setContacts] = useState(initialData.contacts || []);
+  const [extraBlocks, setExtraBlocks] = useState(initialData.extraBlocks || []);
   const [showModal, setShowModal] = useState(false);
-  const [extraBlocks, setExtraBlocks] = useState([]);
   const [showBlockModal, setShowBlockModal] = useState(false);
-  const [showInfo, setShowInfo] = useState(true);
+  const [showInfo, setShowInfo] = useState(mode !== "edit");
   const [loading, setLoading] = useState(false);
 
-  // Контакты
   const addContact = (type) => {
     if (contacts.some((c) => c.type === type)) return setShowModal(false);
-    setContacts([...contacts, { type, value: "" }]);
+    setContacts([...contacts, {
+      type,
+      value: ""
+    }]);
     setShowModal(false);
   };
+
   const handleContactChange = (i, val) => {
     const updated = [...contacts];
     updated[i].value = val;
     setContacts(updated);
   };
+
   const removeContact = (i) => {
     const updated = [...contacts];
     updated.splice(i, 1);
     setContacts(updated);
   };
 
-  // Инфо-блоки
   const handleBlockChange = (i, val) => {
     const updated = [...extraBlocks];
     updated[i].value = val;
     setExtraBlocks(updated);
   };
+
   const removeBlock = (i) => {
     const updated = [...extraBlocks];
     updated.splice(i, 1);
     setExtraBlocks(updated);
   };
 
-  // Submit
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const fieldsDTO = [
-      { type: "name", value: name, label: "Name" },
-      ...contacts.map((c) => ({
-        type: c.type,
-        value: c.value,
-        label: c.type,
-      })),
-      ...extraBlocks.map((b) => ({
-        type: b.type,
-        value: b.value,
-        label: b.label || null,
-      })),
+      ...contacts.map((c) => {
+        const dto = {
+          type: c.type,
+          value: c.value,
+          label: c.type,
+        };
+        if (c.id) dto.id = c.id;
+        return dto;
+      }),
+      ...extraBlocks.map((b) => {
+        const dto = {
+          type: b.type,
+          value: b.value,
+          label: b.label || null,
+        };
+        if (b.id) dto.id = b.id;
+        return dto;
+      })
     ];
 
     const dto = {
+      id: initialData.id,
       name,
       description,
       type: "PERSONAL",
@@ -68,12 +79,16 @@ export function usePersonalVibeForm(navigate) {
 
     try {
       setLoading(true);
-      const token = localStorage.getItem("jwt");
-      await createVibe(dto, token);
-      alert("Vibe created!");
-      navigate("/my-vibes");
+      if (mode === "edit" && onSave) {
+        await onSave(dto); // UPDATE
+      } else {
+        const token = localStorage.getItem("jwt");
+        await createVibe(dto, token); // CREATE
+        alert("Vibe created!");
+        navigate("/my-vibes");
+      }
     } catch (err) {
-      alert("Error creating Vibe");
+      alert("Error saving Vibe");
     } finally {
       setLoading(false);
     }

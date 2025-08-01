@@ -1,4 +1,4 @@
-// src/data/contactIcons.js
+// src/data/contactIcons.jsx
 import React from "react";
 
 import {

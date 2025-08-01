@@ -14,12 +14,12 @@ function SignUp() {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  const form = useSignUpForm(navigate, t, redirectTo, subscribe);
-
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const redirectTo = params.get("redirectTo");
   const subscribe = params.get("subscribe");
+
+  const form = useSignUpForm(navigate, t, redirectTo, subscribe);
 
   const STEP_LABELS = [
     t("signup.step1_label"),

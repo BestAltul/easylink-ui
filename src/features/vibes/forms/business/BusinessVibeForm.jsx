@@ -1,30 +1,41 @@
-// src/features/vibes/forms/BusinessVibeForm.jsx
-
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import CONTACT_TYPES from "../../../../data/contactTypes.js";
 import VibePreview from "../../components/VibePreview.jsx";
 import iconMap from "../../../../data/contactIcons.jsx";
 import { FaGlobe } from "react-icons/fa";
 import INFO_BLOCK_TYPES from "../../../../data/infoBlockTypes.js";
-import HoursBlock from "../../../../components/InfoBlocks/HoursBlock";
-import { useBusinessVibeForm } from "./useBusinessVibeForm.js";
+import HoursBlock from "../../../../components/InfoBlocks/HoursBlock.jsx";
+import { useNavigate } from "react-router-dom";
+import { useBusinessVibeForm } from "./useBusinessVibeForm";
+import { useTranslation } from "react-i18next";
 
-export default function BusinessVibeForm() {
+export default function BusinessVibeForm({ initialData = {}, mode = "create", onSave, onCancel }) {
   const navigate = useNavigate();
+  const { t } = useTranslation();
+
   const {
-    name, setName,
-    description, setDescription,
-    photoFile, setPhotoFile,
-    contacts, setContacts,
-    showModal, setShowModal,
-    extraBlocks, setExtraBlocks,
-    showBlockModal, setShowBlockModal,
+    name,
+    setName,
+    description,
+    setDescription,
+    photoFile,
+    setPhotoFile,
+    contacts,
+    setContacts,
+    showModal,
+    setShowModal,
+    extraBlocks,
+    setExtraBlocks,
+    showBlockModal,
+    setShowBlockModal,
     loading,
-    addContact, handleContactChange, removeContact,
-    handleBlockChange, removeBlock,
+    addContact,
+    handleContactChange,
+    removeContact,
+    handleBlockChange,
+    removeBlock,
     handleSubmit,
-  } = useBusinessVibeForm(navigate);
+  } = useBusinessVibeForm({ navigate, initialData, mode, onSave });
 
   return (
     <div
@@ -37,87 +48,85 @@ export default function BusinessVibeForm() {
           style={{ width: "100%" }}
           onSubmit={handleSubmit}
         >
-          {/* Name */}
           <div className="mb-3">
-            <label className="form-label">Business Name</label>
+            <label className="form-label">{t("business_form.name_label")}</label>
             <input
               type="text"
               className="form-control"
-              placeholder="CoffeeSpace"
+              placeholder={t("business_form.name_placeholder")}
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
             />
           </div>
-          {/* Description */}
+
           <div className="mb-3">
-            <label className="form-label">Description</label>
+            <label className="form-label">{t("business_form.desc_label")}</label>
             <textarea
               className="form-control"
-              placeholder="Downtown Toronto coffee shop. The best latte in the city!"
+              placeholder={t("business_form.desc_placeholder")}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={2}
             />
           </div>
-          {/* Contacts */}
+
           <div className="mb-3">
-            <label className="form-label">Contacts</label>
-            {contacts.length === 0 && (
-              <div className="mb-2 text-muted" style={{ fontSize: 15 }}>
-                No contacts added yet.
-              </div>
+            <label className="form-label">{t("business_form.contacts_label")}</label>
+            {(contacts?.length ?? 0) === 0 && (
+              <div className="mb-2 text-muted">{t("business_form.no_contacts")}</div>
             )}
-            {contacts.map((c, i) => (
-              <div className="input-group mb-2" key={i}>
-                <span
-                  className="input-group-text"
-                  title={CONTACT_TYPES.find((t) => t.key === c.type)?.label}
-                >
-                  {iconMap[c.type] || <FaGlobe />}
-                </span>
-                <input
-                  type={
-                    c.type === "email"
-                      ? "email"
-                      : c.type === "website"
-                      ? "url"
-                      : "text"
-                  }
-                  className="form-control"
-                  placeholder={CONTACT_TYPES.find((t) => t.key === c.type)?.label}
-                  value={c.value}
-                  onChange={(e) => handleContactChange(i, e.target.value)}
-                  required
-                />
-                <button
-                  type="button"
-                  className="btn btn-outline-danger"
-                  onClick={() => removeContact(i)}
-                  title="Remove"
-                >
-                  ×
-                </button>
-              </div>
-            ))}
+            {Array.isArray(contacts) &&
+              contacts.map((c, i) => (
+                <div className="input-group mb-2" key={i}>
+                  <span
+                    className="input-group-text"
+                    title={CONTACT_TYPES.find((t) => t.key === c.type)?.label}
+                  >
+                    {iconMap[c.type] || <FaGlobe />}
+                  </span>
+                  <input
+                    type={
+                      c.type === "email"
+                        ? "email"
+                        : c.type === "website"
+                        ? "url"
+                        : "text"
+                    }
+                    className="form-control"
+                    placeholder={CONTACT_TYPES.find((t) => t.key === c.type)?.label}
+                    value={c.value}
+                    onChange={(e) => handleContactChange(i, e.target.value)}
+                    required
+                  />
+                  <button
+                    type="button"
+                    className="btn btn-outline-danger"
+                    onClick={() => removeContact(i)}
+                    title={t("business_form.remove_button_title")}
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
             <button
               type="button"
               className="btn btn-outline-primary w-100"
               onClick={() => setShowModal(true)}
               disabled={contacts.length >= CONTACT_TYPES.length}
             >
-              + Add Contact
+              {t("business_form.add_contact")}
             </button>
           </div>
-          {/* Info Blocks */}
+
           <div className="mb-3">
-            <label className="form-label">Additional Info</label>
+            <label className="form-label">{t("business_form.additional_info")}</label>
             <button
               type="button"
               className="btn btn-outline-secondary w-100 mb-2"
               onClick={() => setShowBlockModal(true)}
             >
-              + Add Info Block
+              {t("business_form.add_info_block")}
             </button>
             {extraBlocks.map((block, i) => {
               if (block.type === "hours") {
@@ -139,8 +148,8 @@ export default function BusinessVibeForm() {
                     type={block.type === "birthday" ? "date" : "text"}
                     className="form-control"
                     placeholder={
-                      INFO_BLOCK_TYPES.find((b) => b.key === block.type)
-                        ?.placeholder || "Enter info"
+                      INFO_BLOCK_TYPES.find((b) => b.key === block.type)?.placeholder ||
+                      "Enter info"
                     }
                     value={typeof block.value === "string" ? block.value : ""}
                     onChange={(e) => handleBlockChange(i, e.target.value)}
@@ -150,7 +159,7 @@ export default function BusinessVibeForm() {
                     type="button"
                     className="btn btn-outline-danger"
                     onClick={() => removeBlock(i)}
-                    title="Remove"
+                    title={t("business_form.remove_button_title")}
                   >
                     ×
                   </button>
@@ -158,23 +167,45 @@ export default function BusinessVibeForm() {
               );
             })}
           </div>
-          {/* Photo/Logo */}
+
           <div className="mb-3">
-            <label className="form-label">Photo / Logo</label>
+            <label className="form-label">{t("business_form.photo_label")}</label>
             <input
               type="file"
               className="form-control"
               accept="image/*"
               onChange={(e) => setPhotoFile(e.target.files[0])}
             />
-            <div className="form-text">PNG or JPG, up to 2MB</div>
+            <div className="form-text">{t("business_form.photo_hint")}</div>
           </div>
-          <button type="submit" className="btn btn-primary w-100 mt-3" disabled={loading}>
-            {loading ? "Creating..." : "Create Business Card"}
-          </button>
+
+          <div className="d-flex gap-2 mt-3">
+            {mode === "edit" && (
+              <button
+                type="button"
+                className="btn btn-outline-secondary w-50"
+                onClick={onCancel}
+                disabled={loading}
+              >
+                {t("business_form.cancel")}
+              </button>
+            )}
+            <button
+              type="submit"
+              className="btn btn-primary w-100"
+              disabled={loading}
+            >
+              {loading
+                ? mode === "edit"
+                  ? t("business_form.saving")
+                  : t("business_form.creating")
+                : mode === "edit"
+                ? t("business_form.save_button")
+                : t("business_form.create_button")}
+            </button>
+          </div>
         </form>
 
-        {/* Modal for Contact Types */}
         {showModal && (
           <div
             className="modal d-block"
@@ -192,7 +223,7 @@ export default function BusinessVibeForm() {
             <div className="modal-dialog">
               <div className="modal-content">
                 <div className="modal-header">
-                  <h5 className="modal-title">Add contact type</h5>
+                  <h5 className="modal-title">{t("business_form.modal_contact_title")}</h5>
                 </div>
                 <div className="modal-body d-flex flex-wrap gap-2">
                   {CONTACT_TYPES.map((type) => (
@@ -218,11 +249,8 @@ export default function BusinessVibeForm() {
                   ))}
                 </div>
                 <div className="modal-footer">
-                  <button
-                    className="btn btn-secondary"
-                    onClick={() => setShowModal(false)}
-                  >
-                    Cancel
+                  <button className="btn btn-secondary" onClick={() => setShowModal(false)}>
+                    {t("business_form.modal_cancel")}
                   </button>
                 </div>
               </div>
@@ -230,7 +258,6 @@ export default function BusinessVibeForm() {
           </div>
         )}
 
-        {/* Modal for Info Blocks */}
         {showBlockModal && (
           <div
             className="modal d-block"
@@ -248,7 +275,7 @@ export default function BusinessVibeForm() {
             <div className="modal-dialog">
               <div className="modal-content">
                 <div className="modal-header">
-                  <h5 className="modal-title">Add Info Block</h5>
+                  <h5 className="modal-title">{t("business_form.modal_info_title")}</h5>
                 </div>
                 <div className="modal-body d-flex flex-wrap gap-2">
                   {INFO_BLOCK_TYPES.map((block) => (
@@ -274,8 +301,7 @@ export default function BusinessVibeForm() {
                         setShowBlockModal(false);
                       }}
                       disabled={
-                        extraBlocks.some((b) => b.type === block.key) &&
-                        block.key !== "custom"
+                        extraBlocks.some((b) => b.type === block.key) && block.key !== "custom"
                       }
                     >
                       {block.label}
@@ -283,11 +309,8 @@ export default function BusinessVibeForm() {
                   ))}
                 </div>
                 <div className="modal-footer">
-                  <button
-                    className="btn btn-secondary"
-                    onClick={() => setShowBlockModal(false)}
-                  >
-                    Cancel
+                  <button className="btn btn-secondary" onClick={() => setShowBlockModal(false)}>
+                    {t("business_form.modal_cancel")}
                   </button>
                 </div>
               </div>
@@ -295,7 +318,7 @@ export default function BusinessVibeForm() {
           </div>
         )}
       </div>
-      {/* Правая колонка: Превью */}
+
       <div
         style={{
           flex: "1 1 400px",
