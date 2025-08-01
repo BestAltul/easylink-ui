@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import "bootstrap/dist/css/bootstrap.min.css";
 import VibeSearch from "../components/common/VibeSearch";
 import { trackEvent } from '@/services/amplitude';
+import "./styles/Home.css";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -55,13 +56,13 @@ export default function Home() {
         className="row mt-5 justify-content-center"
         style={{ animation: "fadeIn 2s" }}
       >
-        {/* 🔍 Vibe Code Search */}
-        {/* 🔍 Vibe Code Search */}
-        <div className="d-flex justify-content-center my-4">
-          <div style={{ width: "100%", maxWidth: "420px" }}>
-            <VibeSearch />
-          </div>
+
+      {/* 🔍 Vibe Code Search */}
+      <div className="d-flex justify-content-center my-4">
+        <div style={{ width: "100%", maxWidth: "420px" }}>
+          <VibeSearch />
         </div>
+      </div>
 
         {/* <h2 className="mb-5 text-center">{t("home.why")}</h2> */}
         {/* {[
@@ -109,25 +110,7 @@ export default function Home() {
             </div>
           </div>
         ))} */}
-        <style>
-          {`
-            .card:hover {
-              transform: scale(1.03);
-              box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-            }
-          `}
-        </style>
       </div>
-
-      {/* FadeIn CSS */}
-      <style>
-        {`
-          @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-          }
-        `}
-      </style>
     </div>
   );
 }

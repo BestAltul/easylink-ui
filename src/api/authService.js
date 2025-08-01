@@ -12,7 +12,7 @@ export async function verifyEmailAPI(email) {
   }
 
   if (res.status === 404) {
-    return null; // или выбрось ошибку, если хочешь
+    return null; 
   }
 
   return res.json();

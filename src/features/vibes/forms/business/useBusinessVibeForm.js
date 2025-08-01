@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createVibe } from "../../vibeService";
+import { createVibe } from "@/api/vibeApi";
 
 export function useBusinessVibeForm({ navigate, initialData = {}, mode = "create", onSave }) {
   const [name, setName] = useState(initialData.name || "");
@@ -13,7 +13,7 @@ export function useBusinessVibeForm({ navigate, initialData = {}, mode = "create
 
   const addContact = (type) => {
     if (contacts.some((c) => c.type === type)) return setShowModal(false);
-    setContacts([...contacts, { type, value: "" }]); // без id
+    setContacts([...contacts, { type, value: "" }]); 
     setShowModal(false);
   };
 
@@ -46,13 +46,13 @@ export function useBusinessVibeForm({ navigate, initialData = {}, mode = "create
 
     const fieldsDTO = [
       ...contacts.map((c) => ({
-        ...(c.id ? { id: c.id } : {}), // только если есть id
+        ...(c.id ? { id: c.id } : {}), 
         type: c.type,
         value: c.value,
         label: c.type,
       })),
       ...extraBlocks.map((b) => ({
-        ...(b.id ? { id: b.id } : {}), // только если есть id
+        ...(b.id ? { id: b.id } : {}), 
         type: b.type,
         value: typeof b.value === "object" ? JSON.stringify(b.value) : b.value,
         label: b.label || null,

@@ -22,7 +22,6 @@ function Review() {
 
   const API_URL = "/api/v3/reviews";
 
-  // Универсальная функция загрузки отзывов
   const loadReviews = () => {
     fetch(API_URL)
       .then((res) => res.json())
@@ -30,7 +29,6 @@ function Review() {
       .catch((err) => console.error("Error fetching reviews:", err));
   };
 
-  // Загрузка при монтировании компонента
   useEffect(() => {
     loadReviews();
   }, []);
@@ -57,7 +55,7 @@ function Review() {
       })
         .then((res) => res.json())
         .then(() => {
-          loadReviews(); // подгружаем свежие отзывы
+          loadReviews(); 
           setSubmitted(true);
           setText("");
           setTimeout(() => setSubmitted(false), 3000);

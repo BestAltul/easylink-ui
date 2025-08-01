@@ -10,12 +10,10 @@ import "./i18n";
 
 // ===== Features/Pages imports =====
 import Profile from "./features/profile/Profile";
-import Settings from "./features/profile/Settings";
 import SignUp from "./features/auth/SignUp";
 import StartAuth from "./features/auth/StartAuth";
 import Home from "./pages/Home";
 import About from "./pages/About";
-import UserMapPage from "./pages/UserMapPage";
 import Review from "./features/review/Review";
 import CreateVibe from "./features/vibes/forms/CreateVibe";
 import UserVibes from "./features/vibes/UserVibes";
@@ -59,8 +57,6 @@ function App() {
         <Route path="/login" element={<Navigate to="/signin" />} />
         <Route path="/review" element={<Review />} />
         <Route path="/create-vibe" element={<CreateVibe />} />
-        <Route path="/settings" element={<Settings />} />
-        <Route path="/map" element={<UserMapPage />} />
         <Route path="/my-vibes" element={<UserVibes />} />
         <Route path="/vibes" element={<UserVibes />} />
         <Route path="/vibes/:id" element={<VibePage />} />

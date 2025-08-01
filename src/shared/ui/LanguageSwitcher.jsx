@@ -23,7 +23,6 @@ const LANGUAGES = [
   //   label: "Español",
   //   flag: <ReactCountryFlag countryCode="ES" svg style={{ width: "1.3em", height: "1.3em", marginRight: 6 }} />
   // }
-  // // Можешь добавить еще языки здесь
 ];
 
 

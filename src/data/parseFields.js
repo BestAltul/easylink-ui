@@ -11,7 +11,6 @@ function parseFields(fieldsDTO = []) {
   fieldsDTO.forEach(field => {
     const fieldLabel = field.label?.toLowerCase();
 
-    // Имя пользователя
     if (fieldLabel === "name" && field.value) {
       contacts.push({
         id: field.id,
@@ -24,7 +23,6 @@ function parseFields(fieldsDTO = []) {
       return;
     }
 
-    // Контакты из CONTACT_TYPES
     if (contactKeys.includes(fieldLabel)) {
       contacts.push({
         id: field.id,
@@ -35,7 +33,6 @@ function parseFields(fieldsDTO = []) {
       return;
     }
 
-    // Часы работы
     if (fieldLabel === "hours") {
       let hoursValue = field.value;
       if (typeof hoursValue === "string") {
@@ -55,13 +52,11 @@ function parseFields(fieldsDTO = []) {
       return;
     }
 
-    // Описание
     if (fieldLabel === "description") {
       description = field.value;
       return;
     }
 
-    // Custom InfoBlock
     if (field.value) {
       extraBlocks.push({
         id: field.id,
