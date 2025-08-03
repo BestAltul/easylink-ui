@@ -24,7 +24,6 @@ function Review() {
 
   const API_URL = "/api/v3/reviews";
 
-  // Универсальная функция загрузки отзывов
   const loadReviews = () => {
     fetch(API_URL)
       .then((res) => res.json())

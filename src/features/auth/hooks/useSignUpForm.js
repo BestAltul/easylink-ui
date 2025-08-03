@@ -7,7 +7,7 @@ export function useSignUpForm(navigate, t) {
   const [questions, setQuestions] = useState([]);
   const [questionTemplates, setQuestionTemplates] = useState([]);
   const [step, setStep] = useState(1);
-  const [totalQuestions, setTotalQuestions] = useState(3);
+  const [totalQuestions, setTotalQuestions] = useState(1);
 
   const [selectedQuestion, setSelectedQuestion] = useState("");
   const [customQuestionVisible, setCustomQuestionVisible] = useState(false);
