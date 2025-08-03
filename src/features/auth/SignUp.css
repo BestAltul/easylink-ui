@@ -2,6 +2,9 @@
 .animate-fadein {
   animation: fadeIn 0.5s;
 }
+.card:hover {
+  transform: none !important;
+}
 
 @keyframes fadeIn {
   from {
@@ -14,12 +17,24 @@
   }
 }
 
-@media (min-width: 900px) {
-  .card {
-    min-width: 520px;
+@media (min-width: 992px) {
+  .signup-main-column {
+    min-width: 640px;
     max-width: 720px;
   }
 }
+
+@media (max-width: 767.98px) {
+  .progress-bar {
+    font-size: 0.8rem;
+  }
+
+  .sidebar-steps {
+    display: none;
+  }
+
+}
+
 /* 
 .btn-outline-success,
 .btn-success {

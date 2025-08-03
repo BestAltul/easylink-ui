@@ -1,3 +1,4 @@
+
 export default function OfferCard({
   offer,
   onEdit,
@@ -55,6 +56,7 @@ export default function OfferCard({
           {offer.discountType === "DYNAMIC" && "(dynamic)"}
         </p>
       </div>
+
     </div>
   );
 }

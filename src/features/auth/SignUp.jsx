@@ -51,15 +51,14 @@ function SignUp() {
           padding: "24px 0",
         }}
       >
-        <div className="d-flex flex-row justify-content-center align-items-start gap-5">
+        <div className="d-flex flex-column flex-lg-row justify-content-center align-items-start gap-5">
           <SidebarSteps
             step={form.step}
             totalQuestions={form.totalQuestions}
             STEP_LABELS={STEP_LABELS}
           />
           <div
-            className="flex-grow-1 d-flex flex-column align-items-center"
-            style={{ minWidth: 640 }}
+            className="flex-grow-1 d-flex flex-column align-items-center px-3 px-md-4 px-lg-5 w-100"
           >
             <div className="mb-4" style={{ width: "100%", maxWidth: 720 }}>
               <div className="progress" style={{ height: "20px" }}>
@@ -80,16 +79,15 @@ function SignUp() {
                 </div>
               </div>
             </div>
-            <h2
-              className="mb-5 text-center fw-bold"
-              style={{ fontSize: 40, width: "100%" }}
+            <h2 
+              className="mb-4 text-center fw-bold fs-4 fs-md-3 fs-lg-2 w-100"
             >
               {t("signup.title")}{" "}
               <span role="img" aria-label="lock">
                 🔒
               </span>
             </h2>
-            <div style={{ width: "100%", maxWidth: 720 }}>{renderStep()}</div>
+            <div className="signup-main-column w-100">{renderStep()}</div>
           </div>
         </div>
       </div>

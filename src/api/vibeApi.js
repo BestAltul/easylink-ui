@@ -41,7 +41,7 @@ export async function createVibe(data, token) {
 // PUT VIBE
 export async function updateVibe(id, data, token) {
   const res = await fetch(`/api/v3/vibes/${id}`, {
-    method: "PUT", // или PATCH если нужно
+    method: "PUT",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,

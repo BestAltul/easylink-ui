@@ -7,11 +7,10 @@
   min-height: 180px;
   cursor: pointer;
   opacity: 1;
+  border: 1px solid rgba(0, 0, 0, 0.05);
   transition:
     transform 0.18s cubic-bezier(.48,.07,.75,.95),
-    box-shadow 0.20s cubic-bezier(.48,.07,.75,.95),
-    filter .25s cubic-bezier(.48,.07,.75,.95),
-    opacity .3s;
+    box-shadow 0.20s cubic-bezier(.48,.07,.75,.95);
 }
 
 .myvibe-card:hover,

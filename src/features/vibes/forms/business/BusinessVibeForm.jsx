@@ -19,8 +19,10 @@ export default function BusinessVibeForm({
 }) {
   const navigate = useNavigate();
   const { t } = useTranslation();
+
   const location = useLocation();
   const [activeTab, setActiveTab] = useState(location.state?.tab || "main");
+
   const token = localStorage.getItem("jwt");
 
   const offers = useGetOffersByVibeId(initialData.id, token);
@@ -316,9 +318,17 @@ export default function BusinessVibeForm({
                       }
                     />
                   ))}
+
               </div>
+            </>
+          )}
+
+          {activeTab === "menu" && (
+            <div className="alert alert-info">
+              Add your menu information here.
             </div>
           )}
+
         </form>
       </div>
     </div>

@@ -1,10 +1,11 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import VibePreview from "../../components/VibePreview";
-import iconMap from "../../../../data/contactIcons.jsx";
 import { FaGlobe } from "react-icons/fa";
 import { useEventVibeForm } from "./useEventVibeForm";
 import { useTranslation } from "react-i18next";
+import CONTACT_TYPES from "@/data/contactTypes";
+import iconMap from "@/data/contactIcons";
 
 const EVENT_INFO_BLOCKS = [
   { key: "date", label: "Event Date", placeholder: "YYYY-MM-DD" },
@@ -151,23 +152,26 @@ export default function EventVibeForm({
                 <div className="modal-header">
                   <h5 className="modal-title">{t("event_form.modal_contact_title")}</h5>
                 </div>
-                <div className="modal-body">
-                  <input
-                    className="form-control mb-2"
-                    type="text"
-                    placeholder={t("event_form.modal_contact_placeholder")}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        const type = e.target.value.trim().toLowerCase();
-                        if (type && !contacts.some((c) => c.type === type)) {
-                          addContact(type);
-                          setShowModal(false);
-                        }
-                      }
-                    }}
-                  />
-                  <div className="text-muted">{t("event_form.modal_contact_hint")}</div>
+                <div className="modal-body d-flex flex-wrap gap-2">
+                  {CONTACT_TYPES.map((type) => (
+                    <button
+                      key={type.key}
+                      className="btn btn-light"
+                      style={{
+                        width: 110,
+                        height: 70,
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                      onClick={() => addContact(type.key)}
+                      disabled={contacts.some((c) => c.type === type.key)}
+                    >
+                      <span style={{ fontSize: 28 }}>{iconMap[type.key] || <FaGlobe />}</span>
+                      <span style={{ fontSize: 14 }}>{type.label}</span>
+                    </button>
+                  ))}
                 </div>
                 <div className="modal-footer">
                   <button className="btn btn-secondary" onClick={() => setShowModal(false)}>

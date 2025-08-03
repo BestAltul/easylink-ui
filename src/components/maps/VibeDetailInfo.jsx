@@ -1,10 +1,9 @@
-import iconMap from "../../data/contactIcons"; // если есть, иначе просто без иконок
+import iconMap from "../../data/contactIcons"; 
 import { FaGlobe } from "react-icons/fa";
 
 export default function VibeDetailInfo({ vibe }) {
   if (!vibe) return null;
 
-  // Стили для контактов-кнопок (чуть адаптированы)
   const getButtonColor = (type) => {
     switch (type) {
       case "instagram": return "linear-gradient(45deg, #fd5, #f54394, #fc6736)";
@@ -17,7 +16,6 @@ export default function VibeDetailInfo({ vibe }) {
     }
   };
 
-  // Линки для контактов (копипаста из preview)
   const getContactLink = (c) => {
     if (c.type === "instagram" && c.value)
       return c.value.startsWith("http") ? c.value : `https://instagram.com/${c.value.replace(/^@/, "")}`;
@@ -43,7 +41,7 @@ export default function VibeDetailInfo({ vibe }) {
         padding: "0 0 18px 0"
       }}
     >
-      {/* Фото/аватар */}
+
       <div style={{ display: "flex", justifyContent: "center", marginTop: -34, marginBottom: 10 }}>
         {vibe.photo ? (
           <img
@@ -69,7 +67,6 @@ export default function VibeDetailInfo({ vibe }) {
         )}
       </div>
 
-      {/* Имя и тип */}
       <h2 style={{
         fontSize: 22, fontWeight: 700, margin: "0 0 4px 0", textAlign: "center"
       }}>{vibe.name}</h2>
@@ -79,7 +76,6 @@ export default function VibeDetailInfo({ vibe }) {
         {vibe.type?.charAt(0).toUpperCase() + vibe.type?.slice(1)}
       </div>
 
-      {/* Описание в отдельной рамочке */}
       {vibe.description && (
         <div style={{
           background: "#f9faff",
@@ -96,13 +92,11 @@ export default function VibeDetailInfo({ vibe }) {
         </div>
       )}
 
-      {/* Разделитель */}
       <div style={{
         width: "38%", height: 2, background: "linear-gradient(90deg,#d8dffa,#f6eaff 80%)",
         borderRadius: 99, margin: "14px auto 18px auto"
       }} />
 
-      {/* Контакты (кнопки) */}
       {vibe.contacts?.length > 0 && (
         <div style={{ margin: "0 auto", textAlign: "center" }}>
           <b style={{ fontSize: 15, color: "#637bfd" }}>Contacts</b>
@@ -156,7 +150,6 @@ export default function VibeDetailInfo({ vibe }) {
         </div>
       )}
 
-      {/* Дополнительные инфо-блоки, если есть */}
       {vibe.extraBlocks?.length > 0 && (
         <div style={{ margin: "16px 0 0 0" }}>
           {vibe.extraBlocks.map((block, i) => (

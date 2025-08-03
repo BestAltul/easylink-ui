@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createVibe } from "../../vibeService";
+import { createVibe } from "@/api/vibeApi";
 
 export function usePersonalVibeForm({
   navigate,
