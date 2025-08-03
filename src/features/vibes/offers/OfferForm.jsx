@@ -1,6 +1,5 @@
-// OfferAddNew.jsx
 import React, { useState, useEffect } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import useGetOffer from "./useGetOffer";
 import useCreateOffer from "./useCreateOffer";
@@ -23,7 +22,10 @@ export default function OfferForm() {
   const { offer } = useGetOffer(id, token);
   const { updateOffer } = useUpdateOffer(token);
 
-  console.log("offer we get", offer);
+  const returnTo = location.state?.returnTo || "/";
+  const tab = location.state?.tab;
+
+  const navigate = useNavigate();
 
   const [form, setForm] = useState({
     title: "",
@@ -89,6 +91,9 @@ export default function OfferForm() {
 
     if (success) {
       alert(t("Offer created successfully"));
+      navigate(returnTo, {
+        state: { tab },
+      });
     } else {
       alert(t("Error creating offer"));
     }
@@ -159,9 +164,7 @@ export default function OfferForm() {
                 </div>
               </div>
 
-              {/* Две колонки: даты и остальные скидочные поля */}
               <div className="row g-3 mt-1">
-                {/* Левая колонка */}
                 <div className="col-md-6">
                   <label className="form-label">{t("Start Time")}</label>
                   <input
@@ -182,7 +185,6 @@ export default function OfferForm() {
                   />
                 </div>
 
-                {/* Правая колонка */}
                 <div className="col-md-6">
                   <label className="form-label">{t("Decrease Step")}</label>
                   <input

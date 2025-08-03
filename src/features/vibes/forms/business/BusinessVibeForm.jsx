@@ -5,7 +5,7 @@ import iconMap from "../../../../data/contactIcons.jsx";
 import { FaGlobe } from "react-icons/fa";
 import INFO_BLOCK_TYPES from "../../../../data/infoBlockTypes.js";
 import HoursBlock from "../../../../components/InfoBlocks/HoursBlock.jsx";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useBusinessVibeForm } from "./useBusinessVibeForm";
 import { useTranslation } from "react-i18next";
 import useGetOffersByVibeId from "../../../vibes/offers/useGetOfferByVibeId.js";
@@ -19,7 +19,8 @@ export default function BusinessVibeForm({
 }) {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const [activeTab, setActiveTab] = useState("main");
+  const location = useLocation();
+  const [activeTab, setActiveTab] = useState(location.state?.tab || "main");
   const token = localStorage.getItem("jwt");
 
   const offers = useGetOffersByVibeId(initialData.id, token);
@@ -276,13 +277,46 @@ export default function BusinessVibeForm({
           )}
 
           {activeTab === "offers" && (
-            <div className="d-grid gap-3 w-100">
-              {offers.length > 0 &&
-                offers.map((offer) => (
-                  <div className="w-100">
-                    <OfferCard key={offer.id} offer={offer} />
-                  </div>
-                ))}
+            <div className="w-100">
+              <div className="d-flex justify-content-start gap-2 mb-3">
+                <button
+                  className="btn btn-outline-primary"
+                  onClick={() =>
+                    navigate("/offers/new", {
+                      state: {
+                        vibeId: initialData.id,
+                        returnTo: `/vibes/${initialData.id}`,
+                        tab: "offers",
+                      },
+                    })
+                  }
+                >
+                  + Add Offer
+                </button>
+
+                {/* <button className="btn btn-outline-danger" disabled>
+                  Disable
+                </button> */}
+              </div>
+
+              <div className="d-grid gap-3">
+                {offers.length > 0 &&
+                  offers.map((offer) => (
+                    <OfferCard
+                      key={offer.id}
+                      offer={offer}
+                      onEdit={(offer) =>
+                        navigate(`/offers/${offer.id}`, {
+                          state: {
+                            vibeId: initialData.id,
+                            returnTo: `/vibes/${initialData.id}`,
+                            tab: "offers",
+                          },
+                        })
+                      }
+                    />
+                  ))}
+              </div>
             </div>
           )}
         </form>
