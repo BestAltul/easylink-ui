@@ -1,28 +1,30 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "@/context/AuthContext";
 import { useTranslation } from "react-i18next";
+import LanguageSwitcher from "@/shared/ui/LanguageSwitcher";
+import { useEarlyAccess } from "@/components/common/hooks/useEarlyAccess";
+import { useEarlyAccessCheckable } from "@/components/common/hooks/useEarlyAccessCheckable";
+import { trackEvent } from "@/services/amplitude";
 import "./Header.css";
-import LanguageSwitcher from "./LanguageSwitcher";
-import { useEarlyAccess } from "../../components/common/hooks/useEarlyAccess";
-import { useEarlyAccessCheckable } from "../../components/common/hooks/useEarlyAccessCheckable";
+import HeaderMobileMenu from "./HeaderMobileMenu";
 
 function Header() {
   const { isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
   const { t } = useTranslation();
+
+  const [menuOpen, setMenuOpen] = useState(false);
+
   const {
     requestEarlyAccess,
     loading: loadingSubscribe,
-    error: errorSubscribe,
     subscribed: subscribedAfterRequest,
     setSubscribed: setSubscribedAfterRequest,
   } = useEarlyAccess();
 
   const {
     checkEarlyAccess,
-    loading: loadingCheck,
-    error: errorCheck,
     subscribed: subscribedStatus,
     setSubscribed: setSubscribedStatus,
   } = useEarlyAccessCheckable();
@@ -35,9 +37,8 @@ function Header() {
 
   const subscribed = subscribedAfterRequest || subscribedStatus;
 
-  console.log("My status: ", subscribed);
-
   const handleLogout = () => {
+    trackEvent("Logout Clicked", { page: "header" });
     logout();
     setSubscribedAfterRequest(false);
     setSubscribedStatus(false);
@@ -45,80 +46,101 @@ function Header() {
   };
 
   return (
-    <header className="header">
-      <div className="header__container">
-        {/* ЛОГОТИП */}
-        <Link
-          to="/"
-          className="logo"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            textDecoration: "none",
-            width: "auto",
-            padding: 0,
-            margin: 0,
-          }}
-        >
-          <img
-            src="/clearviewblue.png"
-            alt="logo"
-            style={{ width: "36px", height: "36px", marginRight: "8px" }}
-          />
-          <span
-            style={{ color: "#007bff", fontWeight: "bold", fontSize: "2rem" }}
-          >
-            EasyLink
-          </span>
-        </Link>
+    <>
+      <header className="header">
+        <div className="header__container">
+          <div className="header__top">
+            <Link to="/" className="logo">
+              <img src="/clearviewblue.png" alt="logo" />
+              <span>YMK</span>
+            </Link>
 
-        <div
-          className={`early-access-bubble ${
-            subscribed ? "subscribed-green" : ""
-          }`}
-        >
-          <div className="early-access-text">
-            {subscribed ? "✅ Subscribed!" : t("header.lifetime_offer")}
+            <div className={`early-access-bubble ${subscribed ? "subscribed-green" : ""}`}>
+              <div className="early-access-text">
+                {subscribed ? "✅ Subscribed!" : t("header.lifetime_offer")}
+              </div>
+
+              {!subscribed && (
+                <button
+                  onClick={() =>
+                    isAuthenticated ? requestEarlyAccess() : navigate("/signin")
+                  }
+                  className="early-subscribe-highlighted"
+                  disabled={loadingSubscribe}
+                >
+                  {loadingSubscribe ? "Loading..." : t("header.early_subscribtion")}
+                </button>
+              )}
+            </div>
+
+            <nav className="nav">
+              <Link to="/" onClick={() => trackEvent("Header Home Clicked")}>
+                {t("header.home")}
+              </Link>
+
+              {!isAuthenticated && (
+                <Link to="/signup" onClick={() => trackEvent("Header Sign Up Clicked")}>
+                  {t("header.sign_up")}
+                </Link>
+              )}
+
+              {!isAuthenticated && (
+                <Link to="/signin" onClick={() => trackEvent("Header Sign In Clicked")}>
+                  {t("header.log_in")}
+                </Link>
+              )}
+
+              {isAuthenticated && (
+                <Link to="/profile" onClick={() => trackEvent("Header Profile Clicked")}>
+                  {t("header.profile")}
+                </Link>
+              )}
+
+              <Link to="/about" onClick={() => trackEvent("Header About Clicked")}>
+                {t("header.about")}
+              </Link>
+
+              <Link to="/review" onClick={() => trackEvent("Header Review Clicked")}>
+                {t("header.review")}
+              </Link>
+
+              {isAuthenticated && (
+                <Link
+                  to="/"
+                  onClick={(e) => {
+                    e.preventDefault(); 
+                    handleLogout();
+                  }}
+                >
+                  {t("header.log_out")}
+                </Link>
+              )}
+
+              <LanguageSwitcher />
+            </nav>
+
+            <button
+              className="burger-btn"
+              onClick={() => setMenuOpen(true)}
+              aria-label="Open menu"
+            >
+              ☰
+            </button>
           </div>
 
-          {subscribed ? (
-            <div className="subscribed-message"></div>
-          ) : (
-            <button
-              onClick={() => {
-                if (!isAuthenticated) {
-                  navigate("/signin");
-                } else {
-                  requestEarlyAccess();
-                }
-              }}
-              className="early-subscribe-highlighted"
-              disabled={loadingSubscribe}
-            >
-              {loadingSubscribe ? "Loading..." : t("header.early_subscribtion")}
-            </button>
-          )}
-        </div>
 
-        <nav
-          className="nav"
-          style={{ display: "flex", alignItems: "center", gap: 16 }}
-        >
-          <Link to="/">{t("header.home")}</Link>
-          {!isAuthenticated && <Link to="/signup">{t("header.sign_up")}</Link>}
-          {!isAuthenticated && <Link to="/signin">{t("header.log_in")}</Link>}
-          {isAuthenticated && <Link to="/profile">{t("header.profile")}</Link>}
-          <Link to="/about">{t("header.about")}</Link>
-          <Link to="/review">{t("header.review")}</Link>
-          {isAuthenticated && (
-            <button onClick={handleLogout} className="logout-btn">
-              {t("header.log_out")}
-            </button>
-          )}
-          <LanguageSwitcher />
-        </nav>
-      </div>
-    </header>
+        </div>
+      </header>
+
+      <HeaderMobileMenu
+        isOpen={menuOpen}
+        onClose={() => setMenuOpen(false)}
+        isAuthenticated={isAuthenticated}
+        t={t}
+        handleLogout={handleLogout}
+        trackEvent={trackEvent}
+      />
+    </>
   );
 }
 

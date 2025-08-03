@@ -7,7 +7,7 @@ export function useSignUpForm(navigate, t) {
   const [questions, setQuestions] = useState([]);
   const [questionTemplates, setQuestionTemplates] = useState([]);
   const [step, setStep] = useState(1);
-  const [totalQuestions, setTotalQuestions] = useState(3);
+  const [totalQuestions, setTotalQuestions] = useState(1);
 
   const [selectedQuestion, setSelectedQuestion] = useState("");
   const [customQuestionVisible, setCustomQuestionVisible] = useState(false);
@@ -20,9 +20,7 @@ export function useSignUpForm(navigate, t) {
   const [subStep, setSubStep] = useState(0);
 
   const isEmailValid =
-    email.trim().length === 0
-      ? true
-      : /^\S+@\S+\.\S+$/.test(email.trim());
+    email.trim().length === 0 ? true : /^\S+@\S+\.\S+$/.test(email.trim());
 
   useEffect(() => {
     fetch("/api/v3/auth/question-templates")
@@ -56,7 +54,11 @@ export function useSignUpForm(navigate, t) {
             predefined: false,
             createdAt: new Date().toISOString(),
           }
-        : { text: selectedQuestion, predefined: true, createdAt: new Date().toISOString() };
+        : {
+            text: selectedQuestion,
+            predefined: true,
+            createdAt: new Date().toISOString(),
+          };
 
     const newEntry = {
       realQuestion: questionTemplate,
@@ -98,7 +100,12 @@ export function useSignUpForm(navigate, t) {
       toast.success(message, { position: "top-right" });
       navigate("/signin");
     } catch (error) {
-      toast.error(error.message || t("signup.toast_fail"), { position: "top-right" });
+      const serverMessage =
+        error.response?.data?.message ||
+        error.message ||
+        t("signup.toast_fail");
+
+      toast.error(serverMessage, { position: "top-right" });
     }
   };
 

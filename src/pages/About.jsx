@@ -14,7 +14,6 @@ const colors = ["#fff4b2", "#ffd6e7", "#f3e8ff", "#fff7d6"];
 export default function About() {
   const { t } = useTranslation();
 
-  // Секции шагов теперь берём из переводов
   const steps = t("about.steps", { returnObjects: true });
 
   return (

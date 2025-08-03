@@ -7,12 +7,22 @@ export async function verifyEmailAPI(email) {
     body: JSON.stringify({ email }),
   });
 
-  if (!res.ok && res.status !== 404) {
-    throw new Error("Network response was not ok");
-  }
+  const contentType = res.headers.get("content-type") || "";
 
-  if (res.status === 404) {
-    return null; // или выбрось ошибку, если хочешь
+  if (!res.ok) {
+    let message = "Email verification failed";
+
+    if (contentType.includes("application/json")) {
+      const errorData = await res.json();
+      message = errorData?.message || message;
+    } else {
+      const errorText = await res.text();
+      message = errorText || message;
+    }
+
+    const error = new Error(message);
+    error.status = res.status;
+    throw error;
   }
 
   return res.json();

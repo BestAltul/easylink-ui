@@ -1,15 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-/**
- * @param {string} id - targetVibeId (тот вайб, на который хотим подписаться)
- * @param {string} token - jwt пользователя
- * @param {Array} myVibes - список вайбов пользователя (минимум [{id, name}])
- * @param {boolean} subscribed
- * @param {function} setSubscribed
- * @param {Array} comments
- * @param {function} setComments
- */
 export default function VibeActions({
   id,
   token,
@@ -24,7 +15,6 @@ export default function VibeActions({
   const [copied, setCopied] = useState(false);
   const navigate = useNavigate();
 
-  // Устанавливаем первый вайб по умолчанию
   useEffect(() => {
     if (myVibes.length > 0 && !selectedMyVibeId) {
       setSelectedMyVibeId(myVibes[0].id);
@@ -47,8 +37,8 @@ export default function VibeActions({
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
-        myVibeId: selectedMyVibeId, // С какого вайба подписываемся
-        targetVibeId: id,           // На какой вайб подписываемся
+        myVibeId: selectedMyVibeId, 
+        targetVibeId: id,           
         interactionType: "SUBSCRIBE",
         anonymous: false,
         active: true,
@@ -106,7 +96,6 @@ export default function VibeActions({
       borderRadius: 18,
       background: "linear-gradient(135deg, #f9faff 65%, #f7f7fd 100%)"
     }}>
-      {/* Выбор своего вайба */}
       <div className="mb-2">
         <label htmlFor="myVibeSelect" className="fw-semibold mb-2">Выберите свой вайб</label>
         <select
@@ -125,7 +114,6 @@ export default function VibeActions({
           )}
         </select>
       </div>
-      {/* Блок подписки */}
       <div className="mb-3">
         <div className="fw-semibold mb-2">Подписка на вайб</div>
         {subscribed ? (

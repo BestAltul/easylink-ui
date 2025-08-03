@@ -14,7 +14,7 @@ export default function Footer() {
       </div>
 
       <div className="footer__address">
-        © {new Date().getFullYear()} EasyLink. {t("footer.copyright")}
+        © {new Date().getFullYear()} {t("footer.brand")}. {t("footer.copyright")}
       </div>
     </footer>
   );
