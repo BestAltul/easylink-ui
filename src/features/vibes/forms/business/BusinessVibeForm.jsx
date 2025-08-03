@@ -318,9 +318,8 @@ export default function BusinessVibeForm({
                       }
                     />
                   ))}
-
               </div>
-            </>
+            </div>
           )}
 
           {activeTab === "menu" && (
@@ -328,7 +327,6 @@ export default function BusinessVibeForm({
               Add your menu information here.
             </div>
           )}
-
         </form>
       </div>
     </div>
