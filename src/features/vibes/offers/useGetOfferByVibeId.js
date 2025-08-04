@@ -5,9 +5,12 @@ export default function useGetOfferByVibeId(id, token) {
 
   useEffect(() => {
     fetch(`/api/v3/offers/vibe/${id}`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+      // headers: {
+      //   "Content-Type": "application/json",
+      //   Authorization: `Bearer ${token}`,
+      // },
+         headers: {
+        "Content-Type": "application/json",        
       },
     })
       .then((res) => res.json())
