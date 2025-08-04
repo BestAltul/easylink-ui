@@ -24,6 +24,7 @@ import InteractionsPageBasic from "./features/vibes/interactions/InteractionsPag
 import OfferForm from "./features/vibes/offers/OfferForm";
 import ViewOfferForm from "./features/vibes/offers/ViewOfferForm";
 import OfferTableUsers from "./features/vibes/offers/OffersTableForUsers";
+import CatalogForm from "./features/vibes/catalog/catalogForm";
 import "./i18n";
 
 function App() {
@@ -70,6 +71,7 @@ function App() {
         <Route path="/offers/:id" element={<OfferForm />} />
         <Route path="/offer-table-users" element={<OfferTableUsers />} />
         <Route path="/view-offer-form/:id" element={<ViewOfferForm />} />
+        <Route path="/catalog/new" element={<CatalogForm />} />
       </Routes>
       <Footer />
     </>

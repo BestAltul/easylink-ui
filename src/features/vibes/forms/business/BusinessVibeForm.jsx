@@ -273,8 +273,35 @@ export default function BusinessVibeForm({
           )}
 
           {activeTab === "menu" && (
-            <div className="alert alert-info">
-              Add your menu information here.
+            <div className="d-flex justify-content-start gap-2 mb-3">
+              <button
+                className="btn btn-outline-primary"
+                onClick={() =>
+                  navigate("/catalog/new", {
+                    state: {
+                      vibeId: initialData.id,
+                      returnTo: `/vibes/${initialData.id}`,
+                      tab: "menu",
+                    },
+                  })
+                }
+              >
+                Add item
+              </button>
+              <button
+                className="btn btn-outline-primary"
+                // onClick={() =>
+                //   navigate("/catalog/{id}/delete", {
+                //     state: {
+                //       vibeId: initialData.id,
+                //       returnTo: `/vibes/${initialData.id}`,
+                //       tab: "menu",
+                //     },
+                //   })
+                // }
+              >
+                Delete
+              </button>
             </div>
           )}
 
@@ -319,12 +346,6 @@ export default function BusinessVibeForm({
                     />
                   ))}
               </div>
-            </div>
-          )}
-
-          {activeTab === "menu" && (
-            <div className="alert alert-info">
-              Add your menu information here.
             </div>
           )}
         </form>
