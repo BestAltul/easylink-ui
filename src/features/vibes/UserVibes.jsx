@@ -62,6 +62,10 @@ export default function UserVibes() {
       <HeaderActions />
       {loading ? (
         <Loader />
+      ) : vibes.length === 0 ? (
+        <div className="text-center text-muted mt-4">
+          {t("myvibes.no_vibes") || "You have no Vibes yet."}
+        </div>
       ) : (
         <VibesList
           vibes={vibes}
