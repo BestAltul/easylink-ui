@@ -132,6 +132,16 @@ export function useStartAuthForm({
     }
   };
 
+  const resetForm = () => {
+    setEmail("");
+    setInputAnswer("");
+    setAnswersList([]);
+    setAuthResult("");
+    setCurrentStep(0);
+    setShowPassword(false);
+    setQuestions([]); 
+  };
+
   return {
     email,
     setEmail,
@@ -148,5 +158,6 @@ export function useStartAuthForm({
     handleNext,
     handleBack,
     handleKeyDown,
+    resetForm,
   };
 }

@@ -6,6 +6,7 @@ import { useStartAuthForm } from "./hooks/useStartAuthForm";
 import { AnimatePresence } from "framer-motion";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
+import { useEffect } from "react";
 
 import StepsNav from "./components/StepsNav";
 import ProgressBar from "./components/ProgressBar";
@@ -37,6 +38,7 @@ function StartAuth({ questions, setQuestions }) {
     handleNext,
     handleBack,
     handleKeyDown,
+    resetForm,
   } = useStartAuthForm({
     questions,
     setQuestions,
@@ -47,6 +49,10 @@ function StartAuth({ questions, setQuestions }) {
     redirectTo,
     user,
   });
+
+  useEffect(() => {
+    resetForm(); 
+  }, []);
 
   return (
     <section className="container mt-4">

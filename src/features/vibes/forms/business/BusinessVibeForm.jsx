@@ -320,15 +320,8 @@ export default function BusinessVibeForm({
                   ))}
 
               </div>
-            </>
-          )}
-
-          {activeTab === "menu" && (
-            <div className="alert alert-info">
-              Add your menu information here.
             </div>
           )}
-
         </form>
       </div>
     </div>

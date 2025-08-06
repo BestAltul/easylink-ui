@@ -19,12 +19,12 @@ export default function Profile() {
 
   const hasVibes = useHasVibes();
 
-  useEffect(() => {
-    if (!isAuthenticated) return;
-    if (hasVibes === false) {
-      navigate("/create-vibe?redirectBackTo=/profile");
-    }
-  }, [hasVibes, isAuthenticated, navigate]);
+  // useEffect(() => {
+  //   if (!isAuthenticated) return;
+  //   if (hasVibes === false) {
+  //     navigate("/create-vibe?redirectBackTo=/profile");
+  //   }
+  // }, [hasVibes, isAuthenticated, navigate]);
   return (
     <>
       {/* <Sidebar user={user} logout={logout} /> */}
