@@ -41,37 +41,38 @@ export default function VibePage() {
 
   return (
     <div className="container py-5 vibe-container">
-      <div className="d-flex align-items-center vibe-header">
-        <BackButton to="/my-vibes" labelKey="vibe.back" />
-        <h2 className="fw-bold vibe-heading">{t("vibe.title")}</h2>
-      </div>
+      <div className="vibe-header">
+        <BackButton className="vibe-back-button" to="/my-vibes" labelKey="vibe.back" />
 
-      <div className="vibe-top-buttons">
-        <button
-          className="btn btn-primary btn-sm d-flex align-items-center vibe-interaction-btn"
-          onClick={() => {
-            if (vibe.type === "BUSINESS") navigate(`/vibes/${id}/interactions`);
-            else navigate(`/vibes/${id}/interactions-basic`);
-          }}
-        >
-          <svg width="16" height="16" fill="none" stroke="#fff" strokeWidth="2" viewBox="0 0 20 20">
-            <circle cx="10" cy="10" r="6" />
-            <path d="M14 10h-4" />
-            <path d="M10 6v8" />
-          </svg>
-          {t("vibe.interactions")}
-        </button>
+        <h2 className="vibe-heading fw-bold">{t("vibe.title")}</h2>
 
-        <button
-          className="btn btn-light btn-sm d-flex align-items-center vibe-edit-btn"
-          onClick={() => setEditing(true)}
-        >
-          <svg width="18" height="18" fill="none" stroke="#2f57d7" strokeWidth="2" viewBox="0 0 20 20">
-            <path d="M4 13.5V16h2.5l7.6-7.6-2.5-2.5L4 13.5z" />
-            <path d="M13.7 5.3l1.1-1.1a1 1 0 0 1 1.4 1.4l-1.1 1.1" />
-          </svg>
-          {t("vibe.edit")}
-        </button>
+        <div className="vibe-top-buttons">
+          <button
+            className="btn btn-primary btn-sm d-flex align-items-center vibe-interaction-btn"
+            onClick={() => {
+              if (vibe.type === "BUSINESS") navigate(`/vibes/${id}/interactions`);
+              else navigate(`/vibes/${id}/interactions-basic`);
+            }}
+          >
+            <svg width="16" height="16" fill="none" stroke="#fff" strokeWidth="2" viewBox="0 0 20 20">
+              <circle cx="10" cy="10" r="6" />
+              <path d="M14 10h-4" />
+              <path d="M10 6v8" />
+            </svg>
+            {t("vibe.interactions")}
+          </button>
+
+          <button
+            className="btn btn-light btn-sm d-flex align-items-center vibe-edit-btn"
+            onClick={() => setEditing(true)}
+          >
+            <svg width="18" height="18" fill="none" stroke="#2f57d7" strokeWidth="2" viewBox="0 0 20 20">
+              <path d="M4 13.5V16h2.5l7.6-7.6-2.5-2.5L4 13.5z" />
+              <path d="M13.7 5.3l1.1-1.1a1 1 0 0 1 1.4 1.4l-1.1 1.1" />
+            </svg>
+            {t("vibe.edit")}
+          </button>
+        </div>
       </div>
 
       <div className="vibe-main">

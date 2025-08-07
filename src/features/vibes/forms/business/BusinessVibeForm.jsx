@@ -10,6 +10,8 @@ import { useBusinessVibeForm } from "./useBusinessVibeForm";
 import { useTranslation } from "react-i18next";
 import useGetOffersByVibeId from "../../../vibes/offers/useGetOfferByVibeId.js";
 import OfferCard from "../../../vibes/offers/OfferCard.jsx";
+import ContactTypeModal from "@/features/vibes/components/Modals/ContactTypeModal"
+import InfoBlockTypeModal from "@/features/vibes/components/Modals/InfoBlockTypeModal"
 
 export default function BusinessVibeForm({
   initialData = {},
@@ -323,6 +325,34 @@ export default function BusinessVibeForm({
             </div>
           )}
         </form>
+        {showModal && (
+          <ContactTypeModal
+            contacts={contacts}
+            onClose={() => setShowModal(false)}
+            onSelect={(typeKey) => {
+            addContact(typeKey);
+            setShowModal(false);
+            }}
+          />
+        )}  
+        {showBlockModal && (
+          <InfoBlockTypeModal
+            extraBlocks={extraBlocks}
+            onClose={() => setShowBlockModal(false)}
+            onSelect={(block) => {
+              setExtraBlocks([
+                ...extraBlocks,
+                {
+                  type: block.key,
+                  label: block.label,
+                  value: "",
+                  placeholder: block.placeholder,
+                },
+              ]);
+              setShowBlockModal(false);
+            }}
+          />
+        )}
       </div>
     </div>
   );
