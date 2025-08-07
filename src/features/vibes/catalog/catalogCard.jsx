@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useFileUpload } from "../catalog/useFileUpload";
 
 export default function CatalogCard({
   data = {},
@@ -10,10 +11,28 @@ export default function CatalogCard({
   const [description, setDescription] = useState(data.description || "");
   const [price, setPrice] = useState(data.price || "");
   const [image, setImage] = useState(data.image || "");
+  const [file, setFile] = useState(null);
+  const { uploadFile } = useFileUpload();
 
-  const handleSave = () => {
+  const handleSave = async () => {
+    let imageUrl = image;
+
+    if (file) {
+      try {
+        imageUrl = await uploadFile(file);
+      } catch (err) {
+        alert("Upload failed: " + err.message);
+        return;
+      }
+    }
+
     if (onSave) {
-      onSave({ title, description, price, image });
+      onSave({
+        title,
+        description,
+        price,
+        image: imageUrl,
+      });
     }
   };
 
@@ -78,13 +97,14 @@ export default function CatalogCard({
           capture="environment"
           style={{ display: "none" }}
           onChange={(e) => {
-            const file = e.target.files[0];
-            if (file) {
+            const selectedFile = e.target.files[0];
+            if (selectedFile) {
+              setFile(selectedFile);
               const reader = new FileReader();
               reader.onloadend = () => {
-                setImage(reader.result);
+                setImage(reader.result); // превью
               };
-              reader.readAsDataURL(file);
+              reader.readAsDataURL(selectedFile);
             }
           }}
         />
