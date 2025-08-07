@@ -1,15 +1,11 @@
-import { useFileUpload } from "./useFileUpload";
-
 export function useCreateItem() {
-  const { uploadFile } = useFileUpload();
-
-  const createItem = async ({ title, description, price, file, vibeId }) => {
-    let imageUrl = "";
-
-    if (file) {
-      imageUrl = await uploadFile(file);
-    }
-
+  const createItem = async ({
+    title,
+    description,
+    price,
+    imageUrl,
+    vibeId,
+  }) => {
     const token = localStorage.getItem("jwt");
 
     const res = await fetch("/api/v3/catalog", {
@@ -19,20 +15,19 @@ export function useCreateItem() {
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
-        vibeId,
         title,
         description,
-        imageUrl,
         price,
+        imageUrl,
+        vibeId,
       }),
     });
 
     if (!res.ok) {
-      const msg = await res.text();
-      throw new Error("Item creation failed: " + msg);
+      throw new Error("Item creation failed: " + (await res.text()));
     }
 
-    return await res.json(); // ItemResponse
+    return await res.json();
   };
 
   return { createItem };

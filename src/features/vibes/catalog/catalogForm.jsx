@@ -13,9 +13,16 @@ export default function CatalogForm() {
   const { createItem } = useCreateItem();
   const { items, loading } = useItems();
 
-  const handleSave = async ({ title, description, price, file }) => {
+  const handleSave = async ({ title, description, price, image }) => {
     try {
-      await createItem({ vibeId, title, description, file, price });
+      await createItem({
+        vibeId,
+        title,
+        description,
+        price,
+        imageUrl: image,
+        vibeId,
+      });
       navigate(returnTo || "/my-vibes", { state: { tab } });
     } catch (err) {
       alert(err.message);
