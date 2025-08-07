@@ -20,8 +20,7 @@ export default function CatalogForm() {
         title,
         description,
         price,
-        imageUrl: image,
-        vibeId,
+        imageUrl: image,        
       });
       navigate(returnTo || "/my-vibes", { state: { tab } });
     } catch (err) {
