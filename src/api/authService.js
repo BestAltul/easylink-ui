@@ -35,12 +35,23 @@ export async function signUpAPI(email, entriesList) {
     body: JSON.stringify({ email, entries: entriesList }),
   });
 
-  const message = await res.text();
+  const contentType = res.headers.get("content-type") || "";
+  let data = null;
+  let text = null;
 
   if (!res.ok) {
-    throw new Error(message || "Failed to sign up");
+    if (contentType.includes("application/json")) {
+      data = await res.json();
+    } else {
+      text = await res.text();
+    }
+
+    const error = new Error(data?.message || text || "Failed to sign up");
+    error.response = { data };
+    throw error;
   }
-  return message;
+
+  return res.text();
 }
 
 export async function checkAnswersAPI(email, answers, timezone) {

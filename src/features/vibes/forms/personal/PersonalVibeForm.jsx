@@ -6,13 +6,10 @@ import VibePreview from "../../components/VibePreview";
 import { FaGlobe } from "react-icons/fa";
 import { usePersonalVibeForm } from "./usePersonalVibeForm";
 import { useTranslation } from "react-i18next";
+
 import ContactTypeModal from "@/features/vibes/components/Modals/ContactTypeModal"
 import PersonalInfoBlockModal from "@/features/vibes/components/Modals/PersonalInfoBlockModal"
 
-const PERSONAL_INFO_BLOCKS = [
-  { key: "city", label: "City", placeholder: "Your city" },
-  { key: "birthday", label: "Birthday", placeholder: "YYYY-MM-DD" },
-];
 
 export default function PersonalVibeForm({ initialData = {}, mode = "create", onSave, onCancel }) {
   const navigate = useNavigate();
