@@ -10,6 +10,7 @@ import { useBusinessVibeForm } from "./useBusinessVibeForm";
 import { useTranslation } from "react-i18next";
 import useGetOffersByVibeId from "../../../vibes/offers/useGetOfferByVibeId.js";
 import OfferCard from "../../../vibes/offers/OfferCard.jsx";
+import useItemsByVibeId from "../../catalog/useItemByVibeId.js";
 
 export default function BusinessVibeForm({
   initialData = {},
@@ -26,6 +27,12 @@ export default function BusinessVibeForm({
   const token = localStorage.getItem("jwt");
 
   const offers = useGetOffersByVibeId(initialData.id, token);
+
+  const {
+    items,
+    loading: loadingItems,
+    reload: reloadItems,
+  } = useItemsByVibeId(initialData?.id, token);
 
   const {
     name,
@@ -51,7 +58,9 @@ export default function BusinessVibeForm({
     handleSubmit,
   } = useBusinessVibeForm({ navigate, initialData, mode, onSave });
 
-  // console.log("useGetOfferByVibeId");
+  useEffect(() => {
+    if (activeTab === "menu") reloadItems();
+  }, [activeTab]);
 
   return (
     <div
@@ -273,35 +282,63 @@ export default function BusinessVibeForm({
           )}
 
           {activeTab === "menu" && (
-            <div className="d-flex justify-content-start gap-2 mb-3">
-              <button
-                className="btn btn-outline-primary"
-                onClick={() =>
-                  navigate("/catalog/new", {
-                    state: {
-                      vibeId: initialData.id,
-                      returnTo: `/vibes/${initialData.id}`,
-                      tab: "menu",
-                    },
-                  })
-                }
-              >
-                Add item
-              </button>
-              <button
-                className="btn btn-outline-primary"
-                // onClick={() =>
-                //   navigate("/catalog/{id}/delete", {
-                //     state: {
-                //       vibeId: initialData.id,
-                //       returnTo: `/vibes/${initialData.id}`,
-                //       tab: "menu",
-                //     },
-                //   })
-                // }
-              >
-                Delete
-              </button>
+            <div className="d-flex flex-column gap-3 mb-3 w-100">
+              <div className="d-flex justify-content-start gap-2">
+                <button
+                  className="btn btn-outline-primary"
+                  onClick={() =>
+                    navigate("/catalog/new", {
+                      state: {
+                        vibeId: initialData.id,
+                        returnTo: `/vibes/${initialData.id}`,
+                        tab: "menu",
+                      },
+                    })
+                  }
+                >
+                  Add item
+                </button>
+                <button className="btn btn-outline-primary" disabled>
+                  Delete
+                </button>
+              </div>
+
+              {loadingItems ? (
+                <div>Loading...</div>
+              ) : items.length === 0 ? (
+                <div className="text-muted">No items yet</div>
+              ) : (
+                <ul className="list-group">
+                  {items.map((it) => (
+                    <li
+                      key={it.id}
+                      className="list-group-item d-flex justify-content-between align-items-center"
+                    >
+                      <div>
+                        <div className="fw-bold">{it.title}</div>
+                        <div className="small text-muted">
+                          {it.price ? `$${it.price}` : "No price"}
+                          {it.description ? ` • ${it.description}` : ""}
+                        </div>
+                      </div>
+                      <button
+                        className="btn btn-sm btn-outline-secondary"
+                        onClick={() =>
+                          navigate(`/catalog/${it.id}/edit`, {
+                            state: {
+                              vibeId: initialData.id,
+                              returnTo: `/vibes/${initialData.id}`,
+                              tab: "menu",
+                            },
+                          })
+                        }
+                      >
+                        Edit
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
           )}
 

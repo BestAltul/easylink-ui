@@ -72,6 +72,7 @@ function App() {
         <Route path="/offer-table-users" element={<OfferTableUsers />} />
         <Route path="/view-offer-form/:id" element={<ViewOfferForm />} />
         <Route path="/catalog/new" element={<CatalogForm />} />
+        <Route path="/catalog/:id/edit" element={<CatalogForm />} />
       </Routes>
       <Footer />
     </>
