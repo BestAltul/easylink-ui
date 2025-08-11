@@ -91,7 +91,10 @@
     "toast_fill_all": "Please fill in all fields",
     "toast_email_required": "Email is required",
     "toast_error": "Registration error",
-    "toast_fail": "Registration failed"
+    "toast_fail": "Registration failed",
+    "unknown_error": "Something went wrong. Please try again.",
+    "verification_already_sent": "Verification already sent. Please check your email.",
+    "account_already_exists": "This account already exists. Try logging in."
   },
   "auth": {
     "title": "Sign In",
@@ -100,9 +103,9 @@
     "email_not_found": "❌ Email not found",
     "error_verifying_email": "⚠️ Error verifying email",
     "answer_exactly": "❗ Please enter exactly {{count}} answers.",
-    "success": "Success",
+    "success": "Success!",
     "blocked": "🚫 Blocked: {{reason}}",
-    "wrong_answers": "❗ Wrong answers: {{reason}}",
+    "wrong_answers": "❗ Error: {{reason}}",
     "general_error": "❌ Error: {{status}}",
     "error_checking_answers": "⚠️ Error on checking answers: {{error}}",
     "q_number": "Q{{num}}",

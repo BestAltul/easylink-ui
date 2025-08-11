@@ -7,10 +7,9 @@ import { FaGlobe } from "react-icons/fa";
 import { usePersonalVibeForm } from "./usePersonalVibeForm";
 import { useTranslation } from "react-i18next";
 
-const PERSONAL_INFO_BLOCKS = [
-  { key: "city", label: "City", placeholder: "Your city" },
-  { key: "birthday", label: "Birthday", placeholder: "YYYY-MM-DD" },
-];
+import ContactTypeModal from "@/features/vibes/components/Modals/ContactTypeModal"
+import PersonalInfoBlockModal from "@/features/vibes/components/Modals/PersonalInfoBlockModal"
+
 
 export default function PersonalVibeForm({ initialData = {}, mode = "create", onSave, onCancel }) {
   const navigate = useNavigate();
@@ -194,85 +193,30 @@ export default function PersonalVibeForm({ initialData = {}, mode = "create", on
         </form>
 
         {showModal && (
-          <div className="modal d-block" tabIndex={-1} style={{ background: "rgba(0,0,0,0.25)", position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh", zIndex: 1000 }}>
-            <div className="modal-dialog">
-              <div className="modal-content">
-                <div className="modal-header">
-                  <h5 className="modal-title">{t("personal_form.modal_contact_title")}</h5>
-                </div>
-                <div className="modal-body d-flex flex-wrap gap-2">
-                  {CONTACT_TYPES.map((type) => (
-                    <button
-                      key={type.key}
-                      className="btn btn-light"
-                      style={{
-                        width: 110,
-                        height: 70,
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        justifyContent: "center"
-                      }}
-                      onClick={() => addContact(type.key)}
-                      disabled={contacts.some((c) => c.type === type.key)}
-                    >
-                      <span style={{ fontSize: 28 }}>{iconMap[type.key] || <FaGlobe />}</span>
-                      <span style={{ fontSize: 14 }}>{type.label}</span>
-                    </button>
-                  ))}
-                </div>
-                <div className="modal-footer">
-                  <button className="btn btn-secondary" onClick={() => setShowModal(false)}>
-                    {t("personal_form.cancel")}
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+          <ContactTypeModal
+            contacts={contacts}
+            onClose={() => setShowModal(false)}
+            onSelect={(typeKey) => {
+            addContact(typeKey);
+            setShowModal(false);
+            }}
+          />
+        )} 
 
         {showBlockModal && (
-          <div className="modal d-block" tabIndex={-1} style={{ background: "rgba(0,0,0,0.22)", position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh", zIndex: 1010 }}>
-            <div className="modal-dialog">
-              <div className="modal-content">
-                <div className="modal-header">
-                  <h5 className="modal-title">{t("personal_form.modal_info_title")}</h5>
-                </div>
-                <div className="modal-body d-flex flex-wrap gap-2">
-                  {PERSONAL_INFO_BLOCKS.map((block) => (
-                    <button
-                      key={block.key}
-                      className="btn btn-light"
-                      style={{
-                        minWidth: 110,
-                        height: 50,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center"
-                      }}
-                      onClick={() => {
-                        setExtraBlocks([...extraBlocks, {
-                          type: block.key,
-                          label: block.label,
-                          value: "",
-                          placeholder: block.placeholder
-                        }]);
-                        setShowBlockModal(false);
-                      }}
-                      disabled={extraBlocks.some((b) => b.type === block.key)}
-                    >
-                      {block.label}
-                    </button>
-                  ))}
-                </div>
-                <div className="modal-footer">
-                  <button className="btn btn-secondary" onClick={() => setShowBlockModal(false)}>
-                    {t("personal_form.cancel")}
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
+          <PersonalInfoBlockModal
+            extraBlocks={extraBlocks}
+            onClose={() => setShowBlockModal(false)}
+            onSelect={(block) => {
+              setExtraBlocks([...extraBlocks, {
+                type: block.key,
+                label: block.label,
+                value: "",
+                placeholder: block.placeholder
+              }]);
+              setShowBlockModal(false);
+            }}
+          />
         )}
       </div>
 

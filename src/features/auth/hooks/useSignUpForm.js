@@ -7,7 +7,7 @@ export function useSignUpForm(navigate, t) {
   const [questions, setQuestions] = useState([]);
   const [questionTemplates, setQuestionTemplates] = useState([]);
   const [step, setStep] = useState(1);
-  const [totalQuestions, setTotalQuestions] = useState(1);
+  const [totalQuestions, setTotalQuestions] = useState(3);
 
   const [selectedQuestion, setSelectedQuestion] = useState("");
   const [customQuestionVisible, setCustomQuestionVisible] = useState(false);
@@ -90,24 +90,24 @@ export function useSignUpForm(navigate, t) {
   };
 
   const handleSignup = async () => {
-    if (!email.trim()) {
-      toast.error(t("signup.toast_email_required"), { position: "top-right" });
-      return;
-    }
+  if (!email.trim()) {
+    toast.error(t("signup.toast_email_required"), { position: "top-right" });
+    return;
+  }
+  try {
+    const message = await signUpAPI(email, entriesList);
+    toast.success(message, { position: "top-right" });
+    navigate("/email-verification-sent?email=" + encodeURIComponent(email));
+  } catch (error) {
+      const messageKey = error.response?.data?.message || error.message;
 
-    try {
-      const message = await signUpAPI(email, entriesList);
-      toast.success(message, { position: "top-right" });
-      navigate("/signin");
-    } catch (error) {
-      const serverMessage =
-        error.response?.data?.message ||
-        error.message ||
-        t("signup.toast_fail");
-
-      toast.error(serverMessage, { position: "top-right" });
+      if (messageKey?.startsWith("signup.")) {
+        toast.error(t(messageKey), { position: "top-right" });
+      } else {
+        toast.error(messageKey || t("auth.general_error"), { position: "top-right" });
+      }
     }
-  };
+};
 
   return {
     email,

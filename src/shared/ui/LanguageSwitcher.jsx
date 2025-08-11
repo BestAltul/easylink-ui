@@ -18,11 +18,6 @@ const LANGUAGES = [
     label: "Français",
     flag: <ReactCountryFlag countryCode="FR" svg style={{ width: "1.3em", height: "1.3em", marginRight: 6 }} />
   }
-  // {
-  //   code: "es",
-  //   label: "Español",
-  //   flag: <ReactCountryFlag countryCode="ES" svg style={{ width: "1.3em", height: "1.3em", marginRight: 6 }} />
-  // }
 ];
 
 

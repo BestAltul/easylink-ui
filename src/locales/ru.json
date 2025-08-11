@@ -86,7 +86,10 @@
     "toast_fill_all": "Заполните все поля",
     "toast_email_required": "Необходимо ввести e-mail",
     "toast_error": "Ошибка регистрации",
-    "toast_fail": "Регистрация не удалась"
+    "toast_fail": "Регистрация не удалась",
+    "unknown_error": "Что-то пошло не так, пропробуйте позже!",
+    "verification_already_sent": "Письмо уже отправлено. Проверьте почту.",
+    "account_already_exists": "Аккаунт уже существует. Попробуйте войти."
   },
   "auth": {
     "title": "Вход",
