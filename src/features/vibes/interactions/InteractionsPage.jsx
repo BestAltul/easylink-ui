@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import FollowingTable from "./FollowingTable";
-import OffersTable from "./OffersTable";
-import useGetOfferByVibeId from "./useGetOfferByVibeId";
+import OffersTable from "../offers/OffersTable";
+import useGetOfferByVibeId from "../offers/useGetOfferByVibeId";
 import useFollowing from "../interactions/useFollowing";
 
 export default function InteractionsPage() {

@@ -19,16 +19,18 @@ export default function Profile() {
 
   const hasVibes = useHasVibes();
 
-  useEffect(() => {
-    if (!isAuthenticated) return;
-    if (hasVibes === false) {
-      navigate("/create-vibe?redirectBackTo=/profile");
-    }
-  }, [hasVibes, isAuthenticated, navigate]);
+  // useEffect(() => {
+  //   if (!isAuthenticated) return;
+  //   if (hasVibes === false) {
+  //     navigate("/create-vibe?redirectBackTo=/profile");
+  //   }
+  // }, [hasVibes, isAuthenticated, navigate]);
   return (
     <>
-      <Sidebar user={user} logout={logout} />
-      <main className="py-5 px-4" style={{ marginLeft: "60px" }}>
+      {/* <Sidebar user={user} logout={logout} /> */}
+
+      {/* <main className="py-5 px-4" style={{ marginLeft: "60px" }}> */}
+      <main className="py-5 px-4">
         <div className="mx-auto" style={{ maxWidth: "1200px" }}>
           <div className="text-center bg-light p-5 rounded shadow mb-5 animate-slideUp">
             <h2 className="mb-4">

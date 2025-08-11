@@ -1,78 +1,84 @@
 import { useState } from "react";
-import { createVibe } from "../../vibeService";
+import { createVibe } from "@/api/vibeApi";
 
-export function useEventVibeForm(navigate) {
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [photoFile, setPhotoFile] = useState(null);
-  const [contacts, setContacts] = useState([]);
+export function useEventVibeForm({ navigate, initialData = {}, mode = "create", onSave }) {
+  const [name, setName] = useState(initialData.name || "");
+  const [description, setDescription] = useState(initialData.description || "");
+  const [photoFile, setPhotoFile] = useState(initialData.photo || null);
+  const [contacts, setContacts] = useState(initialData.contacts || []);
+  const [extraBlocks, setExtraBlocks] = useState(initialData.extraBlocks || []);
   const [showModal, setShowModal] = useState(false);
-  const [extraBlocks, setExtraBlocks] = useState([]);
   const [showBlockModal, setShowBlockModal] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // Contacts
   const addContact = (type) => {
     if (contacts.some((c) => c.type === type)) return setShowModal(false);
     setContacts([...contacts, { type, value: "" }]);
     setShowModal(false);
   };
+
   const handleContactChange = (i, val) => {
     const updated = [...contacts];
     updated[i].value = val;
     setContacts(updated);
   };
+
   const removeContact = (i) => {
     const updated = [...contacts];
     updated.splice(i, 1);
     setContacts(updated);
   };
 
-  // Info blocks
   const handleBlockChange = (i, val) => {
     const updated = [...extraBlocks];
     updated[i].value = val;
     setExtraBlocks(updated);
   };
+
   const removeBlock = (i) => {
     const updated = [...extraBlocks];
     updated.splice(i, 1);
     setExtraBlocks(updated);
   };
 
-  // Submit
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const fieldsDTO = [
-      { type: "name", value: name, label: "Name" },
       ...contacts.map((c) => ({
+        ...(c.id ? { id: c.id } : {}),
         type: c.type,
         value: c.value,
         label: c.type,
       })),
       ...extraBlocks.map((b) => ({
+        ...(b.id ? { id: b.id } : {}),
         type: b.type,
-        value: b.value,
+        value: typeof b.value === "object" ? JSON.stringify(b.value) : b.value,
         label: b.label || null,
       })),
     ];
 
     const dto = {
+      id: initialData.id,
       name,
       description,
-      type: "EVENT",
+      type: "OTHER", 
       fieldsDTO,
     };
 
     try {
       setLoading(true);
-      const token = localStorage.getItem("jwt");
-      await createVibe(dto, token);
-      alert("Event Vibe created!");
-      navigate("/my-vibes");
+      if (mode === "edit" && onSave) {
+        await onSave(dto); 
+      } else {
+        const token = localStorage.getItem("jwt");
+        await createVibe(dto, token); 
+        alert("Vibe created!");
+        navigate("/my-vibes");
+      }
     } catch (err) {
-      alert("Error creating Vibe");
+      alert("Error saving Vibe");
     } finally {
       setLoading(false);
     }

@@ -15,7 +15,6 @@ export default function StepEmail({ t, form }) {
           value={form.email}
           onChange={form.handleEmailChange}
           onBlur={() => form.setEmailTouched(true)}
-          autoFocus
         />
         {(!form.isEmailValid && form.email.trim() && form.emailTouched) && (
           <span className="input-group-text bg-white border-danger">

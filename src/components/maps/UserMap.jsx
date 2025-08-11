@@ -38,8 +38,8 @@ export default function UserMap({ onVibeSelect }) {
           : `<span style="color:#355b99;font-weight:700;font-size:20px;">${vibe.name[0] || "?"}</span>`;
 
         el.onclick = () => {
-          setPopupVibe(vibe);          // Открыть мини-превью над картой
-          onVibeSelect && onVibeSelect(vibe); // Открыть детали справа
+          setPopupVibe(vibe);         
+          onVibeSelect && onVibeSelect(vibe); 
         };
 
         new mapboxgl.Marker(el)
@@ -56,7 +56,7 @@ export default function UserMap({ onVibeSelect }) {
     };
   }, [onVibeSelect]);
 
-  // Находим координаты popup'а если выбран вайб
+
   const popupCoords = popupVibe ? [popupVibe.lng, popupVibe.lat] : null;
 
   return (
@@ -95,7 +95,6 @@ export default function UserMap({ onVibeSelect }) {
           </div>
         </div>
       )}
-      {/* --- Стили для маркеров --- */}
       <style>{`
         .vibe-marker:hover {
           background: linear-gradient(135deg, #637bfd, #bfe9ff 90%);

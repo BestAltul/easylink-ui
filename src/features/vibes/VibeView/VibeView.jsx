@@ -18,9 +18,12 @@ export default function VibeView() {
     setLoading(true);
 
     fetch(`/api/v3/vibes/${id}`, {
-      headers: {
-        "Content-Type": "application/json",
-        ...(token && { Authorization: `Bearer ${token}` }),
+      // headers: {
+      //   "Content-Type": "application/json",
+      //   ...(token && { Authorization: `Bearer ${token}` }),
+      // },
+            headers: {
+        "Content-Type": "application/json",        
       },
     })
       .then((res) => (res.ok ? res.json() : Promise.reject(res)))

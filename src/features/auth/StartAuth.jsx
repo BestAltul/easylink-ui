@@ -6,6 +6,7 @@ import { useStartAuthForm } from "./hooks/useStartAuthForm";
 import { AnimatePresence } from "framer-motion";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
+import { useEffect } from "react";
 
 import StepsNav from "./components/StepsNav";
 import ProgressBar from "./components/ProgressBar";
@@ -37,6 +38,7 @@ function StartAuth({ questions, setQuestions }) {
     handleNext,
     handleBack,
     handleKeyDown,
+    resetForm,
   } = useStartAuthForm({
     questions,
     setQuestions,
@@ -48,23 +50,36 @@ function StartAuth({ questions, setQuestions }) {
     user,
   });
 
+  useEffect(() => {
+    resetForm(); 
+  }, []);
+
   return (
     <section className="container mt-4">
       <h2 className="mb-4">{t("auth.title")}</h2>
 
       <div className="mb-3">
-        <label className="form-label">{t("auth.email_label")}</label>
-        <input
-          type="email"
-          className="form-control shadow-sm"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          onBlur={() => verifyEmail(email)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") verifyEmail(email);
-          }}
-          placeholder={t("auth.email_placeholder")}
-        />
+        <div className="d-flex align-items-center">
+          <input
+            type="email"
+            className="form-control shadow-sm"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") verifyEmail(email);
+            }}
+            placeholder="Enter your email"
+            style={{ maxWidth: "400px" }}
+          />
+
+          <button
+            type="button"
+            className="btn btn-primary ms-2"
+            onClick={() => verifyEmail(email)}
+          >
+            Next
+          </button>
+        </div>
       </div>
 
       {Array.isArray(questions) && questions.length > 0 && (

@@ -32,17 +32,17 @@ export function useStartAuthForm({
 
     try {
       const data = await verifyEmailAPI(inputEmail);
-      if (data === null) {
-        setQuestions([]);
-        setAnswersList([]);
-        toast.error(t("auth.email_not_found"), { position: "top-right" });
-      } else {
-        setQuestions(data);
-        setAnswersList(new Array(data.length).fill(""));
-        setCurrentStep(0);
-      }
-    } catch {
-      toast.error(t("auth.error_verifying_email"), { position: "top-right" });
+
+      setQuestions(data);
+      setAnswersList(new Array(data.length).fill(""));
+      setCurrentStep(0);
+    } catch (error) {
+      const msg =
+        typeof error.message === "string"
+          ? error.message
+          : t("auth.error_verifying_email");
+
+      toast.error(msg, { position: "top-right" });
     }
   };
 
@@ -132,6 +132,16 @@ export function useStartAuthForm({
     }
   };
 
+  const resetForm = () => {
+    setEmail("");
+    setInputAnswer("");
+    setAnswersList([]);
+    setAuthResult("");
+    setCurrentStep(0);
+    setShowPassword(false);
+    setQuestions([]); 
+  };
+
   return {
     email,
     setEmail,
@@ -148,5 +158,6 @@ export function useStartAuthForm({
     handleNext,
     handleBack,
     handleKeyDown,
+    resetForm,
   };
 }

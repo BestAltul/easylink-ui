@@ -20,9 +20,7 @@ export function useSignUpForm(navigate, t) {
   const [subStep, setSubStep] = useState(0);
 
   const isEmailValid =
-    email.trim().length === 0
-      ? true
-      : /^\S+@\S+\.\S+$/.test(email.trim());
+    email.trim().length === 0 ? true : /^\S+@\S+\.\S+$/.test(email.trim());
 
   useEffect(() => {
     fetch("/api/v3/auth/question-templates")
@@ -56,7 +54,11 @@ export function useSignUpForm(navigate, t) {
             predefined: false,
             createdAt: new Date().toISOString(),
           }
-        : { text: selectedQuestion, predefined: true, createdAt: new Date().toISOString() };
+        : {
+            text: selectedQuestion,
+            predefined: true,
+            createdAt: new Date().toISOString(),
+          };
 
     const newEntry = {
       realQuestion: questionTemplate,
@@ -88,19 +90,24 @@ export function useSignUpForm(navigate, t) {
   };
 
   const handleSignup = async () => {
-    if (!email.trim()) {
-      toast.error(t("signup.toast_email_required"), { position: "top-right" });
-      return;
-    }
+  if (!email.trim()) {
+    toast.error(t("signup.toast_email_required"), { position: "top-right" });
+    return;
+  }
+  try {
+    const message = await signUpAPI(email, entriesList);
+    toast.success(message, { position: "top-right" });
+    navigate("/email-verification-sent?email=" + encodeURIComponent(email));
+  } catch (error) {
+      const messageKey = error.response?.data?.message || error.message;
 
-    try {
-      const message = await signUpAPI(email, entriesList);
-      toast.success(message, { position: "top-right" });
-      navigate("/signin");
-    } catch (error) {
-      toast.error(error.message || t("signup.toast_fail"), { position: "top-right" });
+      if (messageKey?.startsWith("signup.")) {
+        toast.error(t(messageKey), { position: "top-right" });
+      } else {
+        toast.error(messageKey || t("auth.general_error"), { position: "top-right" });
+      }
     }
-  };
+};
 
   return {
     email,

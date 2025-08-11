@@ -10,12 +10,10 @@ import "./i18n";
 
 // ===== Features/Pages imports =====
 import Profile from "./features/profile/Profile";
-import Settings from "./features/profile/Settings";
 import SignUp from "./features/auth/SignUp";
 import StartAuth from "./features/auth/StartAuth";
 import Home from "./pages/Home";
 import About from "./pages/About";
-import UserMapPage from "./pages/UserMapPage";
 import Review from "./features/review/Review";
 import CreateVibe from "./features/vibes/forms/CreateVibe";
 import UserVibes from "./features/vibes/UserVibes";
@@ -23,9 +21,15 @@ import VibePage from "./features/vibes/VibePage";
 import VibeView from "./features/vibes/VibeView/VibeView";
 import InteractionsPage from "./features/vibes/interactions/InteractionsPage";
 import InteractionsPageBasic from "./features/vibes/interactions/InteractionsPageBasic";
-import OfferForm from "./features/vibes/interactions/OfferForm";
-import ViewOfferForm from "./features/vibes/interactions//ViewOfferForm";
-import OfferTableUsers from "./features/vibes/interactions//OffersTableForUsers";
+import OfferForm from "./features/vibes/offers/OfferForm";
+import ViewOfferForm from "./features/vibes/offers/ViewOfferForm";
+import OfferTableUsers from "./features/vibes/offers/OffersTableForUsers";
+
+import EmailVerificationSent from "@/features/auth/EmailVerificationSent";
+import EmailVerified from "@/features/auth/EmailVerified"; 
+
+import CatalogForm from "./features/vibes/catalog/catalogForm";
+
 import "./i18n";
 
 function App() {
@@ -59,8 +63,6 @@ function App() {
         <Route path="/login" element={<Navigate to="/signin" />} />
         <Route path="/review" element={<Review />} />
         <Route path="/create-vibe" element={<CreateVibe />} />
-        <Route path="/settings" element={<Settings />} />
-        <Route path="/map" element={<UserMapPage />} />
         <Route path="/my-vibes" element={<UserVibes />} />
         <Route path="/vibes" element={<UserVibes />} />
         <Route path="/vibes/:id" element={<VibePage />} />
@@ -74,6 +76,13 @@ function App() {
         <Route path="/offers/:id" element={<OfferForm />} />
         <Route path="/offer-table-users" element={<OfferTableUsers />} />
         <Route path="/view-offer-form/:id" element={<ViewOfferForm />} />
+
+        <Route path="/email-verification-sent" element={<EmailVerificationSent />} />
+        <Route path="/email-verified" element={<EmailVerified />} />
+
+        <Route path="/catalog/new" element={<CatalogForm />} />
+        <Route path="/catalog/:id/edit" element={<CatalogForm />} />
+
       </Routes>
       <Footer />
     </>
