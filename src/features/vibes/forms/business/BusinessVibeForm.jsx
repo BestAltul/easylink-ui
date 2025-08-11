@@ -10,8 +10,12 @@ import { useBusinessVibeForm } from "./useBusinessVibeForm";
 import { useTranslation } from "react-i18next";
 import useGetOffersByVibeId from "../../../vibes/offers/useGetOfferByVibeId.js";
 import OfferCard from "../../../vibes/offers/OfferCard.jsx";
+
 import ContactTypeModal from "@/features/vibes/components/Modals/ContactTypeModal"
 import InfoBlockTypeModal from "@/features/vibes/components/Modals/InfoBlockTypeModal"
+
+import useItemsByVibeId from "../../catalog/useItemByVibeId.js";
+
 
 export default function BusinessVibeForm({
   initialData = {},
@@ -28,6 +32,14 @@ export default function BusinessVibeForm({
   const token = localStorage.getItem("jwt");
 
   const offers = useGetOffersByVibeId(initialData.id, token);
+
+  const {
+    items,
+    loading: loadingItems,
+    reload: reloadItems,
+  } = useItemsByVibeId(initialData?.id, token);
+
+  const itemIds = items.map((x) => x.id);
 
   const {
     name,
@@ -53,7 +65,17 @@ export default function BusinessVibeForm({
     handleSubmit,
   } = useBusinessVibeForm({ navigate, initialData, mode, onSave });
 
-  // console.log("useGetOfferByVibeId");
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+    if (tab === "menu") reloadItems?.();
+  };
+
+  useEffect(() => {
+    if (location.state?.tab && location.state.tab !== activeTab) {
+      handleTabChange(location.state.tab);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.state?.tab]);
 
   return (
     <div
@@ -73,7 +95,7 @@ export default function BusinessVibeForm({
                 className={`nav-link w-100 ${
                   activeTab === "main" ? "active" : ""
                 }`}
-                onClick={() => setActiveTab("main")}
+                onClick={() => handleTabChange("main")}
               >
                 Main
               </button>
@@ -84,7 +106,7 @@ export default function BusinessVibeForm({
                 className={`nav-link w-100 ${
                   activeTab === "menu" ? "active" : ""
                 }`}
-                onClick={() => setActiveTab("menu")}
+                onClick={() => handleTabChange("menu")}
               >
                 Menu
               </button>
@@ -95,13 +117,14 @@ export default function BusinessVibeForm({
                 className={`nav-link w-100 ${
                   activeTab === "offers" ? "active" : ""
                 }`}
-                onClick={() => setActiveTab("offers")}
+                onClick={() => handleTabChange("offers")}
               >
                 Offers
               </button>
             </li>
           </ul>
 
+          {/* ======= MAIN TAB ======= */}
           {activeTab === "main" && (
             <>
               <div className="mb-3">
@@ -274,16 +297,100 @@ export default function BusinessVibeForm({
             </>
           )}
 
+          {/* ======= MENU TAB======= */}
           {activeTab === "menu" && (
-            <div className="alert alert-info">
-              Add your menu information here.
+            <div className="d-flex flex-column gap-3 mb-3 w-100">
+              <div className="d-flex justify-content-start gap-2">
+                <button
+                  type="button"
+                  className="btn btn-outline-primary"
+                  onClick={() =>
+                    navigate("/catalog/new", {
+                      state: {
+                        vibeId: initialData.id,
+                        returnTo: `/vibes/${initialData.id}`,
+                        tab: "menu",
+                      },
+                    })
+                  }
+                >
+                  Add item
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-outline-primary"
+                  disabled
+                >
+                  Delete
+                </button>
+              </div>
+
+              {loadingItems ? (
+                <div>Loading...</div>
+              ) : items.length === 0 ? (
+                <div className="text-muted">No items yet</div>
+              ) : (
+                <div className="row row-cols-2 g-3">
+                  {items.map((it) => (
+                    <div className="col" key={it.id}>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          navigate(`/catalog/${it.id}/edit`, {
+                            state: {
+                              vibeId: initialData.id,
+                              returnTo: `/vibes/${initialData.id}`,
+                              tab: "menu",
+                              itemIds,
+                              currentIndex: itemIds.indexOf(it.id),
+                            },
+                          })
+                        }
+                        className="p-0 border-0 bg-transparent w-100"
+                        style={{ cursor: "pointer" }}
+                        title="Edit item"
+                      >
+                        <div className="card overflow-hidden shadow-sm">
+                          <div className="ratio ratio-1x1">
+                            {it.imageUrl ? (
+                              <img
+                                src={it.imageUrl}
+                                alt={it.title || "Item"}
+                                className="w-100 h-100 object-fit-cover"
+                                loading="lazy"
+                              />
+                            ) : (
+                              <div className="d-flex align-items-center justify-content-center bg-light">
+                                <span className="text-muted small">
+                                  No image
+                                </span>
+                              </div>
+                            )}
+                          </div>
+
+                          <div
+                            className="card-img-overlay d-flex align-items-end p-2"
+                            style={{ pointerEvents: "none" }}
+                          >
+                            <div className="w-100 px-2 py-1 rounded-3 bg-dark bg-opacity-50 text-white text-truncate">
+                              {it.title || "Untitled"}
+                            </div>
+                          </div>
+                        </div>
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
 
+          {/* ======= OFFERS TAB ======= */}
           {activeTab === "offers" && (
             <div className="w-100">
               <div className="d-flex justify-content-start gap-2 mb-3">
                 <button
+                  type="button"
                   className="btn btn-outline-primary"
                   onClick={() =>
                     navigate("/offers/new", {
@@ -297,10 +404,6 @@ export default function BusinessVibeForm({
                 >
                   + Add Offer
                 </button>
-
-                {/* <button className="btn btn-outline-danger" disabled>
-                  Disable
-                </button> */}
               </div>
 
               <div className="d-grid gap-3">
@@ -320,7 +423,6 @@ export default function BusinessVibeForm({
                       }
                     />
                   ))}
-
               </div>
             </div>
           )}

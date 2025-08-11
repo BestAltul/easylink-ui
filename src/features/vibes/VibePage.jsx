@@ -31,7 +31,8 @@ export default function VibePage() {
 
   const handleSave = useVibeSave({ token, vibe, setVibe, setEditing });
 
-  if (loading) return <div className="text-center my-5">{t("vibe.loading")}</div>;
+  if (loading)
+    return <div className="text-center my-5">{t("vibe.loading")}</div>;
   if (!vibe)
     return (
       <div className="alert alert-danger my-5 text-center">
@@ -43,6 +44,7 @@ export default function VibePage() {
     <div className="container py-5 vibe-container">
       <div className="vibe-header">
         <BackButton className="vibe-back-button" to="/my-vibes" labelKey="vibe.back" />
+
 
         <h2 className="vibe-heading fw-bold">{t("vibe.title")}</h2>
 
@@ -73,37 +75,39 @@ export default function VibePage() {
             {t("vibe.edit")}
           </button>
         </div>
+
+
       </div>
 
       <div className="vibe-main">
-      {editing ? (
-        <VibeFormRenderer
-          type={vibe.type}
-          initialData={{
-            id: vibe.id,
-            name,
-            description,
-            contacts,
-            extraBlocks,
-            photo: vibe.photo,
-          }}
-          onCancel={() => setEditing(false)}
-          onSave={handleSave}
-        />
-      ) : (
-        <VibePreview
-          id={vibe.id}
-          name={name}
-          description={description}
-          photoFile={vibe.photo}
-          contacts={contacts}
-          type={vibe.type}
-          extraBlocks={extraBlocks}
-          vibeId={vibe.id}
-          visible={vibe.visible}
-          publicCode={publicCode}
-        />
-      )}      
+        {editing ? (
+          <VibeFormRenderer
+            type={vibe.type}
+            initialData={{
+              id: vibe.id,
+              name,
+              description,
+              contacts,
+              extraBlocks,
+              photo: vibe.photo,
+            }}
+            onCancel={() => setEditing(false)}
+            onSave={handleSave}
+          />
+        ) : (
+          <VibePreview
+            id={vibe.id}
+            name={name}
+            description={description}
+            photoFile={vibe.photo}
+            contacts={contacts}
+            type={vibe.type}
+            extraBlocks={extraBlocks}
+            vibeId={vibe.id}
+            visible={vibe.visible}
+            publicCode={publicCode}
+          />
+        )}
       </div>
     </div>
   );
