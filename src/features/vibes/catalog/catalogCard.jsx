@@ -1,117 +1,136 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useFileUpload } from "../catalog/useFileUpload";
 
 export default function CatalogCard({
   data = {},
-  mode = "view", // "view" | "create" | "edit"
+  mode = "view",
   onSave,
   onCancel,
 }) {
   const [title, setTitle] = useState(data.title || "");
   const [description, setDescription] = useState(data.description || "");
-  const [price, setPrice] = useState(data.price || "");
-  const [image, setImage] = useState(data.image || "");
+  const [price, setPrice] = useState(
+    typeof data.price === "number" ? String(data.price) : data.price || ""
+  );
+  const [image, setImage] = useState(data.image || data.imageUrl || "");
   const [file, setFile] = useState(null);
   const { uploadFile } = useFileUpload();
 
+  const readOnly = mode === "view";
+
+  const resolveServerUrl = (path) => {
+    if (!path) return "";
+    if (path.startsWith("http://") || path.startsWith("https://")) return path;
+    if (path.startsWith("/uploads/")) return path;
+    return `/uploads/${path}`;
+  };
+
+  // what comes from the server/props
+  const [serverSrc, setServerSrc] = useState(
+    resolveServerUrl(data.imageUrl || data.image || "")
+  );
+  useEffect(() => {
+    setServerSrc(resolveServerUrl(data.imageUrl || data.image || ""));
+  }, [data.imageUrl, data.image]);
+
+  // preview for a newly selected file
+  const [previewSrc, setPreviewSrc] = useState("");
+  useEffect(() => {
+    if (!file) {
+      setPreviewSrc("");
+      return;
+    }
+    const url = URL.createObjectURL(file);
+    setPreviewSrc(url);
+    return () => URL.revokeObjectURL(url);
+  }, [file]);
+
+  // keep other fields in sync with props
+  useEffect(() => setTitle(data.title || ""), [data.title]);
+  useEffect(() => {
+    setDescription(data.description || "");
+    setPrice(
+      typeof data.price === "number" ? String(data.price) : data.price || ""
+    );
+    setImage(data.image || data.imageUrl || "");
+  }, [data.description, data.price, data.image, data.imageUrl]);
+
+  const inputRef = useRef(null);
+
   const handleSave = async () => {
     let imageUrl = image;
-
     if (file) {
       try {
-        imageUrl = await uploadFile(file);
+        imageUrl = await uploadFile(file); // returns "/uploads/xxx.jpg"
       } catch (err) {
         alert("Upload failed: " + err.message);
         return;
       }
     }
-
-    if (onSave) {
-      onSave({
-        title,
-        description,
-        price,
-        image: imageUrl,
-      });
-    }
+    onSave?.({
+      title: title?.trim(),
+      description: description?.trim(),
+      price: price === "" ? null : Number(price),
+      image: imageUrl,
+    });
   };
 
-  // === READ-ONLY CARD ===
-  if (mode === "view") {
-    return (
-      <div
-        className="card"
-        style={{ width: "100%", maxWidth: "500px", margin: "0 auto" }}
-      >
-        {data.image && (
-          <img
-            src={data.image}
-            alt={data.title}
-            className="card-img-top"
-            style={{ height: "250px", objectFit: "cover" }}
-          />
-        )}
-        <div className="card-body">
-          <h5 className="card-title">{data.title}</h5>
-          <p className="card-text">{data.description}</p>
-          <p className="text-end fw-bold text-success">${data.price}</p>
-        </div>
-      </div>
-    );
-  }
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files?.[0];
+    if (!selectedFile) return;
+    setFile(selectedFile); // preview will update via useEffect above
+  };
 
-  // === CREATE / EDIT FORM ===
+  const imgSrc = previewSrc || serverSrc; // prefer freshly chosen file
+
   return (
     <div
       className="card p-0 overflow-hidden"
-      style={{ width: "100%", maxWidth: "500px", margin: "0 auto" }}
+      style={{ width: "100%", maxWidth: 500, margin: "0 auto" }}
     >
-      {/* IMAGE PREVIEW OR PLACEHOLDER */}
       <div
         className="w-100 bg-light border-bottom"
         style={{
-          width: "100%",
           aspectRatio: "1 / 1",
           overflow: "hidden",
           position: "relative",
-          cursor: "pointer",
+          cursor: readOnly ? "default" : "pointer",
         }}
-        onClick={() => document.getElementById("imageInput").click()}
+        onClick={() => {
+          if (!readOnly) inputRef.current?.click();
+        }}
       >
-        {image ? (
+        {imgSrc ? (
           <img
-            src={image}
-            alt="Preview"
+            src={imgSrc}
+            alt={title || "Image"}
             className="w-100 h-100"
             style={{ objectFit: "cover" }}
+            onError={(e) => {
+              e.currentTarget.style.display = "none";
+            }}
           />
         ) : (
           <div className="d-flex justify-content-center align-items-center h-100 text-muted">
-            Click to upload image
+            No image
           </div>
         )}
-        <input
-          id="imageInput"
-          type="file"
-          accept="image/*"
-          capture="environment"
-          style={{ display: "none" }}
-          onChange={(e) => {
-            const selectedFile = e.target.files[0];
-            if (selectedFile) {
-              setFile(selectedFile);
-              const reader = new FileReader();
-              reader.onloadend = () => {
-                setImage(reader.result); // превью
-              };
-              reader.readAsDataURL(selectedFile);
-            }
-          }}
-        />
+
+        {!readOnly && (
+          <input
+            ref={inputRef}
+            id="imageInput"
+            type="file"
+            accept="image/*"
+            capture="environment"
+            style={{ display: "none" }}
+            onChange={handleFileChange}
+          />
+        )}
       </div>
 
-      {/* FORM FIELDS */}
       <div className="p-4">
+        {/* fields */}
         <div className="mb-3">
           <input
             type="text"
@@ -119,6 +138,7 @@ export default function CatalogCard({
             placeholder="Title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
+            readOnly={readOnly}
           />
         </div>
 
@@ -129,28 +149,50 @@ export default function CatalogCard({
             placeholder="Description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
+            readOnly={readOnly}
           />
         </div>
 
         <div className="d-flex justify-content-between align-items-center gap-2">
-          <div style={{ width: "150px" }}>
+          <div style={{ width: 150 }}>
             <input
               type="number"
               className="form-control"
               placeholder="Price"
               value={price}
               onChange={(e) => setPrice(e.target.value)}
+              readOnly={readOnly}
             />
           </div>
 
-          <div className="d-flex gap-2">
-            <button className="btn btn-secondary" onClick={onCancel}>
-              Cancel
-            </button>
-            <button className="btn btn-primary" onClick={handleSave}>
-              Save
-            </button>
-          </div>
+          {!readOnly ? (
+            <div className="d-flex gap-2">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={onCancel}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={handleSave}
+              >
+                Save
+              </button>
+            </div>
+          ) : (
+            <div className="d-flex gap-2">
+              <button
+                type="button"
+                className="btn btn-outline-secondary"
+                onClick={onCancel}
+              >
+                Back
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>
