@@ -231,7 +231,58 @@ export default function VibeContentForCustomers({
             {activeTab === "menu" && (
               <div className="tab-pane fade show active">
                 <div className="alert alert-info w-100 text-center">
-                  {t("Menu content goes here.")}
+                  <div className="w-100">
+                    {items.length === 0 ? (
+                      <div className="alert alert-info text-center">
+                        Нет меню
+                      </div>
+                    ) : (
+                      <div className="row row-cols-2 g-3">
+                        {items.map((it) => {
+                          const img = resolveServerUrl(it.imageUrl);
+                          return (
+                            <div className="col" key={it.id}>
+                              <div
+                                className="position-relative w-100"
+                                style={{
+                                  borderRadius: 12,
+                                  overflow: "hidden",
+                                  background: "#f6f6f6",
+                                }}
+                                aria-label={it.title}
+                              >
+                                <div
+                                  style={{
+                                    paddingTop: "100%", // квадрат 1:1
+                                    backgroundImage: img
+                                      ? `url(${img})`
+                                      : "none",
+                                    backgroundSize: "cover",
+                                    backgroundPosition: "center",
+                                    backgroundRepeat: "no-repeat",
+                                  }}
+                                />
+
+                                <div
+                                  className="position-absolute bottom-0 start-0 end-0 p-2"
+                                  style={{
+                                    background:
+                                      "linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.6) 100%)",
+                                    color: "#fff",
+                                    fontWeight: 600,
+                                    fontSize: 14,
+                                  }}
+                                  title={it.title}
+                                >
+                                  {it.title}
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             )}
