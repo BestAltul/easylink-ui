@@ -43,7 +43,7 @@ export default function CatalogForm() {
   const handleSwipeRight = () => goToIndex(index - 1);
 
   if (itemId) {
-    const { items, loading, error } = useItems(itemId);
+    const { items, loading, error } = useItems(itemId, { auth: "required" });
     const item = Array.isArray(items) ? items?.[0] : items;
 
     if (loading) return <div className="container py-4">Loading...</div>;

@@ -8,6 +8,7 @@ import SelectVibeModalWithLogic from "./SelectVibeModalWithLogic";
 import { useTranslation } from "react-i18next";
 import useGetOffersByVibeId from "../vibes/offers/useGetOfferByVibeId";
 import OfferCard from "../vibes/offers/OfferCard";
+import useItemsByVibeId from "../vibes/catalog/useItemByVibeId";
 
 export default function VibeContentForCustomers({
   id,
@@ -27,6 +28,14 @@ export default function VibeContentForCustomers({
   const navigate = useNavigate();
   const location = useLocation();
   const offers = useGetOffersByVibeId(id, token);
+  const { items, loading: itemsLoading } = useItemsByVibeId(id, token);
+
+  const resolveServerUrl = (path) => {
+    if (!path) return "";
+    if (path.startsWith("http://") || path.startsWith("https://")) return path;
+    if (path.startsWith("/uploads/")) return path;
+    return `/uploads/${path}`;
+  };
 
   useEffect(() => {
     const normalizedSubscriberVibeId =
@@ -230,59 +239,54 @@ export default function VibeContentForCustomers({
             )}
             {activeTab === "menu" && (
               <div className="tab-pane fade show active">
-                <div className="alert alert-info w-100 text-center">
-                  <div className="w-100">
-                    {items.length === 0 ? (
-                      <div className="alert alert-info text-center">
-                        Нет меню
-                      </div>
-                    ) : (
-                      <div className="row row-cols-2 g-3">
-                        {items.map((it) => {
-                          const img = resolveServerUrl(it.imageUrl);
-                          return (
-                            <div className="col" key={it.id}>
+                <div className="w-100">
+                  {itemsLoading ? (
+                    <div className="text-center text-muted">Loading…</div>
+                  ) : items.length === 0 ? (
+                    <div className="alert alert-info text-center">No items</div>
+                  ) : (
+                    <div className="row row-cols-2 g-3">
+                      {items.map((it) => {
+                        const img = resolveServerUrl(it.imageUrl);
+                        return (
+                          <div className="col" key={it.id}>
+                            <div
+                              className="position-relative w-100"
+                              style={{
+                                borderRadius: 12,
+                                overflow: "hidden",
+                                background: "#f6f6f6",
+                              }}
+                              aria-label={it.title}
+                            >
                               <div
-                                className="position-relative w-100"
                                 style={{
-                                  borderRadius: 12,
-                                  overflow: "hidden",
-                                  background: "#f6f6f6",
+                                  paddingTop: "100%",
+                                  backgroundImage: img ? `url(${img})` : "none",
+                                  backgroundSize: "cover",
+                                  backgroundPosition: "center",
+                                  backgroundRepeat: "no-repeat",
                                 }}
-                                aria-label={it.title}
+                              />
+                              <div
+                                className="position-absolute bottom-0 start-0 end-0 p-2"
+                                style={{
+                                  background:
+                                    "linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.6) 100%)",
+                                  color: "#fff",
+                                  fontWeight: 600,
+                                  fontSize: 14,
+                                }}
+                                title={it.title}
                               >
-                                <div
-                                  style={{
-                                    paddingTop: "100%", // квадрат 1:1
-                                    backgroundImage: img
-                                      ? `url(${img})`
-                                      : "none",
-                                    backgroundSize: "cover",
-                                    backgroundPosition: "center",
-                                    backgroundRepeat: "no-repeat",
-                                  }}
-                                />
-
-                                <div
-                                  className="position-absolute bottom-0 start-0 end-0 p-2"
-                                  style={{
-                                    background:
-                                      "linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.6) 100%)",
-                                    color: "#fff",
-                                    fontWeight: 600,
-                                    fontSize: 14,
-                                  }}
-                                  title={it.title}
-                                >
-                                  {it.title}
-                                </div>
+                                {it.title}
                               </div>
                             </div>
-                          );
-                        })}
-                      </div>
-                    )}
-                  </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
               </div>
             )}
