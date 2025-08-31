@@ -41,16 +41,34 @@ pipeline {
         }
       }
     }
-
+    
     stage('build ui') {
       steps {
         sh '''
           set -e
           export DOCKER_HOST="${DOCKER_HOST:-tcp://host.docker.internal:2375}"
+    
           docker run --rm \
-            -v "$PWD":/app \
-            -w /app \
-            node:20-alpine sh -lc "corepack enable || true; (npm ci || npm i); npm run build"
+            -v "$PWD":/ws \
+            -w /ws \
+            node:20-alpine sh -lc "
+              set -e
+              FRONT_DIR=/ws
+              if [ ! -f /ws/package.json ] && [ -f /ws/easylink-ui/package.json ]; then
+                FRONT_DIR=/ws/easylink-ui
+              fi
+              echo Using FRONT_DIR=\$FRONT_DIR
+              cd \$FRONT_DIR
+              ls -la
+    
+              if [ -f package-lock.json ]; then
+                npm ci
+              else
+                npm i
+              fi
+    
+              npm run build
+            "
         '''
       }
     }
@@ -60,13 +78,20 @@ pipeline {
         sh '''
           set -e
           STATIC_DIR="${BACK_DIR}/src/main/resources/static"
+    
+          FRONT_DIST="dist"
+          if [ -d "easylink-ui/dist" ]; then
+            FRONT_DIST="easylink-ui/dist"
+          fi
+    
           rm -rf "$STATIC_DIR" || true
           mkdir -p "$STATIC_DIR"
-          cp -r dist/* "$STATIC_DIR/"
-          echo "Copied dist -> $STATIC_DIR"
+          cp -r "$FRONT_DIST/"* "$STATIC_DIR/"
+          echo "Copied $FRONT_DIST -> $STATIC_DIR"
         '''
       }
     }
+
 
     stage('build backend') {
       steps {
