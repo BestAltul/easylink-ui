@@ -18,6 +18,23 @@ pipeline {
   }
 
   stages {
+
+    stage('preflight') {
+      steps {
+        sh '''
+          set -e
+          echo "[preflight] whoami: $(whoami)"
+          echo "[preflight] pwd: $PWD"
+          echo "[preflight] docker version:"
+          docker version || true
+          echo "[preflight] docker compose version:"
+          (docker compose version || docker-compose --version) || true
+          echo "[preflight] ensure DEPLOY_DIR exists"
+          mkdir -p "${DEPLOY_DIR}"
+        '''
+      }
+    }
+
     stage('checkout frontend (this repo)') {
       steps {
         checkout([$class: 'GitSCM',
@@ -29,8 +46,8 @@ pipeline {
 
     stage('checkout backend') {
       steps {
-        sh "rm -rf '${BACK_DIR}'"
-        dir("${BACK_DIR}") {
+        sh "rm -rf '${env.BACK_DIR}'"
+        dir("${env.BACK_DIR}") {
           git branch: "${env.BACK_BRANCH}", url: "${env.BACK_REPO_URL}"
         }
       }
@@ -39,12 +56,11 @@ pipeline {
     stage('build ui (docker run)') {
       steps {
         sh '''
-          set -e
-    
+          set -euo pipefail
+
           echo "[debug] workspace: $PWD"
-          echo "[debug] tree (top level):"
           ls -la
-    
+
           UI_DIR=""
           if [ -f package.json ]; then
             UI_DIR="."
@@ -57,17 +73,16 @@ pipeline {
             echo "[hint] run: find . -maxdepth 2 -name package.json"
             exit 1
           fi
-    
+
           echo "[debug] using UI_DIR=$UI_DIR"
-          echo "[debug] show UI_DIR contents:"
           ls -la "$UI_DIR"
-    
+
           docker run --rm \
             -v "$PWD/$UI_DIR":/app \
             -w /app \
             -v "$HOME/.npm":/root/.npm \
-            node:20-bullseye bash -lc "npm ci || npm i && npm run build"
-    
+            node:20-bullseye bash -lc 'npm ci || npm i && npm run build'
+
           rm -rf ui-dist && mkdir ui-dist
           cp -r "$UI_DIR/dist/." ui-dist/
         '''
@@ -75,53 +90,51 @@ pipeline {
       }
     }
 
-
     stage('put dist into backend static') {
       steps {
         unstash 'ui-dist'
-        dir("${BACK_DIR}") {
+        dir("${env.BACK_DIR}") {
           sh '''
             set -e
-            rm -rf src/main/resources/static/* || true
             mkdir -p src/main/resources/static
+            rm -rf src/main/resources/static/* || true
           '''
         }
-        sh 'cp -r ui-dist/* "${BACK_DIR}/src/main/resources/static/" && rm -rf ui-dist'
+        sh 'cp -r ui-dist/* "${env.BACK_DIR}/src/main/resources/static/" && rm -rf ui-dist'
       }
     }
-    
+
     stage('build backend (docker run)') {
       steps {
-        sh '''
+        sh """
           set -e
-          # собрать jar с gradle-cli внутри контейнера
-          docker run --rm \
-            -v "$PWD/${BACK_DIR}":/app \
-            -w /app \
-            -v "$HOME/.gradle":/home/gradle/.gradle \
-            gradle:8.9-jdk21 bash -lc "gradle clean bootJar -x test"
+          docker run --rm \\
+            -v "\$PWD/${env.BACK_DIR}":/app \\
+            -w /app \\
+            -v "\$HOME/.gradle":/home/gradle/.gradle \\
+            gradle:8.9-jdk21 bash -lc 'gradle clean bootJar -x test'
 
-          # архивируем и stash'им банку
-          ls ${BACK_DIR}/build/libs/*.jar
-        '''
-        archiveArtifacts artifacts: "${BACK_DIR}/build/libs/*.jar", fingerprint: true
-        stash name: 'app-jar', includes: "${BACK_DIR}/build/libs/*.jar"
+          ls ${env.BACK_DIR}/build/libs/*.jar
+        """
+        archiveArtifacts artifacts: "${env.BACK_DIR}/build/libs/*.jar", fingerprint: true
+        stash name: 'app-jar', includes: "${env.BACK_DIR}/build/libs/*.jar"
       }
     }
 
-    stage('export app.jar to /workspace/ymk/EasyLinkBackEnd') {
+    stage('export app.jar to deploy dir') {
       steps {
         sh 'mkdir -p "${DEPLOY_BE_DIR}"'
         unstash 'app-jar'
-        sh '''
+        sh """
           set -e
-          JAR=$(ls ${BACK_DIR}/build/libs/*.jar | head -n 1)
-          cp -f "$JAR" "${DEPLOY_BE_DIR}/app.jar"
-        '''
+          JAR=\$(ls ${env.BACK_DIR}/build/libs/*.jar | head -n 1)
+          cp -f "\$JAR" "${env.DEPLOY_BE_DIR}/app.jar"
+          echo "[deploy] copied app.jar to ${env.DEPLOY_BE_DIR}"
+        """
       }
     }
 
-    stage('docker compose up (without jenkins)') {
+    stage('docker compose up') {
       when { expression { return fileExists(env.COMPOSE_FILE) } }
       steps {
         sh '''
