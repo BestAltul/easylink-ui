@@ -40,26 +40,41 @@ pipeline {
       steps {
         sh '''
           set -e
-          # определить папку UI
-          UI_DIR="."
-          if [ -f package.json ]; then UI_DIR="."
-          elif [ -f easylink-ui/package.json ]; then UI_DIR="easylink-ui"
-          else echo "package.json not found"; exit 1; fi
-
-          # собрать в контейнере node:20 (npm будет писаться в смонтированный проект)
+    
+          echo "[debug] workspace: $PWD"
+          echo "[debug] tree (top level):"
+          ls -la
+    
+          UI_DIR=""
+          if [ -f package.json ]; then
+            UI_DIR="."
+          elif [ -f easylink-ui/package.json ]; then
+            UI_DIR="easylink-ui"
+          elif [ -f ui/package.json ]; then
+            UI_DIR="ui"
+          else
+            echo "[error] package.json not found at '.', 'easylink-ui', or 'ui'"
+            echo "[hint] run: find . -maxdepth 2 -name package.json"
+            exit 1
+          fi
+    
+          echo "[debug] using UI_DIR=$UI_DIR"
+          echo "[debug] show UI_DIR contents:"
+          ls -la "$UI_DIR"
+    
           docker run --rm \
-            -v "$PWD/${UI_DIR}":/app \
+            -v "$PWD/$UI_DIR":/app \
             -w /app \
             -v "$HOME/.npm":/root/.npm \
-            node:20-bullseye bash -lc "npm ci || npm i; npm run build"
-
-          # сохранить артефакт dist
+            node:20-bullseye bash -lc "npm ci || npm i && npm run build"
+    
           rm -rf ui-dist && mkdir ui-dist
-          cp -r "${UI_DIR}/dist/." ui-dist/
+          cp -r "$UI_DIR/dist/." ui-dist/
         '''
         stash name: 'ui-dist', includes: 'ui-dist/**'
       }
     }
+
 
     stage('put dist into backend static') {
       steps {
@@ -71,13 +86,10 @@ pipeline {
             mkdir -p src/main/resources/static
           '''
         }
-        sh '''
-          cp -r ui-dist/* "${BACK_DIR}/src/main/resources/static/"
-          rm -rf ui-dist
-        '''
+        sh 'cp -r ui-dist/* "${BACK_DIR}/src/main/resources/static/" && rm -rf ui-dist'
       }
     }
-
+    
     stage('build backend (docker run)') {
       steps {
         sh '''
