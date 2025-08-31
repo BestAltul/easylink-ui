@@ -94,7 +94,12 @@ pipeline {
     stage('build backend') {
       steps {
         dir("${env.BACK_DIR}") {
-          sh './gradlew clean build -x test'
+          sh '''
+            set -e
+            chmod +x gradlew
+            ./gradlew --version
+            ./gradlew clean build -x test
+          '''
         }
       }
     }
