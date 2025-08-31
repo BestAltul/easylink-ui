@@ -42,6 +42,7 @@ pipeline {
       steps {
         sh '''
           set -e
+          export DOCKER_HOST="${DOCKER_HOST:-tcp://host.docker.internal:2375}"
           docker run --rm \
             -v "$PWD":/app \
             -w /app \
@@ -87,6 +88,7 @@ pipeline {
       steps {
         sh '''
           set -e
+          export DOCKER_HOST="${DOCKER_HOST:-tcp://host.docker.internal:2375}"
           cd "${DEPLOY_DIR}"
           if docker compose version >/dev/null 2>&1; then
             DC="docker compose"
