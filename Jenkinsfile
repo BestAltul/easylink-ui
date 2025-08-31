@@ -8,18 +8,14 @@ pipeline {
     skipDefaultCheckout(true)   
   }
 
-  environment {
-
-    BACK_REPO_URL = 'https://github.com/BestAltul/EasyLinkBackEnd.git'
-    BACK_BRANCH   = 'main'
-    BACK_DIR      = 'EasyLinkBackEnd'
-
-    DEPLOY_DIR     = '/workspace/ymk'                
-    DEPLOY_DIR_WIN = 'C:/ymk'                      
-    COMPOSE_FILE   = "${env.DEPLOY_DIR}/docker-compose.yml"
-    DEPLOY_BE_DIR  = "${env.DEPLOY_DIR}/EasyLinkBackEnd"
-  }
-
+    environment {
+      BACK_REPO_URL = 'https://github.com/approachh/EasyLinkBackEnd.git'  
+      BACK_BRANCH   = 'main'                                               
+      BACK_DIR      = 'EasyLinkBackEnd'
+      DEPLOY_DIR    = '/workspace/ymk'
+      COMPOSE_FILE  = "${env.DEPLOY_DIR}/docker-compose.yml"
+      DEPLOY_BE_DIR = "${env.DEPLOY_DIR}/EasyLinkBackEnd"
+    }
   stages {
 
     stage('checkout frontend (this repo)') {
@@ -33,12 +29,12 @@ pipeline {
 
     stage('checkout backend') {
       steps {
-        dir("${env.BACK_DIR}") {
-          git branch: "${env.BACK_BRANCH}", url: "${env.BACK_REPO_URL}"
+        sh "rm -rf '${BACK_DIR}'"
+        dir("${BACK_DIR}") {
+          git branch: "${BACK_BRANCH}", url: "${BACK_REPO_URL}"
         }
       }
     }
-
     stage('build ui') {
       steps {
         sh '''
