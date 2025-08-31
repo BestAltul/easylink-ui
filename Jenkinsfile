@@ -36,65 +36,70 @@ pipeline {
       }
     }
 
-    stage('build ui') {
-      agent {
-        docker {
-          image 'node:20-bullseye'
-          // кеш npm, чтобы быстрее
-          args '-u root:root -v $HOME/.npm:/root/.npm'
-        }
-      }
+    stage('build ui (docker run)') {
       steps {
         sh '''
           set -e
-          if [ -f package.json ]; then cd .
-          elif [ -f easylink-ui/package.json ]; then cd easylink-ui
+          # определить папку UI
+          UI_DIR="."
+          if [ -f package.json ]; then UI_DIR="."
+          elif [ -f easylink-ui/package.json ]; then UI_DIR="easylink-ui"
           else echo "package.json not found"; exit 1; fi
-          npm ci || npm i
-          npm run build
+
+          # собрать в контейнере node:20 (npm будет писаться в смонтированный проект)
+          docker run --rm \
+            -v "$PWD/${UI_DIR}":/app \
+            -w /app \
+            -v "$HOME/.npm":/root/.npm \
+            node:20-bullseye bash -lc "npm ci || npm i; npm run build"
+
+          # сохранить артефакт dist
+          rm -rf ui-dist && mkdir ui-dist
+          cp -r "${UI_DIR}/dist/." ui-dist/
         '''
-        // забираем dist из текущей директории
-        stash name: 'ui-dist', includes: 'dist/**'
+        stash name: 'ui-dist', includes: 'ui-dist/**'
       }
     }
 
     stage('put dist into backend static') {
       steps {
+        unstash 'ui-dist'
         dir("${BACK_DIR}") {
-          sh 'rm -rf src/main/resources/static/* || true'
-          unstash 'ui-dist'
-          sh 'cp -r dist/* src/main/resources/static/'
-          sh 'rm -rf dist || true'
+          sh '''
+            set -e
+            rm -rf src/main/resources/static/* || true
+            mkdir -p src/main/resources/static
+          '''
         }
+        sh '''
+          cp -r ui-dist/* "${BACK_DIR}/src/main/resources/static/"
+          rm -rf ui-dist
+        '''
       }
     }
 
-    stage('build backend') {
-      agent {
-        docker {
-          image 'eclipse-temurin:21-jdk'
-          args '-u root:root -v $HOME/.gradle:/root/.gradle'
-        }
-      }
+    stage('build backend (docker run)') {
       steps {
-        dir("${env.BACK_DIR}") {
-          sh '''
-            set -e
-            chmod +x gradlew || true
-            ./gradlew clean build -x test
-          '''
-          archiveArtifacts artifacts: 'build/libs/*.jar', fingerprint: true
-          stash name: 'app-jar', includes: 'build/libs/*.jar'
-        }
+        sh '''
+          set -e
+          # собрать jar с gradle-cli внутри контейнера
+          docker run --rm \
+            -v "$PWD/${BACK_DIR}":/app \
+            -w /app \
+            -v "$HOME/.gradle":/home/gradle/.gradle \
+            gradle:8.9-jdk21 bash -lc "gradle clean bootJar -x test"
+
+          # архивируем и stash'им банку
+          ls ${BACK_DIR}/build/libs/*.jar
+        '''
+        archiveArtifacts artifacts: "${BACK_DIR}/build/libs/*.jar", fingerprint: true
+        stash name: 'app-jar', includes: "${BACK_DIR}/build/libs/*.jar"
       }
     }
 
     stage('export app.jar to /workspace/ymk/EasyLinkBackEnd') {
       steps {
-        sh '''
-          set -e
-          mkdir -p "${DEPLOY_BE_DIR}"
-        '''
+        sh 'mkdir -p "${DEPLOY_BE_DIR}"'
         unstash 'app-jar'
         sh '''
           set -e
@@ -107,13 +112,12 @@ pipeline {
     stage('docker compose up (without jenkins)') {
       when { expression { return fileExists(env.COMPOSE_FILE) } }
       steps {
-        sh """
+        sh '''
           set -e
           cd "${DEPLOY_DIR}"
           if docker compose version >/dev/null 2>&1; then DC="docker compose"; else DC="docker-compose"; fi
-          # ВАЖНО: требуется docker CLI в агенте и примонтированный /var/run/docker.sock
-          \$DC -f "${COMPOSE_FILE}" up -d --build postgres pgadmin zookeeper kafka auth-service
-        """
+          $DC -f "${COMPOSE_FILE}" up -d --build postgres pgadmin zookeeper kafka auth-service
+        '''
       }
     }
   }
