@@ -1,18 +1,35 @@
 pipeline {
   agent any
-
-  options { timestamps(); disableConcurrentBuilds() }
+  options {
+    timestamps()
+    disableConcurrentBuilds()
+    durabilityHint('PERFORMANCE_OPTIMIZED')
+  }
 
   environment {
     BACK_REPO_URL = 'https://github.com/BestAltul/EasyLinkBackEnd.git'
     BACK_BRANCH   = 'main'
-    BACK_DIR      = 'EasyLinkBackEnd'
-    DEPLOY_FE     = "${DEPLOY_DIR}\\frontend\\dist"
-    DEPLOY_BE_LIB = "${DEPLOY_DIR}\\backend\\app.jar"
-    COMPOSE_FILE  = "${DEPLOY_DIR}\\docker-compose.yml"
+    BACK_DIR      = 'EasyLinkBackEnd' 
+
+    DEPLOY_DIR   = '/workspace/ymk'
+    COMPOSE_FILE = "${env.DEPLOY_DIR}/docker-compose.yml"
+  
+    DEPLOY_BE_DIR = "${env.DEPLOY_DIR}/EasyLinkBackEnd"
   }
 
   stages {
+    stage('env check') {
+      steps {
+        sh '''
+          set -e
+          echo "workspace: $(pwd)"
+          node -v && npm -v || true
+          docker version || true
+          ls -la
+        '''
+      }
+    }
+
     stage('checkout backend') {
       steps {
         dir("${env.BACK_DIR}") {
@@ -23,19 +40,24 @@ pipeline {
 
     stage('build ui') {
       steps {
-        bat '''
-          (npm ci) || (npm i)
+        sh '''
+          set -e
+          corepack enable || true
+          (npm ci || npm i)
           npm run build
         '''
       }
     }
 
-    stage('copy FE dist') {
+    stage('put dist into backend static') {
       steps {
-        bat '''
-          if exist "%DEPLOY_FE%" rmdir /S /Q "%DEPLOY_FE%"
-          mkdir "%DEPLOY_FE%"
-          robocopy "dist" "%DEPLOY_FE%" *.* /E /NFL /NDL /NJH /NJS /NP >NUL
+        sh '''
+          set -e
+          STATIC_DIR="${BACK_DIR}/src/main/resources/static"
+          rm -rf "$STATIC_DIR" || true
+          mkdir -p "$STATIC_DIR"
+          cp -r dist/* "$STATIC_DIR/"
+          echo "Copied dist -> $STATIC_DIR"
         '''
       }
     }
@@ -43,27 +65,35 @@ pipeline {
     stage('build backend') {
       steps {
         dir("${env.BACK_DIR}") {
-          bat 'gradlew.bat clean build -x test'
+          sh './gradlew clean build -x test'
         }
       }
     }
 
-    stage('copy BE jar') {
+    stage('export app.jar to /workspace/ymk/EasyLinkBackEnd') {
       steps {
-        bat '''
-          for %%f in ("%BACK_DIR%\\build\\libs\\*.jar") do (
-            if not exist "%DEPLOY_DIR%\\backend" mkdir "%DEPLOY_DIR%\\backend"
-            copy /Y "%%f" "%DEPLOY_BE_LIB%"
-          )
+        sh '''
+          set -e
+          mkdir -p "${DEPLOY_BE_DIR}"
+          JAR=$(ls ${BACK_DIR}/build/libs/*.jar | head -n 1)
+          cp -f "$JAR" "${DEPLOY_BE_DIR}/app.jar"
+          echo "Copied $(basename "$JAR") -> ${DEPLOY_BE_DIR}/app.jar"
         '''
       }
     }
 
-    stage('docker compose up') {
+    stage('docker compose up (without jenkins)') {
       steps {
-        bat '''
-          cd /d "%DEPLOY_DIR%"
-          docker compose -f "%COMPOSE_FILE%" up -d --build
+        sh '''
+          set -e
+          cd "${DEPLOY_DIR}"
+          if docker compose version >/dev/null 2>&1; then
+            DC="docker compose"
+          else
+            DC="docker-compose"
+          fi
+
+          $DC -f "${COMPOSE_FILE}" up -d --build postgres pgadmin zookeeper kafka auth-service
         '''
       }
     }
