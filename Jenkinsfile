@@ -5,25 +5,27 @@ pipeline {
     timestamps()
     disableConcurrentBuilds()
     durabilityHint('PERFORMANCE_OPTIMIZED')
-    skipDefaultCheckout(true)   
+    skipDefaultCheckout(true)
   }
 
-    environment {
-      BACK_REPO_URL = 'https://github.com/approachh/EasyLinkBackEnd.git'  
-      BACK_BRANCH   = 'main'                                               
-      BACK_DIR      = 'EasyLinkBackEnd'
-      DEPLOY_DIR    = '/workspace/ymk'
-      COMPOSE_FILE  = "${env.DEPLOY_DIR}/docker-compose.yml"
-      DEPLOY_BE_DIR = "${env.DEPLOY_DIR}/EasyLinkBackEnd"
-    }
-  stages {
+  tools { nodejs 'node20' }
 
+  environment {
+    BACK_REPO_URL = 'https://github.com/approachh/EasyLinkBackEnd.git'
+    BACK_BRANCH   = 'main'
+    BACK_DIR      = 'EasyLinkBackEnd'
+    DEPLOY_DIR    = '/workspace/ymk'
+    COMPOSE_FILE  = "${env.DEPLOY_DIR}/docker-compose.yml"
+    DEPLOY_BE_DIR = "${env.DEPLOY_DIR}/EasyLinkBackEnd"
+  }
+
+  stages {
     stage('checkout frontend (this repo)') {
       steps {
-        sh 'git config --global --add safe.directory "*"'
-
-        checkout scm
-        sh 'echo "Frontend checked out to: $PWD"; ls -la'
+        checkout([$class: 'GitSCM',
+          branches: [[name: '*/main']],
+          userRemoteConfigs: [[url: 'https://github.com/BestAltul/easylink-ui']]
+        ])
       }
     }
 
@@ -31,38 +33,20 @@ pipeline {
       steps {
         sh "rm -rf '${BACK_DIR}'"
         dir("${BACK_DIR}") {
-          git branch: "${BACK_BRANCH}", url: "${BACK_REPO_URL}"
+          git branch: "${env.BACK_BRANCH}", url: "${env.BACK_REPO_URL}"
         }
       }
     }
+
     stage('build ui') {
       steps {
         sh '''
           set -e
-          export DOCKER_HOST="${DOCKER_HOST:-tcp://host.docker.internal:2375}"
-
-          SHARED_DIR_LIN="${DEPLOY_DIR}/_ci/ymk-pipeline"     
-          SHARED_DIR_WIN="${DEPLOY_DIR_WIN}/_ci/ymk-pipeline"  
-
-          rm -rf "$SHARED_DIR_LIN" || true
-          mkdir -p "$SHARED_DIR_LIN"
-
-          cp -a "$WORKSPACE"/. "$SHARED_DIR_LIN"/
-
-          docker run --rm \
-            -v "$SHARED_DIR_WIN:/ws" \
-            -w /ws \
-            node:20-alpine sh -lc '
-              set -e
-              FRONT_DIR=/ws
-              if [ ! -f /ws/package.json ] && [ -f /ws/easylink-ui/package.json ]; then
-                FRONT_DIR=/ws/easylink-ui
-              fi
-              echo "Using FRONT_DIR=$FRONT_DIR"
-              cd "$FRONT_DIR"
-              if [ -f package-lock.json ]; then npm ci; else npm i; fi
-              npm run build
-            '
+          if [ -f package.json ]; then cd .
+          elif [ -f easylink-ui/package.json ]; then cd easylink-ui
+          else echo "package.json not found"; exit 1; fi
+          npm ci || npm i
+          npm run build
         '''
       }
     }
@@ -71,18 +55,13 @@ pipeline {
       steps {
         sh '''
           set -e
-          SHARED_DIR_LIN="${DEPLOY_DIR}/_ci/ymk-pipeline"
           STATIC_DIR="${BACK_DIR}/src/main/resources/static"
-
-          FRONT_DIST="$SHARED_DIR_LIN/dist"
-          [ -d "$SHARED_DIR_LIN/easylink-ui/dist" ] && FRONT_DIST="$SHARED_DIR_LIN/easylink-ui/dist"
-
-          [ -d "$FRONT_DIST" ] || { echo "ERROR: dist не найден в $FRONT_DIST"; exit 1; }
-
-          rm -rf "$STATIC_DIR" || true
+          SRC="dist"
+          [ -d "easylink-ui/dist" ] && SRC="easylink-ui/dist"
+          [ -d "$SRC" ] || { echo "dist not found"; exit 1; }
+          rm -rf "$STATIC_DIR"
           mkdir -p "$STATIC_DIR"
-          cp -r "$FRONT_DIST/"* "$STATIC_DIR/"
-          echo "Copied $FRONT_DIST -> $STATIC_DIR"
+          cp -r "$SRC/"* "$STATIC_DIR/"
         '''
       }
     }
@@ -93,7 +72,6 @@ pipeline {
           sh '''
             set -e
             chmod +x gradlew
-            ./gradlew --version
             ./gradlew clean build -x test
           '''
         }
@@ -107,7 +85,6 @@ pipeline {
           mkdir -p "${DEPLOY_BE_DIR}"
           JAR=$(ls ${BACK_DIR}/build/libs/*.jar | head -n 1)
           cp -f "$JAR" "${DEPLOY_BE_DIR}/app.jar"
-          echo "Copied $(basename "$JAR") -> ${DEPLOY_BE_DIR}/app.jar"
         '''
       }
     }
@@ -118,14 +95,8 @@ pipeline {
           set -e
           export DOCKER_HOST="${DOCKER_HOST:-tcp://host.docker.internal:2375}"
           cd "${DEPLOY_DIR}"
-
-          if docker compose version >/dev/null 2>&1; then
-            DC="docker compose"
-          else
-            DC="docker-compose"
-          fi
-          $DC -p app -f "${COMPOSE_FILE}" down --remove-orphans || true
-          $DC -p app -f "${COMPOSE_FILE}" up -d --build postgres pgadmin zookeeper kafka auth-service
+          if docker compose version >/dev/null 2>&1; then DC="docker compose"; else DC="docker-compose"; fi
+          $DC -f "${COMPOSE_FILE}" up -d --build postgres pgadmin zookeeper kafka auth-service
         '''
       }
     }
