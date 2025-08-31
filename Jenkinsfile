@@ -57,19 +57,25 @@ pipeline {
             elif [ -f easylink-ui/package.json ]; then UI_DIR="easylink-ui";
             elif [ -f ui/package.json ]; then UI_DIR="ui";
             else echo "[ui][error] package.json not found"; exit 1; fi
-            rm -rf ui-dist && mkdir -p ui-dist
-            CID=$(docker create --name ui-build node:20-bullseye bash -lc "set -e; cd /app; npm ci || npm i; npm run build")
-            tar -C "$UI_DIR" -cf - . | docker cp - "$CID":/app
-            docker start -a "$CID"
-            docker cp "$CID":/app/dist - | tar -C ui-dist -xf -
-            docker rm -f "$CID" >/dev/null
+            rm -rf ui-dist ui-dist.tar
+            tar -C "$UI_DIR" -cf - . | docker run --rm -i node:20-bullseye bash -lc "
+              set -e
+              mkdir -p /app
+              tar -C /app -xf -
+              cd /app
+              npm ci 1>&2 || npm i 1>&2
+              npm run build 1>&2
+              exec tar -C /app/dist -cf - .
+            " > ui-dist.tar
+            mkdir -p ui-dist
+            tar -C ui-dist -xf ui-dist.tar
+            rm -f ui-dist.tar
             echo "[ui] dist files: $(ls -1 ui-dist | wc -l)"
           '
         '''
         stash name: 'ui-dist', includes: 'ui-dist/**'
       }
     }
-
 
     stage('put dist into backend static') {
       steps {
