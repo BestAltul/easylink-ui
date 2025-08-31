@@ -1,31 +1,35 @@
 pipeline {
   agent any
+
   options {
     timestamps()
     disableConcurrentBuilds()
     durabilityHint('PERFORMANCE_OPTIMIZED')
+    skipDefaultCheckout(true)   
   }
 
   environment {
     BACK_REPO_URL = 'https://github.com/BestAltul/EasyLinkBackEnd.git'
     BACK_BRANCH   = 'main'
-    BACK_DIR      = 'EasyLinkBackEnd' 
+    BACK_DIR      = 'EasyLinkBackEnd'
 
-    DEPLOY_DIR   = '/workspace/ymk'
-    COMPOSE_FILE = "${env.DEPLOY_DIR}/docker-compose.yml"
-  
+    DEPLOY_DIR    = '/workspace/ymk'
+    COMPOSE_FILE  = "${env.DEPLOY_DIR}/docker-compose.yml"
     DEPLOY_BE_DIR = "${env.DEPLOY_DIR}/EasyLinkBackEnd"
   }
 
   stages {
-    stage('env check') {
+    stage('prepare git & checkout frontend') {
       steps {
         sh '''
           set -e
-          echo "workspace: $(pwd)"
-          node -v && npm -v || true
-          docker version || true
-          ls -la
+          git config --global --add safe.directory '*'
+          if [ ! -d .git ]; then
+            git init
+            git remote add origin https://github.com/BestAltul/easylink-ui
+          fi
+          git fetch --depth=1 origin main
+          git checkout -f FETCH_HEAD
         '''
       }
     }
