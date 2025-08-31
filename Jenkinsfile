@@ -1,69 +1,41 @@
 pipeline {
   agent any
 
-  options {
-    timestamps()
-    durabilityHint('PERFORMANCE_OPTIMIZED')
-    disableConcurrentBuilds()
-  }
+  options { timestamps(); disableConcurrentBuilds() }
 
   environment {
     BACK_REPO_URL = 'https://github.com/BestAltul/EasyLinkBackEnd.git'
     BACK_BRANCH   = 'main'
     BACK_DIR      = 'EasyLinkBackEnd'
-    BACK_STATIC   = "${env.BACK_DIR}/src/main/resources/static"
-    COMPOSE_FILE  = "${env.BACK_DIR}/docker-compose.yml"
-    GIT_CREDS     = 'github-pat-or-ssh-creds'
+    DEPLOY_FE     = "${DEPLOY_DIR}\\frontend\\dist"
+    DEPLOY_BE_LIB = "${DEPLOY_DIR}\\backend\\app.jar"
+    COMPOSE_FILE  = "${DEPLOY_DIR}\\docker-compose.yml"
   }
 
   stages {
-    stage('frontend checked out') {
-      steps {
-        echo "workspace = ${pwd()}"
-        sh 'ls -la'
-      }
-    }
-
     stage('checkout backend') {
       steps {
         dir("${env.BACK_DIR}") {
-          git branch: "${env.BACK_BRANCH}",
-              credentialsId: "${env.GIT_CREDS}",
-              url: "${env.BACK_REPO_URL}"
+          git branch: "${env.BACK_BRANCH}", url: "${env.BACK_REPO_URL}"
         }
-      }
-    }
-
-    stage('verify node') {
-      steps {
-        sh '''
-          set -e
-          which node || true
-          node -v
-          npm -v
-        '''
       }
     }
 
     stage('build ui') {
       steps {
-        sh '''
-          set -e
-          corepack enable || true
-          (npm ci || npm i)
+        bat '''
+          (npm ci) || (npm i)
           npm run build
         '''
       }
     }
 
-    stage('move dist to backend static') {
+    stage('copy FE dist') {
       steps {
-        sh '''
-          set -e
-          rm -rf "${BACK_STATIC}" || true
-          mkdir -p "${BACK_STATIC}"
-          cp -r dist/* "${BACK_STATIC}/"
-          echo "Copied dist -> ${BACK_STATIC}"
+        bat '''
+          if exist "%DEPLOY_FE%" rmdir /S /Q "%DEPLOY_FE%"
+          mkdir "%DEPLOY_FE%"
+          robocopy "dist" "%DEPLOY_FE%" *.* /E /NFL /NDL /NJH /NJS /NP >NUL
         '''
       }
     }
@@ -71,17 +43,27 @@ pipeline {
     stage('build backend') {
       steps {
         dir("${env.BACK_DIR}") {
-          sh './gradlew clean build -x test'
+          bat 'gradlew.bat clean build -x test'
         }
       }
     }
 
-    stage('build & deploy docker') {
+    stage('copy BE jar') {
       steps {
-        sh '''
-          set -e
-          docker compose -f "${COMPOSE_FILE}" build
-          docker compose -f "${COMPOSE_FILE}" up -d
+        bat '''
+          for %%f in ("%BACK_DIR%\\build\\libs\\*.jar") do (
+            if not exist "%DEPLOY_DIR%\\backend" mkdir "%DEPLOY_DIR%\\backend"
+            copy /Y "%%f" "%DEPLOY_BE_LIB%"
+          )
+        '''
+      }
+    }
+
+    stage('docker compose up') {
+      steps {
+        bat '''
+          cd /d "%DEPLOY_DIR%"
+          docker compose -f "%COMPOSE_FILE%" up -d --build
         '''
       }
     }
