@@ -48,15 +48,36 @@ pipeline {
           set -e
           export DOCKER_HOST="${DOCKER_HOST:-tcp://host.docker.internal:2375}"
     
+          echo "== Host workspace =="
+          pwd
+          ls -la
+          echo "== find package.json (host) =="
+          find . -maxdepth 2 -name package.json -print -exec ls -l {} \\; || true
+    
+          echo "== Check mount content inside container =="
+          docker run --rm -v "$PWD":/ws -w /ws busybox sh -lc 'set -e; pwd; ls -la; echo "---"; find /ws -maxdepth 2 -name package.json -print -exec ls -l {} \\; || true'
+    
+          # Сборка фронта: ищем папку с package.json
           docker run --rm \
             -v "$PWD":/ws \
             -w /ws \
             node:20-alpine sh -lc '
               set -e
-              FRONT_DIR=/ws
-              if [ ! -f /ws/package.json ] && [ -f /ws/easylink-ui/package.json ]; then
+              apk add --no-cache bash >/dev/null 2>&1 || true
+    
+              FRONT_DIR=
+              if [ -f /ws/package.json ]; then
+                FRONT_DIR=/ws
+              elif [ -f /ws/easylink-ui/package.json ]; then
                 FRONT_DIR=/ws/easylink-ui
+              else
+                FRONT_DIR=$(find /ws -maxdepth 2 -name package.json -print -quit | xargs -r dirname)
               fi
+    
+              if [ -z "$FRONT_DIR" ] || [ ! -f "$FRONT_DIR/package.json" ]; then
+                echo "ERROR: package.json не найден в /ws или /ws/easylink-ui"; exit 1
+              fi
+    
               echo "Using FRONT_DIR=$FRONT_DIR"
               cd "$FRONT_DIR"
               ls -la
@@ -80,9 +101,8 @@ pipeline {
           STATIC_DIR="${BACK_DIR}/src/main/resources/static"
     
           FRONT_DIST="dist"
-          if [ -d "easylink-ui/dist" ]; then
-            FRONT_DIST="easylink-ui/dist"
-          fi
+          [ -d "easylink-ui/dist" ] && FRONT_DIST="easylink-ui/dist"
+          [ -d "$FRONT_DIST" ] || { echo "ERROR: не найден dist (ни ./dist, ни ./easylink-ui/dist)"; exit 1; }
     
           rm -rf "$STATIC_DIR" || true
           mkdir -p "$STATIC_DIR"
@@ -91,6 +111,7 @@ pipeline {
         '''
       }
     }
+
 
 
     stage('build backend') {
