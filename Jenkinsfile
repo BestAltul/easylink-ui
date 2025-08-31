@@ -37,6 +37,13 @@ pipeline {
     }
 
     stage('build ui') {
+      agent {
+        docker {
+          image 'node:20-bullseye'
+          // кеш npm, чтобы быстрее
+          args '-u root:root -v $HOME/.npm:/root/.npm'
+        }
+      }
       steps {
         sh '''
           set -e
@@ -46,32 +53,38 @@ pipeline {
           npm ci || npm i
           npm run build
         '''
+        // забираем dist из текущей директории
+        stash name: 'ui-dist', includes: 'dist/**'
       }
     }
 
     stage('put dist into backend static') {
       steps {
-        sh '''
-          set -e
-          STATIC_DIR="${BACK_DIR}/src/main/resources/static"
-          SRC="dist"
-          [ -d "easylink-ui/dist" ] && SRC="easylink-ui/dist"
-          [ -d "$SRC" ] || { echo "dist not found"; exit 1; }
-          rm -rf "$STATIC_DIR"
-          mkdir -p "$STATIC_DIR"
-          cp -r "$SRC/"* "$STATIC_DIR/"
-        '''
+        dir("${BACK_DIR}") {
+          sh 'rm -rf src/main/resources/static/* || true'
+          unstash 'ui-dist'
+          sh 'cp -r dist/* src/main/resources/static/'
+          sh 'rm -rf dist || true'
+        }
       }
     }
 
     stage('build backend') {
+      agent {
+        docker {
+          image 'eclipse-temurin:21-jdk'
+          args '-u root:root -v $HOME/.gradle:/root/.gradle'
+        }
+      }
       steps {
         dir("${env.BACK_DIR}") {
           sh '''
             set -e
-            chmod +x gradlew
+            chmod +x gradlew || true
             ./gradlew clean build -x test
           '''
+          archiveArtifacts artifacts: 'build/libs/*.jar', fingerprint: true
+          stash name: 'app-jar', includes: 'build/libs/*.jar'
         }
       }
     }
@@ -81,6 +94,10 @@ pipeline {
         sh '''
           set -e
           mkdir -p "${DEPLOY_BE_DIR}"
+        '''
+        unstash 'app-jar'
+        sh '''
+          set -e
           JAR=$(ls ${BACK_DIR}/build/libs/*.jar | head -n 1)
           cp -f "$JAR" "${DEPLOY_BE_DIR}/app.jar"
         '''
@@ -88,14 +105,15 @@ pipeline {
     }
 
     stage('docker compose up (without jenkins)') {
+      when { expression { return fileExists(env.COMPOSE_FILE) } }
       steps {
-        sh '''
+        sh """
           set -e
-          export DOCKER_HOST="${DOCKER_HOST:-tcp://host.docker.internal:2375}"
           cd "${DEPLOY_DIR}"
           if docker compose version >/dev/null 2>&1; then DC="docker compose"; else DC="docker-compose"; fi
-          $DC -f "${COMPOSE_FILE}" up -d --build postgres pgadmin zookeeper kafka auth-service
-        '''
+          # ВАЖНО: требуется docker CLI в агенте и примонтированный /var/run/docker.sock
+          \$DC -f "${COMPOSE_FILE}" up -d --build postgres pgadmin zookeeper kafka auth-service
+        """
       }
     }
   }
