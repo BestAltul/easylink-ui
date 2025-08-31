@@ -13,7 +13,6 @@ pipeline {
     BACK_BRANCH   = 'main'
     BACK_DIR      = 'EasyLinkBackEnd'
     IMAGE_TAG     = 'ymk/auth-service:latest'
-    // ожидается, что DOCKER_HOST уже задан в UI: tcp://host.docker.internal:2375
   }
 
   stages {
@@ -48,42 +47,29 @@ pipeline {
       }
     }
 
-    stage('build ui (no mounts)') {
+    stage('build ui') {
       steps {
         sh '''
           bash -lc '
             set -euo pipefail
-
             UI_DIR=""
-            if   [ -f package.json ];             then UI_DIR=".";
+            if   [ -f package.json ]; then UI_DIR=".";
             elif [ -f easylink-ui/package.json ]; then UI_DIR="easylink-ui";
-            elif [ -f ui/package.json ];          then UI_DIR="ui";
+            elif [ -f ui/package.json ]; then UI_DIR="ui";
             else echo "[ui][error] package.json not found"; exit 1; fi
-            echo "[ui] using UI_DIR=$UI_DIR"
-
-            rm -rf ui-dist ui-dist.tar
-
-            # передаём исходники в контейнер через stdin, возвращаем dist.tar через stdout
-            tar -C "$UI_DIR" -cf - . \
-            | docker run --rm -i node:20-bullseye bash -lc "
-                set -e
-                mkdir -p /app
-                tar -C /app -xf -
-                cd /app
-                npm ci || npm i
-                npm run build
-                tar -C /app/dist -cf - .
-              " > ui-dist.tar
-
-            mkdir -p ui-dist
-            tar -C ui-dist -xf ui-dist.tar
-            rm -f ui-dist.tar
+            rm -rf ui-dist && mkdir -p ui-dist
+            CID=$(docker create --name ui-build node:20-bullseye bash -lc "set -e; cd /app; npm ci || npm i; npm run build")
+            tar -C "$UI_DIR" -cf - . | docker cp - "$CID":/app
+            docker start -a "$CID"
+            docker cp "$CID":/app/dist - | tar -C ui-dist -xf -
+            docker rm -f "$CID" >/dev/null
             echo "[ui] dist files: $(ls -1 ui-dist | wc -l)"
           '
         '''
         stash name: 'ui-dist', includes: 'ui-dist/**'
       }
     }
+
 
     stage('put dist into backend static') {
       steps {
@@ -110,7 +96,6 @@ pipeline {
           set -eu
           rm -f app.jar app-jar.tar
 
-          # скармливаем код бэка в gradle-контейнер, вытаскиваем банку обратно
           tar -C "${BACK_DIR}" -cf - . \
           | docker run --rm -i gradle:8.9-jdk21 bash -lc '
               set -e
@@ -149,7 +134,6 @@ pipeline {
           ENTRYPOINT ["java","-jar","/app/app.jar"]
           EOF
 
-          # docker-cli заархивирует контекст и отправит его в daemon по DOCKER_HOST
           docker build -t "${IMAGE_TAG}" -f Dockerfile.ci .
           docker images | grep -E "ymk/auth-service|REPOSITORY"
         '''
@@ -160,7 +144,6 @@ pipeline {
       steps {
         sh '''
           set -eu
-          # если задан внешний compose — используем его; иначе — пишем fallback yaml
           if [ -n "${COMPOSE_FILE_LINUX:-}" ] && [ -f "${COMPOSE_FILE_LINUX}" ]; then
             echo "[compose] using external file: ${COMPOSE_FILE_LINUX}"
             FILE_OPT="-f ${COMPOSE_FILE_LINUX}"
@@ -210,7 +193,6 @@ pipeline {
                 depends_on: [postgres, kafka]
                 environment:
                   SPRING_PROFILES_ACTIVE: prod
-                  # добавь свои переменные, если нужны (URL БД/Kafka и т.п.)
                 ports: ["8080:8080"]
                 restart: unless-stopped
 
