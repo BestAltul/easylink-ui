@@ -51,14 +51,14 @@ pipeline {
           docker run --rm \
             -v "$PWD":/ws \
             -w /ws \
-            node:20-alpine sh -lc "
+            node:20-alpine sh -lc '
               set -e
               FRONT_DIR=/ws
               if [ ! -f /ws/package.json ] && [ -f /ws/easylink-ui/package.json ]; then
                 FRONT_DIR=/ws/easylink-ui
               fi
-              echo Using FRONT_DIR=\$FRONT_DIR
-              cd \$FRONT_DIR
+              echo "Using FRONT_DIR=$FRONT_DIR"
+              cd "$FRONT_DIR"
               ls -la
     
               if [ -f package-lock.json ]; then
@@ -68,7 +68,7 @@ pipeline {
               fi
     
               npm run build
-            "
+            '
         '''
       }
     }
