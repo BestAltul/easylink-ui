@@ -42,68 +42,55 @@ pipeline {
       }
     }
     
-    stage('build ui') {
+   stage('build ui') {
       steps {
         sh '''
           set -e
           export DOCKER_HOST="${DOCKER_HOST:-tcp://host.docker.internal:2375}"
     
-          echo "== Host workspace =="
-          pwd
-          ls -la
-          echo "== find package.json (host) =="
-          find . -maxdepth 2 -name package.json -print -exec ls -l {} \\; || true
+          # Общая папка с хостом (C:\\ymk)
+          SHARED_DIR="/workspace/ymk/_ci/ymk-pipeline"
+          rm -rf "$SHARED_DIR" || true
+          mkdir -p "$SHARED_DIR"
     
-          echo "== Check mount content inside container =="
-          docker run --rm -v "$PWD":/ws -w /ws busybox sh -lc 'set -e; pwd; ls -la; echo "---"; find /ws -maxdepth 2 -name package.json -print -exec ls -l {} \\; || true'
+          # Кладём туда текущий workspace
+          # (исключим .git, node_modules на всякий случай)
+          rsync -a --delete --exclude ".git" --exclude "node_modules" ./ "$SHARED_DIR"/ || cp -a . "$SHARED_DIR"/
     
-          # Сборка фронта: ищем папку с package.json
+          # Собираем фронт ВНУТРИ node-контейнера, монтируя SHARED_DIR
           docker run --rm \
-            -v "$PWD":/ws \
+            -v "$SHARED_DIR":/ws \
             -w /ws \
             node:20-alpine sh -lc '
               set -e
-              apk add --no-cache bash >/dev/null 2>&1 || true
-    
-              FRONT_DIR=
-              if [ -f /ws/package.json ]; then
-                FRONT_DIR=/ws
-              elif [ -f /ws/easylink-ui/package.json ]; then
+              FRONT_DIR=/ws
+              if [ ! -f /ws/package.json ] && [ -f /ws/easylink-ui/package.json ]; then
                 FRONT_DIR=/ws/easylink-ui
-              else
-                FRONT_DIR=$(find /ws -maxdepth 2 -name package.json -print -quit | xargs -r dirname)
               fi
-    
-              if [ -z "$FRONT_DIR" ] || [ ! -f "$FRONT_DIR/package.json" ]; then
-                echo "ERROR: package.json не найден в /ws или /ws/easylink-ui"; exit 1
-              fi
-    
               echo "Using FRONT_DIR=$FRONT_DIR"
               cd "$FRONT_DIR"
-              ls -la
-    
-              if [ -f package-lock.json ]; then
-                npm ci
-              else
-                npm i
-              fi
-    
+              if [ -f package-lock.json ]; then npm ci; else npm i; fi
               npm run build
             '
         '''
       }
     }
 
+
     stage('put dist into backend static') {
       steps {
         sh '''
           set -e
+          SHARED_DIR="/workspace/ymk/_ci/ymk-pipeline"
           STATIC_DIR="${BACK_DIR}/src/main/resources/static"
-    
-          FRONT_DIST="dist"
-          [ -d "easylink-ui/dist" ] && FRONT_DIST="easylink-ui/dist"
-          [ -d "$FRONT_DIST" ] || { echo "ERROR: не найден dist (ни ./dist, ни ./easylink-ui/dist)"; exit 1; }
-    
+      
+          FRONT_DIST="$SHARED_DIR/dist"
+          if [ -d "$SHARED_DIR/easylink-ui/dist" ]; then
+            FRONT_DIST="$SHARED_DIR/easylink-ui/dist"
+          fi
+      
+          [ -d "$FRONT_DIST" ] || { echo "ERROR: dist не найден в $FRONT_DIST"; exit 1; }
+      
           rm -rf "$STATIC_DIR" || true
           mkdir -p "$STATIC_DIR"
           cp -r "$FRONT_DIST/"* "$STATIC_DIR/"
@@ -111,8 +98,6 @@ pipeline {
         '''
       }
     }
-
-
 
     stage('build backend') {
       steps {
