@@ -42,9 +42,10 @@ pipeline {
       steps {
         sh '''
           set -e
-          corepack enable || true
-          (npm ci || npm i)
-          npm run build
+          docker run --rm \
+            -v "$PWD":/app \
+            -w /app \
+            node:20-alpine sh -lc "corepack enable || true; (npm ci || npm i); npm run build"
         '''
       }
     }
