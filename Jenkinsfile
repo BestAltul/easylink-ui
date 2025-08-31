@@ -9,28 +9,25 @@ pipeline {
   }
 
   environment {
+
     BACK_REPO_URL = 'https://github.com/BestAltul/EasyLinkBackEnd.git'
     BACK_BRANCH   = 'main'
     BACK_DIR      = 'EasyLinkBackEnd'
 
-    DEPLOY_DIR    = '/workspace/ymk'
-    COMPOSE_FILE  = "${env.DEPLOY_DIR}/docker-compose.yml"
-    DEPLOY_BE_DIR = "${env.DEPLOY_DIR}/EasyLinkBackEnd"
+    DEPLOY_DIR     = '/workspace/ymk'                
+    DEPLOY_DIR_WIN = 'C:/ymk'                      
+    COMPOSE_FILE   = "${env.DEPLOY_DIR}/docker-compose.yml"
+    DEPLOY_BE_DIR  = "${env.DEPLOY_DIR}/EasyLinkBackEnd"
   }
 
   stages {
-    stage('prepare git & checkout frontend') {
+
+    stage('checkout frontend (this repo)') {
       steps {
-        sh '''
-          set -e
-          git config --global --add safe.directory '*'
-          if [ ! -d .git ]; then
-            git init
-            git remote add origin https://github.com/BestAltul/easylink-ui
-          fi
-          git fetch --depth=1 origin main
-          git checkout -f FETCH_HEAD
-        '''
+        sh 'git config --global --add safe.directory "*"'
+
+        checkout scm
+        sh 'echo "Frontend checked out to: $PWD"; ls -la'
       }
     }
 
@@ -41,25 +38,23 @@ pipeline {
         }
       }
     }
-    
-   stage('build ui') {
+
+    stage('build ui') {
       steps {
         sh '''
           set -e
           export DOCKER_HOST="${DOCKER_HOST:-tcp://host.docker.internal:2375}"
-    
-          # Общая папка с хостом (C:\\ymk)
-          SHARED_DIR="/workspace/ymk/_ci/ymk-pipeline"
-          rm -rf "$SHARED_DIR" || true
-          mkdir -p "$SHARED_DIR"
-    
-          # Кладём туда текущий workspace
-          # (исключим .git, node_modules на всякий случай)
-          rsync -a --delete --exclude ".git" --exclude "node_modules" ./ "$SHARED_DIR"/ || cp -a . "$SHARED_DIR"/
-    
-          # Собираем фронт ВНУТРИ node-контейнера, монтируя SHARED_DIR
+
+          SHARED_DIR_LIN="${DEPLOY_DIR}/_ci/ymk-pipeline"     
+          SHARED_DIR_WIN="${DEPLOY_DIR_WIN}/_ci/ymk-pipeline"  
+
+          rm -rf "$SHARED_DIR_LIN" || true
+          mkdir -p "$SHARED_DIR_LIN"
+
+          cp -a "$WORKSPACE"/. "$SHARED_DIR_LIN"/
+
           docker run --rm \
-            -v "$SHARED_DIR":/ws \
+            -v "$SHARED_DIR_WIN:/ws" \
             -w /ws \
             node:20-alpine sh -lc '
               set -e
@@ -76,21 +71,18 @@ pipeline {
       }
     }
 
-
     stage('put dist into backend static') {
       steps {
         sh '''
           set -e
-          SHARED_DIR="/workspace/ymk/_ci/ymk-pipeline"
+          SHARED_DIR_LIN="${DEPLOY_DIR}/_ci/ymk-pipeline"
           STATIC_DIR="${BACK_DIR}/src/main/resources/static"
-      
-          FRONT_DIST="$SHARED_DIR/dist"
-          if [ -d "$SHARED_DIR/easylink-ui/dist" ]; then
-            FRONT_DIST="$SHARED_DIR/easylink-ui/dist"
-          fi
-      
+
+          FRONT_DIST="$SHARED_DIR_LIN/dist"
+          [ -d "$SHARED_DIR_LIN/easylink-ui/dist" ] && FRONT_DIST="$SHARED_DIR_LIN/easylink-ui/dist"
+
           [ -d "$FRONT_DIST" ] || { echo "ERROR: dist не найден в $FRONT_DIST"; exit 1; }
-      
+
           rm -rf "$STATIC_DIR" || true
           mkdir -p "$STATIC_DIR"
           cp -r "$FRONT_DIST/"* "$STATIC_DIR/"
@@ -125,13 +117,14 @@ pipeline {
           set -e
           export DOCKER_HOST="${DOCKER_HOST:-tcp://host.docker.internal:2375}"
           cd "${DEPLOY_DIR}"
+
           if docker compose version >/dev/null 2>&1; then
             DC="docker compose"
           else
             DC="docker-compose"
           fi
-
-          $DC -f "${COMPOSE_FILE}" up -d --build postgres pgadmin zookeeper kafka auth-service
+          $DC -p app -f "${COMPOSE_FILE}" down --remove-orphans || true
+          $DC -p app -f "${COMPOSE_FILE}" up -d --build postgres pgadmin zookeeper kafka auth-service
         '''
       }
     }
