@@ -8,8 +8,6 @@ pipeline {
     skipDefaultCheckout(true)
   }
 
-  tools { nodejs 'node20' }
-
   environment {
     BACK_REPO_URL = 'https://github.com/approachh/EasyLinkBackEnd.git'
     BACK_BRANCH   = 'main'
