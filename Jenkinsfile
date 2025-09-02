@@ -147,25 +147,8 @@ pipeline {
         sh '''
           set -eu
     
-          if [ -f docker-compose.yml ] && [ -f docker-compose-jenkins.yml ]; then
-            echo "[compose] using docker-compose.yml + docker-compose-jenkins.yml"
-            FILE_OPT="-f docker-compose.yml -f docker-compose-jenkins.yml"
-            WORKDIR="$PWD"
-          elif [ -n "${COMPOSE_FILE_LINUX:-}" ] && [ -f "${COMPOSE_FILE_LINUX}" ]; then
-            echo "[compose] using external file: ${COMPOSE_FILE_LINUX}"
-            FILE_OPT="-f ${COMPOSE_FILE_LINUX}"
-            WORKDIR="$(dirname "${COMPOSE_FILE_LINUX}")"
-          else
-            echo "[compose] fallback ci-compose.yml"
-            WORKDIR="$PWD"
-            cat > ci-compose.yml <<'YAML'
-    services:
-      auth-service:
-        image: ymk/auth-service:latest
-        ports: ["8080:8080"]
-    YAML
-            FILE_OPT="-f ci-compose.yml"
-          fi
+          [ -f docker-compose.yml ] || { echo "[compose] docker-compose.yml not found"; exit 1; }
+          [ -f docker-compose-jenkins.yml ] || { echo "[compose] docker-compose-jenkins.yml not found"; exit 1; }
     
           docker image inspect "${IMAGE_TAG}" >/dev/null 2>&1 || {
             echo "[compose] local image missing — building ${IMAGE_TAG}"
@@ -173,13 +156,12 @@ pipeline {
             docker build -t "${IMAGE_TAG}" -f Dockerfile.ci .
           }
     
-          cd "$WORKDIR"
           if docker compose version >/dev/null 2>&1; then DC="docker compose"; else DC="docker-compose"; fi
-          $DC $FILE_OPT up -d
-          $DC $FILE_OPT ps
+          $DC -f docker-compose.yml -f docker-compose-jenkins.yml up -d --build
+          $DC -f docker-compose.yml -f docker-compose-jenkins.yml ps
         '''
       }
-   }
+    }
 }
 
   post {
