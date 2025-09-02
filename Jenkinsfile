@@ -145,6 +145,7 @@ pipeline {
     stage('compose up') {
       steps {
         sh '''
+          cat > /tmp/compose_up.sh <<'BASH'
           set -euo pipefail
     
           IMG="${IMAGE_TAG}"
@@ -183,6 +184,8 @@ pipeline {
             $DC -f "$FILE" up -d --build
             $DC -f "$FILE" ps
           fi
+    BASH
+          bash /tmp/compose_up.sh
         '''
       }
     }
