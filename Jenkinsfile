@@ -143,84 +143,43 @@ pipeline {
     }
 
     stage('compose up') {
-      steps {
-        sh '''
-          set -eu
-          if [ -n "${COMPOSE_FILE_LINUX:-}" ] && [ -f "${COMPOSE_FILE_LINUX}" ]; then
-            echo "[compose] using external file: ${COMPOSE_FILE_LINUX}"
-            FILE_OPT="-f ${COMPOSE_FILE_LINUX}"
-            WORKDIR="$(dirname "${COMPOSE_FILE_LINUX}")"
-          else
-            echo "[compose] using fallback ci-compose.yml (named volumes, no bind mounts)"
-            WORKDIR="$PWD"
-cat > ci-compose.yml <<'YAML'
+  steps {
+    sh '''
+      set -eu
+
+      if [ -f docker-compose.yml ] && [ -f docker-compose-jenkins.yml ]; then
+        echo "[compose] using docker-compose.yml + docker-compose-jenkins.yml"
+        FILE_OPT="-f docker-compose.yml -f docker-compose-jenkins.yml"
+        WORKDIR="$PWD"
+      elif [ -n "${COMPOSE_FILE_LINUX:-}" ] && [ -f "${COMPOSE_FILE_LINUX}" ]; then
+        echo "[compose] using external file: ${COMPOSE_FILE_LINUX}"
+        FILE_OPT="-f ${COMPOSE_FILE_LINUX}"
+        WORKDIR="$(dirname "${COMPOSE_FILE_LINUX}")"
+      else
+        echo "[compose] fallback ci-compose.yml"
+        WORKDIR="$PWD"
+        cat > ci-compose.yml <<'YAML'
 services:
-  postgres:
-    image: postgres:16
-    environment:
-      POSTGRES_DB: easylink
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    ports:
-      - "5432:5432"
-    volumes:
-      - "pgdata:/var/lib/postgresql/data"
-    restart: unless-stopped
-
-  zookeeper:
-    image: confluentinc/cp-zookeeper:7.5.0
-    environment:
-      ZOOKEEPER_CLIENT_PORT: 2181
-    restart: unless-stopped
-
-  kafka:
-    image: confluentinc/cp-kafka:7.5.0
-    environment:
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-    depends_on:
-      - zookeeper
-    ports:
-      - "9092:9092"
-    restart: unless-stopped
-
-  pgadmin:
-    image: dpage/pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@example.local
-      PGADMIN_DEFAULT_PASSWORD: adminpass
-    ports:
-      - "5050:80"
-    depends_on:
-      - postgres
-    restart: unless-stopped
-
   auth-service:
     image: ymk/auth-service:latest
-    depends_on:
-      - postgres
-      - kafka
-    environment:
-      SPRING_PROFILES_ACTIVE: prod
-    ports:
-      - "8080:8080"
-    restart: unless-stopped
-
-volumes:
-  pgdata:
+    ports: ["8080:8080"]
 YAML
-            FILE_OPT="-f ci-compose.yml"
-          fi
+        FILE_OPT="-f ci-compose.yml"
+      fi
 
-          cd "$WORKDIR"
-          if docker compose version >/dev/null 2>&1; then DC="docker compose"; else DC="docker-compose"; fi
-          $DC $FILE_OPT up -d
-          $DC $FILE_OPT ps
-        '''
+      docker image inspect "${IMAGE_TAG}" >/dev/null 2>&1 || {
+        echo "[compose] local image missing — building ${IMAGE_TAG}"
+        [ -f Dockerfile.ci ] || { echo "[compose][error] Dockerfile.ci not found"; exit 1; }
+        docker build -t "${IMAGE_TAG}" -f Dockerfile.ci .
       }
-    }
+
+      cd "$WORKDIR"
+      if docker compose version >/dev/null 2>&1; then DC="docker compose"; else DC="docker-compose"; fi
+      $DC $FILE_OPT up -d
+      $DC $FILE_OPT ps
+    '''
   }
+}
 
   post {
     success { echo 'Deployment successful!' }
