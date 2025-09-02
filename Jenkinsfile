@@ -153,54 +153,63 @@ pipeline {
           else
             echo "[compose] using fallback ci-compose.yml (named volumes, no bind mounts)"
             WORKDIR="$PWD"
-            cat > ci-compose.yml <<'YAML'
-            services:
-              postgres:
-                image: postgres:16
-                environment:
-                  POSTGRES_DB: easylink
-                  POSTGRES_USER: postgres
-                  POSTGRES_PASSWORD: postgres
-                ports: ["5432:5432"]
-                volumes: ["pgdata:/var/lib/postgresql/data"]
-                restart: unless-stopped
+cat > ci-compose.yml <<'YAML'
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: easylink
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - "pgdata:/var/lib/postgresql/data"
+    restart: unless-stopped
 
-              zookeeper:
-                image: confluentinc/cp-zookeeper:7.5.0
-                environment:
-                  ZOOKEEPER_CLIENT_PORT: 2181
-                restart: unless-stopped
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+    restart: unless-stopped
 
-              kafka:
-                image: confluentinc/cp-kafka:7.5.0
-                environment:
-                  KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-                  KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
-                  KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-                depends_on: [zookeeper]
-                ports: ["9092:9092"]
-                restart: unless-stopped
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    restart: unless-stopped
 
-              pgadmin:
-                image: dpage/pgadmin4
-                environment:
-                  PGADMIN_DEFAULT_EMAIL: admin@example.local
-                  PGADMIN_DEFAULT_PASSWORD: adminpass
-                ports: ["5050:80"]
-                depends_on: [postgres]
-                restart: unless-stopped
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.local
+      PGADMIN_DEFAULT_PASSWORD: adminpass
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    restart: unless-stopped
 
-              auth-service:
-                image: ymk/auth-service:latest
-                depends_on: [postgres, kafka]
-                environment:
-                  SPRING_PROFILES_ACTIVE: prod
-                ports: ["8080:8080"]
-                restart: unless-stopped
+  auth-service:
+    image: ymk/auth-service:latest
+    depends_on:
+      - postgres
+      - kafka
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
 
-            volumes:
-              pgdata:
-            YAML
+volumes:
+  pgdata:
+YAML
             FILE_OPT="-f ci-compose.yml"
           fi
 
