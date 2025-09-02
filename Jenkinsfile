@@ -101,19 +101,17 @@ pipeline {
         sh '''
           set -eu
           rm -f app.jar app-jar.tar
-
           tar -C "${BACK_DIR}" -cf - . \
           | docker run --rm -i gradle:8.9-jdk21 bash -lc '
               set -e
               mkdir -p /app
               tar -C /app -xf -
               cd /app
-              gradle clean bootJar -x test
+              gradle clean bootJar -x test 1>&2
               JAR=$(ls build/libs/*.jar | head -n1)
-              echo "[gradle] built: ${JAR}"
-              tar -C "$(dirname "$JAR")" -cf - "$(basename "$JAR")"
+              >&2 echo "[gradle] built: ${JAR}"
+              exec tar -C "$(dirname "$JAR")" -cf - "$(basename "$JAR")"
             ' > app-jar.tar
-
           mkdir -p out-jar
           tar -C out-jar -xf app-jar.tar
           JAR_PATH=$(ls out-jar/*.jar | head -n1)
@@ -125,6 +123,7 @@ pipeline {
         stash name: 'app-jar', includes: "app.jar"
       }
     }
+
 
     stage('build runtime image') {
       steps {
