@@ -145,20 +145,44 @@ pipeline {
     stage('compose up') {
       steps {
         sh '''
-          set -eu
+          set -euo pipefail
     
-          [ -f docker-compose.yml ] || { echo "[compose] docker-compose.yml not found"; exit 1; }
-          [ -f docker-compose-jenkins.yml ] || { echo "[compose] docker-compose-jenkins.yml not found"; exit 1; }
+          IMG="${IMAGE_TAG}"
+          ROOT="$PWD"
+          CANDIDATES="$ROOT $ROOT/EasyLinkBackEnd $ROOT/jenkins /workspace/ymk"
     
-          docker image inspect "${IMAGE_TAG}" >/dev/null 2>&1 || {
-            echo "[compose] local image missing — building ${IMAGE_TAG}"
+          F1=""; F2=""
+          for d in $CANDIDATES; do
+            [ -z "$F1" ] && [ -f "$d/docker-compose.yml" ] && F1="$d/docker-compose.yml"
+            [ -z "$F2" ] && [ -f "$d/docker-compose-jenkins.yml" ] && F2="$d/docker-compose-jenkins.yml"
+          done
+    
+          if [ -n "${COMPOSE_FILE_LINUX:-}" ] && [ -f "${COMPOSE_FILE_LINUX}" ]; then
+            F1="${COMPOSE_FILE_LINUX}"
+          fi
+    
+          if [ -z "$F1" ] && [ -z "$F2" ]; then
+            echo "[compose] no compose files found in: $CANDIDATES"; exit 1
+          fi
+    
+          docker image inspect "$IMG" >/dev/null 2>&1 || {
+            echo "[compose] local image missing — building $IMG"
             [ -f Dockerfile.ci ] || { echo "[compose][error] Dockerfile.ci not found"; exit 1; }
-            docker build -t "${IMAGE_TAG}" -f Dockerfile.ci .
+            docker build -t "$IMG" -f Dockerfile.ci .
           }
     
           if docker compose version >/dev/null 2>&1; then DC="docker compose"; else DC="docker-compose"; fi
-          $DC -f docker-compose.yml -f docker-compose-jenkins.yml up -d --build
-          $DC -f docker-compose.yml -f docker-compose-jenkins.yml ps
+    
+          if [ -n "$F1" ] && [ -n "$F2" ]; then
+            echo "[compose] using: $F1 + $F2"
+            $DC -f "$F1" -f "$F2" up -d --build
+            $DC -f "$F1" -f "$F2" ps
+          else
+            FILE="${F1:-$F2}"
+            echo "[compose] using: $FILE"
+            $DC -f "$FILE" up -d --build
+            $DC -f "$FILE" ps
+          fi
         '''
       }
     }
