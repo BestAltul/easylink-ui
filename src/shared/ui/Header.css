@@ -141,8 +141,8 @@
 
 /* ----------------------------RESPONSIVE--------------------------- */
 @media (max-width: 767.98px) {
-  .nav {
-    display: none !important;
+  .header .nav {
+    display: none;
   }
 
   .early-access-bubble {
