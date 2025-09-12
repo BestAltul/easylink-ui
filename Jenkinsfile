@@ -128,13 +128,13 @@ pipeline {
     steps {
       unstash 'app-jar'
       sh '''
-        bash -lc '
-          set -euo pipefail
+        set -e
   
-          BACK_SHA=$(git -C EasyLinkBackEnd rev-parse --short=12 HEAD || echo unknown)
-          BUILD_TIME=$(date -u +%FT%TZ)
+        BACK_SHA=$(git -C EasyLinkBackEnd rev-parse --short=12 HEAD || echo unknown)
+        BUILD_TIME=$(date -u +%FT%TZ)
   
-          cat > Dockerfile.ci <<'\''EOF'\''
+        # пишем Dockerfile ЛИТЕРАЛЬНО (переменные внутри не подставляются)
+        cat > Dockerfile.ci <<'EOF'
   ARG BUILD_SHA=unknown
   ARG BUILD_TIME=unknown
   FROM eclipse-temurin:21-jre
@@ -149,18 +149,19 @@ pipeline {
   ENTRYPOINT ["java","-jar","/app/app.jar"]
   EOF
   
-          docker build --no-cache \
-            -t "${IMAGE_TAG}" \
-            --build-arg BUILD_SHA="$BACK_SHA" \
-            --build-arg BUILD_TIME="$BUILD_TIME" \
-            -f Dockerfile.ci .
+        # сборка БЕЗ кэша, пробрасываем фактические значения через --build-arg
+        docker build --no-cache \
+          -t "${IMAGE_TAG}" \
+          --build-arg BUILD_SHA="$BACK_SHA" \
+          --build-arg BUILD_TIME="$BUILD_TIME" \
+          -f Dockerfile.ci .
   
-          echo "[image] built ${IMAGE_TAG}"
-          docker image inspect "${IMAGE_TAG}" --format "id={{.Id}}  created={{.Created}}  tags={{.RepoTags}}"
-        '
+        echo "[image] built ${IMAGE_TAG}"
+        docker image inspect "${IMAGE_TAG}" --format "id={{ .Id }}  created={{ .Created }}  tags={{ .RepoTags }}"
       '''
     }
   }
+
 
 
     stage('compose up') {
