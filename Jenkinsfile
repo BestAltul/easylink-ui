@@ -124,23 +124,42 @@ pipeline {
       }
     }
 
-    stage('build runtime image') {
-      steps {
-        unstash 'app-jar'
-        sh '''
-          set -eu
-          cat > Dockerfile.ci <<'EOF'
-          FROM eclipse-temurin:21-jre
-          WORKDIR /app
-          COPY app.jar /app/app.jar
-          EXPOSE 8080
-          ENTRYPOINT ["java","-jar","/app/app.jar"]
-          EOF
-          docker build -t "${IMAGE_TAG}" -f Dockerfile.ci .
-          docker images | grep -E "ymk/auth-service|REPOSITORY" || true
-        '''
-      }
+  stage('build runtime image') {
+    steps {
+      unstash 'app-jar'
+      sh '''
+        set -euo pipefail
+        BACK_SHA=$(git -C EasyLinkBackEnd rev-parse --short=12 HEAD || echo unknown)
+        BUILD_TIME=$(date -u +%FT%TZ)
+        cat > Dockerfile.ci <<'EOF'
+        ARG BUILD_SHA=unknown
+        ARG BUILD_TIME=unknown
+        FROM eclipse-temurin:21-jre
+        WORKDIR /app
+        COPY app.jar /app/app.jar
+        ENV APP_BUILD_SHA=${BUILD_SHA} \
+            APP_BUILD_TIME=${BUILD_TIME}
+        LABEL org.opencontainers.image.revision=${BUILD_SHA} \
+              org.opencontainers.image.created=${BUILD_TIME} \
+              org.opencontainers.image.title="ymk/auth-service"
+        EXPOSE 8080
+        ENTRYPOINT ["java","-jar","/app/app.jar"]
+        EOF
+        docker build --no-cache \
+          -t "${IMAGE_TAG}" \
+          --build-arg BUILD_SHA="$BACK_SHA" \
+          --build-arg BUILD_TIME="$BUILD_TIME" \
+          -f Dockerfile.ci .
+        echo "[image] built ${IMAGE_TAG} (sha + created):"
+        ID=$(docker image inspect "${IMAGE_TAG}" --format '{{.Id}}')
+        CREATED=$(docker image inspect "${IMAGE_TAG}" --format '{{.Created}}')
+        echo "  id=${ID}"
+        echo "  created=${CREATED}"
+        echo "  back_sha=${BACK_SHA}  build_time=${BUILD_TIME}"
+      '''
     }
+  }
+
 
     stage('compose up') {
       steps {
