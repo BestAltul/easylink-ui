@@ -128,38 +128,39 @@ pipeline {
     steps {
       unstash 'app-jar'
       sh '''
-        set -euo pipefail
-        BACK_SHA=$(git -C EasyLinkBackEnd rev-parse --short=12 HEAD || echo unknown)
-        BUILD_TIME=$(date -u +%FT%TZ)
-        cat > Dockerfile.ci <<'EOF'
-        ARG BUILD_SHA=unknown
-        ARG BUILD_TIME=unknown
-        FROM eclipse-temurin:21-jre
-        WORKDIR /app
-        COPY app.jar /app/app.jar
-        ENV APP_BUILD_SHA=${BUILD_SHA} \
-            APP_BUILD_TIME=${BUILD_TIME}
-        LABEL org.opencontainers.image.revision=${BUILD_SHA} \
-              org.opencontainers.image.created=${BUILD_TIME} \
-              org.opencontainers.image.title="ymk/auth-service"
-        EXPOSE 8080
-        ENTRYPOINT ["java","-jar","/app/app.jar"]
-        EOF
-        docker build --no-cache \
-          -t "${IMAGE_TAG}" \
-          --build-arg BUILD_SHA="$BACK_SHA" \
-          --build-arg BUILD_TIME="$BUILD_TIME" \
-          -f Dockerfile.ci .
-        echo "[image] built ${IMAGE_TAG} (sha + created):"
-        ID=$(docker image inspect "${IMAGE_TAG}" --format '{{.Id}}')
-        CREATED=$(docker image inspect "${IMAGE_TAG}" --format '{{.Created}}')
-        echo "  id=${ID}"
-        echo "  created=${CREATED}"
-        echo "  back_sha=${BACK_SHA}  build_time=${BUILD_TIME}"
+        bash -lc '
+          set -euo pipefail
+  
+          BACK_SHA=$(git -C EasyLinkBackEnd rev-parse --short=12 HEAD || echo unknown)
+          BUILD_TIME=$(date -u +%FT%TZ)
+  
+          cat > Dockerfile.ci <<EOF
+  ARG BUILD_SHA=unknown
+  ARG BUILD_TIME=unknown
+  FROM eclipse-temurin:21-jre
+  WORKDIR /app
+  COPY app.jar /app/app.jar
+  ENV APP_BUILD_SHA=\${BUILD_SHA} \\
+      APP_BUILD_TIME=\${BUILD_TIME}
+  LABEL org.opencontainers.image.revision=\${BUILD_SHA} \\
+        org.opencontainers.image.created=\${BUILD_TIME} \\
+        org.opencontainers.image.title="ymk/auth-service"
+  EXPOSE 8080
+  ENTRYPOINT ["java","-jar","/app/app.jar"]
+  EOF
+  
+          docker build --no-cache \
+            -t "${IMAGE_TAG}" \
+            --build-arg BUILD_SHA="$BACK_SHA" \
+            --build-arg BUILD_TIME="$BUILD_TIME" \
+            -f Dockerfile.ci .
+  
+          echo "[image] built ${IMAGE_TAG}"
+          docker image inspect "${IMAGE_TAG}" --format "id={{.Id}}  created={{.Created}}  tags={{.RepoTags}}"
+        '
       '''
     }
   }
-
 
     stage('compose up') {
       steps {
