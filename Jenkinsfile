@@ -134,16 +134,16 @@ pipeline {
           BACK_SHA=$(git -C EasyLinkBackEnd rev-parse --short=12 HEAD || echo unknown)
           BUILD_TIME=$(date -u +%FT%TZ)
   
-          cat > Dockerfile.ci <<EOF
+          cat > Dockerfile.ci <<'\''EOF'\''
   ARG BUILD_SHA=unknown
   ARG BUILD_TIME=unknown
   FROM eclipse-temurin:21-jre
   WORKDIR /app
   COPY app.jar /app/app.jar
-  ENV APP_BUILD_SHA=\${BUILD_SHA} \\
-      APP_BUILD_TIME=\${BUILD_TIME}
-  LABEL org.opencontainers.image.revision=\${BUILD_SHA} \\
-        org.opencontainers.image.created=\${BUILD_TIME} \\
+  ENV APP_BUILD_SHA=${BUILD_SHA} \
+      APP_BUILD_TIME=${BUILD_TIME}
+  LABEL org.opencontainers.image.revision=${BUILD_SHA} \
+        org.opencontainers.image.created=${BUILD_TIME} \
         org.opencontainers.image.title="ymk/auth-service"
   EXPOSE 8080
   ENTRYPOINT ["java","-jar","/app/app.jar"]
@@ -161,6 +161,7 @@ pipeline {
       '''
     }
   }
+
 
     stage('compose up') {
       steps {
