@@ -9,7 +9,7 @@ pipeline {
   }
 
   environment {
-    DOCKER_HOST = 'npipe:////./pipe/docker_engine'
+    DOCKER_HOST = 'tcp://host.docker.internal:2375'
     BACK_REPO_URL = 'https://github.com/approachh/EasyLinkBackEnd.git'
     BACK_BRANCH   = 'main'
     BACK_DIR      = 'EasyLinkBackEnd'
