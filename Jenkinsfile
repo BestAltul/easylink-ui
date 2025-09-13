@@ -166,21 +166,27 @@ EOF
       }
     }
 
-    stage('compose up') {
-      steps {
-        sh '''
-          set -e
-          DC="docker-compose"   
-          docker -H "$DOCKER_HOST" image inspect "${IMAGE_TAG}" >/dev/null
-          $DC -H "$DOCKER_HOST" up -d --force-recreate auth-service
-          CID=$($DC -H "$DOCKER_HOST" ps -q auth-service)
-          IMG=$(docker -H "$DOCKER_HOST" inspect "$CID" --format '{{.Image}}')
-          echo "[compose] auth-service image=$IMG"
-          docker -H "$DOCKER_HOST" image inspect "$IMG" --format 'created={{.Created}} tags={{.RepoTags}}'
-        '''
-      }
+  stage('compose up') {
+    steps {
+      sh '''
+        set -e
+        DC="docker-compose"
+  
+        FILE_MAIN="/workspace/ymk/docker-compose.yml"
+        FILE_JENKINS="/workspace/ymk/docker-compose-jenkins.yml"
+  
+        echo "[compose] using: $FILE_MAIN + $FILE_JENKINS"
+        ls -la /workspace/ymk || true
+        docker -H "$DOCKER_HOST" image inspect "${IMAGE_TAG}" >/dev/null
+        "$DC" -H "$DOCKER_HOST" -f "$FILE_MAIN" -f "$FILE_JENKINS" up -d --force-recreate auth-service
+        CID=$("$DC" -H "$DOCKER_HOST" -f "$FILE_MAIN" -f "$FILE_JENKINS" ps -q auth-service)
+        IMG=$(docker -H "$DOCKER_HOST" inspect "$CID" --format '{{.Image}}')
+        echo "[compose] auth-service image=$IMG"
+        docker -H "$DOCKER_HOST" image inspect "$IMG" --format 'created={{.Created}} tags={{.RepoTags}}'
+      '''
     }
   }
+
 
   post {
     success { echo 'Deployment successful!' }
