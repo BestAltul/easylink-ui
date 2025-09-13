@@ -24,8 +24,19 @@ pipeline {
           echo "[preflight] whoami: $(whoami)"
           echo "[preflight] workspace: $PWD"
           echo "[preflight] DOCKER_HOST=${DOCKER_HOST:-<unset>}"
-          docker version || (echo "[error] docker unreachable" && exit 1)
+          docker -H "$DOCKER_HOST" version || (echo "[error] docker unreachable" && exit 1)
           (docker compose version || docker-compose --version) || true
+        '''
+      }
+    }
+
+    stage('diagnose docker tcp') {
+      steps {
+        sh '''
+          set -e
+          echo "[diag] DOCKER_HOST=$DOCKER_HOST"
+          docker -H "$DOCKER_HOST" info --format "server={{.ServerVersion}}  os={{.OperatingSystem}}"
+          docker -H "$DOCKER_HOST" ps --format "table {{.Names}}\t{{.Image}}\t{{.Status}}" || true
         '''
       }
     }
@@ -53,11 +64,8 @@ pipeline {
         sh '''
           bash -lc '
             set -euo pipefail
-            UI_DIR=""
-            if   [ -f package.json ]; then UI_DIR=".";
-            elif [ -f easylink-ui/package.json ]; then UI_DIR="easylink-ui";
-            elif [ -f ui/package.json ]; then UI_DIR="ui";
-            else echo "[ui][error] package.json not found"; exit 1; fi
+            UI_DIR="."
+            [ -f package.json ] || { echo "[ui][error] package.json not found in ."; exit 1; }
             rm -rf ui-dist ui-dist.tar
             tar -C "$UI_DIR" -cf - . | docker run --rm -i node:20-bullseye bash -lc "
               set -e
@@ -125,94 +133,54 @@ pipeline {
       }
     }
 
-  stage('build runtime image') {
-    steps {
-      unstash 'app-jar'
-      sh '''
-        set -e
-  
-        BACK_SHA=$(git -C EasyLinkBackEnd rev-parse --short=12 HEAD || echo unknown)
-        BUILD_TIME=$(date -u +%FT%TZ)
-  
-        # пишем Dockerfile ЛИТЕРАЛЬНО (переменные внутри не подставляются)
-        cat > Dockerfile.ci <<'EOF'
-  ARG BUILD_SHA=unknown
-  ARG BUILD_TIME=unknown
-  FROM eclipse-temurin:21-jre
-  WORKDIR /app
-  COPY app.jar /app/app.jar
-  ENV APP_BUILD_SHA=${BUILD_SHA} \
-      APP_BUILD_TIME=${BUILD_TIME}
-  LABEL org.opencontainers.image.revision=${BUILD_SHA} \
-        org.opencontainers.image.created=${BUILD_TIME} \
-        org.opencontainers.image.title="ymk/auth-service"
-  EXPOSE 8080
-  ENTRYPOINT ["java","-jar","/app/app.jar"]
-  EOF
-  
-        # сборка БЕЗ кэша, пробрасываем фактические значения через --build-arg
-        docker build --no-cache \
-          -t "${IMAGE_TAG}" \
-          --build-arg BUILD_SHA="$BACK_SHA" \
-          --build-arg BUILD_TIME="$BUILD_TIME" \
-          -f Dockerfile.ci .
-  
-        echo "[image] built ${IMAGE_TAG}"
-        docker image inspect "${IMAGE_TAG}" --format "id={{ .Id }}  created={{ .Created }}  tags={{ .RepoTags }}"
-      '''
+    stage('build runtime image') {
+      steps {
+        unstash 'app-jar'
+        sh '''
+          set -e
+          BACK_SHA=$(git -C EasyLinkBackEnd rev-parse --short=12 HEAD || echo unknown)
+          BUILD_TIME=$(date -u +%FT%TZ)
+          cat > Dockerfile.ci <<'EOF'
+ARG BUILD_SHA=unknown
+ARG BUILD_TIME=unknown
+FROM eclipse-temurin:21-jre
+WORKDIR /app
+COPY app.jar /app/app.jar
+ENV APP_BUILD_SHA=${BUILD_SHA} \
+    APP_BUILD_TIME=${BUILD_TIME}
+LABEL org.opencontainers.image.revision=${BUILD_SHA} \
+      org.opencontainers.image.created=${BUILD_TIME} \
+      org.opencontainers.image.title="ymk/auth-service"
+EXPOSE 8080
+ENTRYPOINT ["java","-jar","/app/app.jar"]
+EOF
+          docker -H "$DOCKER_HOST" image rm "${IMAGE_TAG}" -f || true
+          docker -H "$DOCKER_HOST" build --no-cache \
+            -t "${IMAGE_TAG}" \
+            --build-arg BUILD_SHA="$BACK_SHA" \
+            --build-arg BUILD_TIME="$BUILD_TIME" \
+            -f Dockerfile.ci .
+          docker -H "$DOCKER_HOST" image inspect "${IMAGE_TAG}" \
+            --format "id={{.Id}}  created={{.Created}}  tags={{.RepoTags}}"
+        '''
+      }
     }
-  }
-
-
 
     stage('compose up') {
       steps {
         sh '''
-          cat > /tmp/compose_up.sh <<'BASH'
-          set -euo pipefail
-    
-          IMG="${IMAGE_TAG}"
-          ROOT="$PWD"
-          CANDIDATES="$ROOT $ROOT/EasyLinkBackEnd $ROOT/jenkins /workspace/ymk"
-    
-          F1=""; F2=""
-          for d in $CANDIDATES; do
-            [ -z "$F1" ] && [ -f "$d/docker-compose.yml" ] && F1="$d/docker-compose.yml"
-            [ -z "$F2" ] && [ -f "$d/docker-compose-jenkins.yml" ] && F2="$d/docker-compose-jenkins.yml"
-          done
-    
-          if [ -n "${COMPOSE_FILE_LINUX:-}" ] && [ -f "${COMPOSE_FILE_LINUX}" ]; then
-            F1="${COMPOSE_FILE_LINUX}"
-          fi
-    
-          if [ -z "$F1" ] && [ -z "$F2" ]; then
-            echo "[compose] no compose files found in: $CANDIDATES"; exit 1
-          fi
-    
-          docker image inspect "$IMG" >/dev/null 2>&1 || {
-            echo "[compose] local image missing — building $IMG"
-            [ -f Dockerfile.ci ] || { echo "[compose][error] Dockerfile.ci not found"; exit 1; }
-            docker build -t "$IMG" -f Dockerfile.ci .
-          }
-    
-          if docker compose version >/dev/null 2>&1; then DC="docker compose"; else DC="docker-compose"; fi
-    
-          if [ -n "$F1" ] && [ -n "$F2" ]; then
-            echo "[compose] using: $F1 + $F2"
-            $DC -f "$F1" -f "$F2" up -d --build
-            $DC -f "$F1" -f "$F2" ps
-          else
-            FILE="${F1:-$F2}"
-            echo "[compose] using: $FILE"
-            $DC -f "$FILE" up -d --build
-            $DC -f "$FILE" ps
-          fi
-    BASH
-          bash /tmp/compose_up.sh
+          set -e
+          DC="docker-compose"   
+          docker -H "$DOCKER_HOST" image inspect "${IMAGE_TAG}" >/dev/null
+          $DC -H "$DOCKER_HOST" up -d --force-recreate auth-service
+          CID=$($DC -H "$DOCKER_HOST" ps -q auth-service)
+          IMG=$(docker -H "$DOCKER_HOST" inspect "$CID" --format '{{.Image}}')
+          echo "[compose] auth-service image=$IMG"
+          docker -H "$DOCKER_HOST" image inspect "$IMG" --format 'created={{.Created}} tags={{.RepoTags}}'
         '''
       }
     }
-}
+  }
 
   post {
     success { echo 'Deployment successful!' }
