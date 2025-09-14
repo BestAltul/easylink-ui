@@ -36,7 +36,7 @@ pipeline {
           set -e
           echo "[diag] DOCKER_HOST=$DOCKER_HOST"
           docker -H "$DOCKER_HOST" info --format "server={{.ServerVersion}}  os={{.OperatingSystem}}"
-          docker -H "$DOCKER_HOST" ps --format "table {{.Names}}\t{{.Image}}\t{{.Status}}" || true
+          docker -H "$DOCKER_HOST" ps --format "table {{.Names}}\\t{{.Image}}\\t{{.Status}}" || true
         '''
       }
     }
@@ -67,7 +67,7 @@ pipeline {
             UI_DIR="."
             [ -f package.json ] || { echo "[ui][error] package.json not found in ."; exit 1; }
             rm -rf ui-dist ui-dist.tar
-            tar -C "$UI_DIR" -cf - . | docker run --rm -i node:20-bullseye bash -lc "
+            tar -C "$UI_DIR" -cf - . | docker -H "$DOCKER_HOST" run --rm -i node:20-bullseye bash -lc "
               set -e
               mkdir -p /app
               tar -C /app -xf -
@@ -111,7 +111,7 @@ pipeline {
           set -eu
           rm -f app.jar app-jar.tar
           tar -C "${BACK_DIR}" -cf - . \
-          | docker run --rm -i gradle:8.9-jdk21 bash -lc '
+          | docker -H "$DOCKER_HOST" run --rm -i gradle:8.9-jdk21 bash -lc '
               set -e
               mkdir -p /app
               tar -C /app -xf -
@@ -140,6 +140,7 @@ pipeline {
           set -e
           BACK_SHA=$(git -C EasyLinkBackEnd rev-parse --short=12 HEAD || echo unknown)
           BUILD_TIME=$(date -u +%FT%TZ)
+
           cat > Dockerfile.ci <<'EOF'
 ARG BUILD_SHA=unknown
 ARG BUILD_TIME=unknown
@@ -154,6 +155,7 @@ LABEL org.opencontainers.image.revision=${BUILD_SHA} \
 EXPOSE 8080
 ENTRYPOINT ["java","-jar","/app/app.jar"]
 EOF
+
           docker -H "$DOCKER_HOST" image rm "${IMAGE_TAG}" -f || true
           docker -H "$DOCKER_HOST" build --no-cache \
             -t "${IMAGE_TAG}" \
@@ -166,27 +168,34 @@ EOF
       }
     }
 
-  stage('compose up') {
-    steps {
-      sh '''
-        set -e
-        DC="docker-compose"
-  
-        FILE_MAIN="/workspace/ymk/docker-compose.yml"
-        FILE_JENKINS="/workspace/ymk/docker-compose-jenkins.yml"
-  
-        echo "[compose] using: $FILE_MAIN + $FILE_JENKINS"
-        ls -la /workspace/ymk || true
-        docker -H "$DOCKER_HOST" image inspect "${IMAGE_TAG}" >/dev/null
-        "$DC" -H "$DOCKER_HOST" -f "$FILE_MAIN" -f "$FILE_JENKINS" up -d --force-recreate auth-service
-        CID=$("$DC" -H "$DOCKER_HOST" -f "$FILE_MAIN" -f "$FILE_JENKINS" ps -q auth-service)
-        IMG=$(docker -H "$DOCKER_HOST" inspect "$CID" --format '{{.Image}}')
-        echo "[compose] auth-service image=$IMG"
-        docker -H "$DOCKER_HOST" image inspect "$IMG" --format 'created={{.Created}} tags={{.RepoTags}}'
-      '''
+    stage('compose up') {
+      steps {
+        sh '''
+          set -e
+          if docker compose version >/dev/null 2>&1; then
+            DC="docker compose"
+          elif command -v docker-compose >/dev/null 2>&1; then
+            DC="docker-compose"
+          else
+            echo "[error] docker compose not found"; exit 1
+          fi
+
+          FILE_MAIN="/workspace/ymk/docker-compose.yml"
+          FILE_JENKINS="/workspace/ymk/docker-compose-jenkins.yml"
+
+          echo "[compose] using: $FILE_MAIN + $FILE_JENKINS"
+          ls -la /workspace/ymk || true
+          docker -H "$DOCKER_HOST" image inspect "${IMAGE_TAG}" >/dev/null
+          DOCKER_HOST="$DOCKER_HOST" $DC -f "$FILE_MAIN" -f "$FILE_JENKINS" up -d --force-recreate auth-service
+
+          CID=$(DOCKER_HOST="$DOCKER_HOST" $DC -f "$FILE_MAIN" -f "$FILE_JENKINS" ps -q auth-service)
+          IMG=$(docker -H "$DOCKER_HOST" inspect "$CID" --format '{{.Image}}')
+          echo "[compose] auth-service image=$IMG"
+          docker -H "$DOCKER_HOST" image inspect "$IMG" --format 'created={{.Created}} tags={{.RepoTags}}'
+        '''
+      }
     }
   }
-}
 
   post {
     success { echo 'Deployment successful!' }
