@@ -14,6 +14,7 @@ pipeline {
     BACK_BRANCH   = 'main'
     BACK_DIR      = 'EasyLinkBackEnd'
     IMAGE_TAG     = 'ymk/auth-service:latest'
+    AMPLITUDE_API_KEY = credentials('amplitude-api-key')
   }
 
   stages {
@@ -59,32 +60,38 @@ pipeline {
       }
     }
 
-    stage('build ui') {
-      steps {
-        sh '''
-          bash -lc '
-            set -euo pipefail
-            UI_DIR="."
-            [ -f package.json ] || { echo "[ui][error] package.json not found in ."; exit 1; }
-            rm -rf ui-dist ui-dist.tar
-            tar -C "$UI_DIR" -cf - . | docker -H "$DOCKER_HOST" run --rm -i node:20-bullseye bash -lc "
+  stage('build ui') {
+    steps {
+      sh '''
+        bash -lc '
+          set -euo pipefail
+          UI_DIR="."
+          [ -f package.json ] || { echo "[ui][error] package.json not found in ."; exit 1; }
+  
+          rm -rf ui-dist ui-dist.tar
+          # ВАЖНО: прокидываем VITE_AMPLITUDE_API_KEY в контейнер
+          tar -C "$UI_DIR" -cf - . | docker -H "$DOCKER_HOST" run --rm -i \
+            -e VITE_AMPLITUDE_API_KEY="${AMPLITUDE_API_KEY}" \
+            node:20-bullseye bash -lc "
               set -e
               mkdir -p /app
               tar -C /app -xf -
               cd /app
+              echo [ui] VITE_AMPLITUDE_API_KEY=\${VITE_AMPLITUDE_API_KEY:+***set***}
               npm ci 1>&2 || npm i 1>&2
               npm run build 1>&2
               exec tar -C /app/dist -cf - .
             " > ui-dist.tar
-            mkdir -p ui-dist
-            tar -C ui-dist -xf ui-dist.tar
-            rm -f ui-dist.tar
-            echo "[ui] dist files: $(ls -1 ui-dist | wc -l)"
-          '
-        '''
-        stash name: 'ui-dist', includes: 'ui-dist/**'
-      }
+  
+          mkdir -p ui-dist
+          tar -C ui-dist -xf ui-dist.tar
+          rm -f ui-dist.tar
+          echo "[ui] dist files: $(ls -1 ui-dist | wc -l)"
+        '
+      '''
+      stash name: 'ui-dist', includes: 'ui-dist/**'
     }
+  }
 
     stage('put dist into backend static') {
       steps {
