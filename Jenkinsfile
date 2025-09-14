@@ -69,7 +69,6 @@ pipeline {
           [ -f package.json ] || { echo "[ui][error] package.json not found in ."; exit 1; }
   
           rm -rf ui-dist ui-dist.tar
-          # ВАЖНО: прокидываем VITE_AMPLITUDE_API_KEY в контейнер
           tar -C "$UI_DIR" -cf - . | docker -H "$DOCKER_HOST" run --rm -i \
             -e VITE_AMPLITUDE_API_KEY="${AMPLITUDE_API_KEY}" \
             node:20-bullseye bash -lc "
@@ -77,7 +76,6 @@ pipeline {
               mkdir -p /app
               tar -C /app -xf -
               cd /app
-              echo [ui] VITE_AMPLITUDE_API_KEY=\${VITE_AMPLITUDE_API_KEY:+***set***}
               npm ci 1>&2 || npm i 1>&2
               npm run build 1>&2
               exec tar -C /app/dist -cf - .
