@@ -273,7 +273,10 @@
     "save_button": "Save Changes",
     "modal_contact_title": "Add contact type",
     "modal_info_title": "Add Info Block",
-    "remove_button_title": "Remove"
+    "remove_button_title": "Remove",
+    "preview": "Preview",
+    "preview_title": "Personal Vibe Preview",
+    "close": "Close"
   },
   "extra_block": {
     "not_specified": "not specified",
@@ -310,4 +313,5 @@
     "invalid_code": "Please enter a valid 4–5 digit code",
     "not_found": "Vibe not found"
   }
+
 }
