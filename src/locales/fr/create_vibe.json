@@ -1,0 +1,10 @@
+{
+  "back": "Retour au profil",
+  "title": "Créez votre carte numérique",
+  "type_label": "Type de carte",
+  "types": {
+    "business": "Entreprise",
+    "personal": "Personnelle",
+    "event": "Autre"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "welcome": "Bon retour !",
+  "dashboard": "Ceci est votre tableau de bord personnel. Gérez vos centres d’intérêt, vos passe-temps, vos groupes et vos communautés — et partagez ce qui compte grâce aux différents types de vibes.",
+  "vibes": "Vibes",
+  "friends": "Amis",
+  "streak": "Série : {{count}}j",
+  "cards": [
+    {
+      "title": "❤️ Mes vibes",
+      "text": "Voyez les vibes que vous avez déjà créés !",
+      "button": "Voir mes vibes"
+    },
+    {
+      "title": "💙 Créer un nouveau vibe",
+      "text": "Ajoutez un nouveau vibe personnel, professionnel ou événementiel à votre compte.",
+      "button": "Créer un vibe"
+    }
+  ],
+  "sidebar": {
+    "edit": "Modifier",
+    "settings": "Paramètres",
+    "logout": "Se déconnecter"
+  },
+  "user_name": "Nom d’utilisateur"
+}

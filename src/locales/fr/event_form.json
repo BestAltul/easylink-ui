@@ -1,0 +1,23 @@
+{
+  "name_label": "Nom de l’événement",
+  "name_placeholder": "Entrez le nom de l’événement",
+  "desc_label": "Description",
+  "desc_placeholder": "Décrivez votre événement...",
+  "contacts_label": "Contacts",
+  "no_contacts": "Aucun contact ajouté pour l’instant.",
+  "add_contact": "+ Ajouter un contact",
+  "info_label": "Détails de l’événement",
+  "add_info_block": "+ Ajouter un bloc d’informations",
+  "photo_label": "Photo / Affiche de l’événement",
+  "photo_hint": "PNG ou JPG, jusqu’à 2 Mo",
+  "cancel": "Annuler",
+  "creating": "Création...",
+  "create_button": "Créer une carte d’événement",
+  "saving": "Enregistrement...",
+  "save_button": "Enregistrer les modifications",
+  "modal_contact_title": "Ajouter un type de contact",
+  "modal_contact_placeholder": "Type de contact (par ex. Instagram, téléphone)",
+  "modal_contact_hint": "Appuyez sur Entrée pour ajouter",
+  "modal_info_title": "Ajouter un bloc d’informations",
+  "remove_button_title": "Supprimer"
+}

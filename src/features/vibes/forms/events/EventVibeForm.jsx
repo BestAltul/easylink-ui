@@ -1,26 +1,33 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import VibePreview from "../../components/VibePreview";
-import { FaGlobe } from "react-icons/fa";
-import { useEventVibeForm } from "./useEventVibeForm";
 import { useTranslation } from "react-i18next";
+
+import { useEventVibeForm } from "./useEventVibeForm";
+
+// generic form blocks
+import ContactListGeneric from "@/components/common/formBlocks/ContactListGeneric";
+import ExtraBlocksGeneric from "@/components/common/formBlocks/ExtraBlocksGeneric";
+import PhotoUploader from "@/components/common/formBlocks/PhotoUploader";
+
+// preview
+import { VibePreviewPane, MobilePreviewModal } from "@/components/common/preview";
+
+// data
 import CONTACT_TYPES from "@/data/contactTypes";
 import iconMap from "@/data/contactIcons";
 
-const EVENT_INFO_BLOCKS = [
-  { key: "date", label: "Event Date", placeholder: "YYYY-MM-DD" },
-  { key: "location", label: "Location", placeholder: "Venue / City" },
-  { key: "organizer", label: "Organizer", placeholder: "Organizer Name" }
-];
+// modals
+import ContactTypeModal from "@/features/vibes/components/Modals/ContactTypeModal";
 
 export default function EventVibeForm({
   mode = "create",
   initialData = {},
   onCancel,
-  onSave
+  onSave,
 }) {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t } = useTranslation("event_form"); // ⬅️ фиксируем ns
+  const [showMobilePreview, setShowMobilePreview] = React.useState(false);
 
   const {
     name, setName,
@@ -33,91 +40,101 @@ export default function EventVibeForm({
     loading,
     addContact, handleContactChange, removeContact,
     handleBlockChange, removeBlock,
-    handleSubmit
+    handleSubmit,
   } = useEventVibeForm({ navigate, initialData, mode, onSave });
 
+  const INFO_BLOCKS = React.useMemo(() => ([
+    { key: "date",      label: t("info.date"),      placeholder: t("info.date_ph") },
+    { key: "location",  label: t("info.location"),  placeholder: t("info.location_ph") },
+    { key: "organizer", label: t("info.organizer"), placeholder: t("info.organizer_ph") },
+  ]), [t]);
+
   return (
-    <div className="d-flex flex-column flex-lg-row gap-5 align-items-start justify-content-center w-100" style={{ maxWidth: 1200, margin: "0 auto" }}>
+    <div
+      className="d-flex flex-column flex-lg-row gap-5 align-items-start justify-content-center w-100"
+      style={{ maxWidth: 1200, margin: "0 auto" }}
+    >
       <div style={{ flex: "1 1 500px", maxWidth: 540, minWidth: 320 }}>
-        <form className="bg-light p-4 rounded-4 shadow" style={{ width: "100%" }} onSubmit={handleSubmit}>
+        {/* mobile preview button */}
+        <div className="d-lg-none mb-3">
+          <button
+            type="button"
+            className="btn btn-outline-secondary w-100"
+            onClick={() => setShowMobilePreview(true)}
+          >
+            {t("preview")}
+          </button>
+        </div>
+
+        <form
+          className="bg-light p-4 rounded-4 shadow"
+          style={{ width: "100%" }}
+          onSubmit={handleSubmit}
+        >
+          {/* name */}
           <div className="mb-3">
-            <label className="form-label">{t("event_form.name_label")}</label>
+            <label className="form-label">{t("name_label")}</label>
             <input
               type="text"
               className="form-control"
-              placeholder={t("event_form.name_placeholder")}
+              placeholder={t("name_placeholder")}
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
             />
           </div>
 
+          {/* description */}
           <div className="mb-3">
-            <label className="form-label">{t("event_form.desc_label")}</label>
+            <label className="form-label">{t("desc_label")}</label>
             <textarea
               className="form-control"
-              placeholder={t("event_form.desc_placeholder")}
+              placeholder={t("desc_placeholder")}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={2}
             />
           </div>
 
+          {/* contacts */}
           <div className="mb-3">
-            <label className="form-label">{t("event_form.contacts_label")}</label>
-            {contacts.length === 0 && (
-              <div className="mb-2 text-muted" style={{ fontSize: 15 }}>
-                {t("event_form.no_contacts")}
-              </div>
-            )}
-            {contacts.map((c, i) => (
-              <div className="input-group mb-2" key={i}>
-                <span className="input-group-text" title={c.label || c.type}>
-                  {iconMap[c.type] || <FaGlobe />}
-                </span>
-                <input
-                  type={c.type === "email" ? "email" : "text"}
-                  className="form-control"
-                  placeholder={c.label || c.type}
-                  value={c.value}
-                  onChange={(e) => handleContactChange(i, e.target.value)}
-                  required
-                />
-                <button type="button" className="btn btn-outline-danger" onClick={() => removeContact(i)} title={t("event_form.remove_button_title")}>×</button>
-              </div>
-            ))}
-            <button type="button" className="btn btn-outline-primary w-100" onClick={() => setShowModal(true)}>
-              {t("event_form.add_contact")}
-            </button>
+            <ContactListGeneric
+              t={t}
+              contacts={contacts}
+              onChange={handleContactChange}
+              onRemove={removeContact}
+              onOpenPicker={() => setShowModal(true)}
+              contactTypes={CONTACT_TYPES}
+              iconMap={iconMap}
+              titleKey="contacts_label"
+              emptyKey="no_contacts"
+              addKey="add_contact"
+            />
           </div>
 
+          {/* extra blocks */}
           <div className="mb-3">
-            <label className="form-label">{t("event_form.info_label")}</label>
-            <button type="button" className="btn btn-outline-secondary w-100 mb-2" onClick={() => setShowBlockModal(true)}>
-              {t("event_form.add_info_block")}
-            </button>
-            {extraBlocks.map((block, i) => (
-              <div className="input-group mb-2" key={i}>
-                <span className="input-group-text" style={{ minWidth: 80 }}>{block.label}</span>
-                <input
-                  type={block.type === "date" ? "date" : "text"}
-                  className="form-control"
-                  placeholder={block.placeholder || ""}
-                  value={block.value}
-                  onChange={(e) => handleBlockChange(i, e.target.value)}
-                  required
-                />
-                <button type="button" className="btn btn-outline-danger" onClick={() => removeBlock(i)} title={t("event_form.remove_button_title")}>×</button>
-              </div>
-            ))}
+            <ExtraBlocksGeneric
+              t={t}
+              blocks={extraBlocks}
+              onOpenPicker={() => setShowBlockModal(true)}
+              onChange={handleBlockChange}
+              onRemove={removeBlock}
+              titleKey="info_label"
+              addKey="add_info_block"
+              isDateType={(type) => type === "date"}
+            />
           </div>
 
-          <div className="mb-3">
-            <label className="form-label">{t("event_form.photo_label")}</label>
-            <input type="file" className="form-control" accept="image/*" onChange={(e) => setPhotoFile(e.target.files[0])} />
-            <div className="form-text">{t("event_form.photo_hint")}</div>
-          </div>
+          {/* photo */}
+          <PhotoUploader
+            t={t}
+            onFileChange={setPhotoFile}
+            labelKey="photo_label"
+            hintKey="photo_hint"
+          />
 
+          {/* buttons */}
           <div className="d-flex gap-2 mt-3">
             {mode === "edit" && (
               <button
@@ -126,7 +143,7 @@ export default function EventVibeForm({
                 onClick={onCancel}
                 disabled={loading}
               >
-                {t("event_form.cancel")}
+                {t("cancel")}
               </button>
             )}
             <button
@@ -135,79 +152,77 @@ export default function EventVibeForm({
               disabled={loading}
             >
               {loading
-                ? mode === "edit"
-                  ? t("event_form.saving")
-                  : t("event_form.creating")
-                : mode === "edit"
-                ? t("event_form.save_button")
-                : t("event_form.create_button")}
+                ? (mode === "edit" ? t("saving") : t("creating"))
+                : (mode === "edit" ? t("save_button") : t("create_button"))}
             </button>
           </div>
         </form>
 
+        {/* contact modal */}
         {showModal && (
-          <div className="modal d-block" tabIndex={-1} style={{ background: "rgba(0,0,0,0.25)", position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh", zIndex: 1000 }}>
+          <ContactTypeModal
+            contacts={contacts}
+            onClose={() => setShowModal(false)}
+            onSelect={(typeKey) => {
+              addContact(typeKey);
+              setShowModal(false);
+            }}
+          />
+        )}
+
+        {/* extra blocks modal */}
+        {showBlockModal && (
+          <div
+            className="modal d-block"
+            tabIndex={-1}
+            style={{
+              background: "rgba(0,0,0,0.22)",
+              position: "fixed",
+              inset: 0,
+              zIndex: 1010,
+            }}
+          >
             <div className="modal-dialog">
               <div className="modal-content">
                 <div className="modal-header">
-                  <h5 className="modal-title">{t("event_form.modal_contact_title")}</h5>
+                  <h5 className="modal-title">{t("modal_info_title")}</h5>
                 </div>
                 <div className="modal-body d-flex flex-wrap gap-2">
-                  {CONTACT_TYPES.map((type) => (
+                  {INFO_BLOCKS.map((block) => (
                     <button
-                      key={type.key}
+                      key={block.key}
                       className="btn btn-light"
                       style={{
-                        width: 110,
-                        height: 70,
+                        minWidth: 110,
+                        height: 50,
                         display: "flex",
-                        flexDirection: "column",
                         alignItems: "center",
                         justifyContent: "center",
                       }}
-                      onClick={() => addContact(type.key)}
-                      disabled={contacts.some((c) => c.type === type.key)}
+                      onClick={() => {
+                        setExtraBlocks([
+                          ...extraBlocks,
+                          {
+                            type: block.key,
+                            label: block.label,
+                            value: "",
+                            placeholder: block.placeholder,
+                          },
+                        ]);
+                        setShowBlockModal(false);
+                      }}
+                      disabled={extraBlocks.some((b) => b.type === block.key)}
                     >
-                      <span style={{ fontSize: 28 }}>{iconMap[type.key] || <FaGlobe />}</span>
-                      <span style={{ fontSize: 14 }}>{type.label}</span>
-                    </button>
-                  ))}
-                </div>
-                <div className="modal-footer">
-                  <button className="btn btn-secondary" onClick={() => setShowModal(false)}>
-                    {t("event_form.cancel")}
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {showBlockModal && (
-          <div className="modal d-block" tabIndex={-1} style={{ background: "rgba(0,0,0,0.22)", position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh", zIndex: 1010 }}>
-            <div className="modal-dialog">
-              <div className="modal-content">
-                <div className="modal-header">
-                  <h5 className="modal-title">{t("event_form.modal_info_title")}</h5>
-                </div>
-                <div className="modal-body d-flex flex-wrap gap-2">
-                  {EVENT_INFO_BLOCKS.map((block) => (
-                    <button key={block.key} className="btn btn-light" style={{ minWidth: 110, height: 50, display: "flex", alignItems: "center", justifyContent: "center" }} onClick={() => {
-                      setExtraBlocks([...extraBlocks, {
-                        type: block.key,
-                        label: block.label,
-                        value: "",
-                        placeholder: block.placeholder
-                      }]);
-                      setShowBlockModal(false);
-                    }} disabled={extraBlocks.some((b) => b.type === block.key)}>
                       {block.label}
                     </button>
                   ))}
                 </div>
                 <div className="modal-footer">
-                  <button className="btn btn-secondary" onClick={() => setShowBlockModal(false)}>
-                    {t("event_form.cancel")}
+                  <button
+                    className="btn btn-secondary"
+                    onClick={() => setShowBlockModal(false)}
+                  >
+                    {t("cancel")}
                   </button>
                 </div>
               </div>
@@ -216,18 +231,30 @@ export default function EventVibeForm({
         )}
       </div>
 
-      <div style={{ flex: "1 1 400px", minWidth: 320, maxWidth: 480 }} className="d-none d-lg-block">
-        <div className="sticky-top" style={{ top: 90, zIndex: 1 }}>
-          <VibePreview
-            name={name}
-            description={description}
-            photoFile={photoFile}
-            contacts={contacts}
-            type="EVENT"
-            extraBlocks={extraBlocks}
-          />
-        </div>
-      </div>
+      {/* desktop preview */}
+      {(mode === "create" || mode === "edit") && (
+        <VibePreviewPane
+          name={name}
+          description={description}
+          photoFile={photoFile}
+          contacts={contacts}
+          extraBlocks={extraBlocks}
+          type="OTHER"
+        />
+      )}
+
+      {/* mobile preview modal */}
+      <MobilePreviewModal
+        open={showMobilePreview}
+        onClose={() => setShowMobilePreview(false)}
+        t={t}
+        name={name}
+        description={description}
+        photoFile={photoFile}
+        contacts={contacts}
+        extraBlocks={extraBlocks}
+        type="OTHER"
+      />
     </div>
   );
 }

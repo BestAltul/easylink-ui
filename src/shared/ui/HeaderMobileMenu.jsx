@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "@/shared/ui/LanguageSwitcher";
 import "./HeaderMobileMenu.css";
 
@@ -7,21 +8,28 @@ function HeaderMobileMenu({
   isOpen,
   onClose,
   isAuthenticated,
-  t,
   handleLogout,
   trackEvent,
 }) {
+  const { t } = useTranslation("header"); // ✅ берём строки из ns "header"
+
   if (!isOpen) return null;
 
   return (
-    <div className="mobile-menu-overlay" onClick={onClose}>
+    <div
+      className="mobile-menu-overlay"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Mobile menu"
+    >
       <div className="mobile-menu" onClick={(e) => e.stopPropagation()}>
         <div className="mobile-menu-header">
-          <Link to="/" className="logo" onClick={onClose}>
-            <img src="/clearviewblue.png" alt="logo" />
+          <Link to="/" className="logo" onClick={onClose} aria-label="YMK home">
+            <img src="/clearviewblue.png" alt="YMK logo" />
             <span>YMK</span>
           </Link>
-          <button className="close-btn" onClick={onClose}>
+          <button className="close-btn" onClick={onClose} aria-label="Close menu">
             ✕
           </button>
         </div>
@@ -35,7 +43,7 @@ function HeaderMobileMenu({
               onClose();
             }}
           >
-            {t("header.home")}
+            {t("home")}
           </Link>
 
           {!isAuthenticated && (
@@ -47,7 +55,7 @@ function HeaderMobileMenu({
                 onClose();
               }}
             >
-              {t("header.sign_up")}
+              {t("sign_up")}
             </Link>
           )}
 
@@ -60,7 +68,7 @@ function HeaderMobileMenu({
                 onClose();
               }}
             >
-              {t("header.log_in")}
+              {t("log_in")}
             </Link>
           )}
 
@@ -73,7 +81,7 @@ function HeaderMobileMenu({
                 onClose();
               }}
             >
-              {t("header.profile")}
+              {t("profile")}
             </Link>
           )}
 
@@ -85,7 +93,7 @@ function HeaderMobileMenu({
               onClose();
             }}
           >
-            {t("header.about")}
+            {t("about")}
           </Link>
 
           <Link
@@ -96,7 +104,7 @@ function HeaderMobileMenu({
               onClose();
             }}
           >
-            {t("header.review")}
+            {t("review")}
           </Link>
 
           {isAuthenticated && (
@@ -107,7 +115,7 @@ function HeaderMobileMenu({
                 onClose();
               }}
             >
-              {t("header.log_out")}
+              {t("log_out")}
             </button>
           )}
         </nav>

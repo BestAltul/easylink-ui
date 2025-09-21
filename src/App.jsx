@@ -30,6 +30,9 @@ import EmailVerified from "@/features/auth/EmailVerified";
 
 import CatalogForm from "./features/vibes/catalog/catalogForm";
 
+import Terms from "./pages/legal/Terms";
+import Privacy from "./pages/legal/Privacy";
+import Ads from "./pages/legal/Ads";
 import "./i18n";
 
 function App() {
@@ -82,7 +85,10 @@ function App() {
 
         <Route path="/catalog/new" element={<CatalogForm />} />
         <Route path="/catalog/:id/edit" element={<CatalogForm />} />
-
+        
+        <Route path="/terms" element={<Terms />} />
+        <Route path="/privacy" element={<Privacy />} />
+        <Route path="/ads" element={<Ads />} />
       </Routes>
       <Footer />
     </>

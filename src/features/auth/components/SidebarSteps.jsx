@@ -1,16 +1,30 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
-function SidebarSteps({ step, totalQuestions, STEP_LABELS }) {
+export default function SidebarSteps({ step, totalQuestions }) {
+  const { t } = useTranslation("signup");
+
+  // 1: email, 2: count, 3: questions (диапазон), 4: preview
+  const LABELS = [
+    t("step1_label"),
+    t("step2_label"),
+    t("step3_question"),
+    t("step3_create"),
+  ];
+
   return (
-    <div
+    <ul
       className="d-none d-md-flex flex-column align-items-start gap-4 mt-4 pe-4"
       style={{ minWidth: 260 }}
+      role="list"
+      aria-label={t("title")}
     >
-      {[1, 2, 3, 4].map((s, idx) => {
+      {[1, 2, 3, 4].map((s) => {
         const isActive = step === s || (s === 3 && step > 2 && step < totalQuestions + 3);
-        const isDone = (s < step) || (s === 3 && step >= totalQuestions + 3);
+        const isDone = s < step || (s === 3 && step >= totalQuestions + 3);
+
         return (
-          <div
+          <li
             key={s}
             className="d-flex align-items-center gap-3"
             style={{
@@ -20,24 +34,28 @@ function SidebarSteps({ step, totalQuestions, STEP_LABELS }) {
               color: isActive ? "#0d6efd" : "#212529",
               letterSpacing: 0.1,
             }}
+            aria-current={isActive ? "step" : undefined}
           >
             <span
-              className={`badge d-flex align-items-center justify-content-center rounded-circle ${isDone ? "bg-success" : isActive ? "bg-primary" : "bg-light border"}`}
+              className={`badge d-flex align-items-center justify-content-center rounded-circle ${
+                isDone ? "bg-success" : isActive ? "bg-primary" : "bg-light border"
+              }`}
               style={{
                 width: 44,
                 height: 44,
                 fontSize: 22,
-                boxShadow: isActive ? "0 0 0 3px #e2f8e5" : "none"
+                boxShadow: isActive ? "0 0 0 3px #e2f8e5" : "none",
               }}
+              aria-hidden="true"
             >
-              {isDone ? <i className="bi bi-check-lg"></i> : s}
+              {isDone ? <i className="bi bi-check-lg" /> : s}
             </span>
-            <span style={{ lineHeight: 1.15, textAlign: "left" }}>{STEP_LABELS[s - 1]}</span>
-          </div>
+            <span style={{ lineHeight: 1.15, textAlign: "left" }}>
+              {LABELS[s - 1]}
+            </span>
+          </li>
         );
       })}
-    </div>
+    </ul>
   );
 }
-
-export default SidebarSteps;

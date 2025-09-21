@@ -1,0 +1,9 @@
+{
+  "share_code_label": "Share code:",
+  "your_name": "Your Name",
+  "default_type": "Business",
+  "default_description": "Description goes here...",
+  "no_contacts": "No contacts yet",
+  "share_qr": "Share QR code",
+  "qr_hint": "QR code will appear after creating the Vibe"
+}

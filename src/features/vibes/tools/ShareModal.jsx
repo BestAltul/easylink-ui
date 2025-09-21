@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { BsClipboard } from "react-icons/bs";
 import { FaTelegramPlane, FaWhatsapp, FaInstagram } from "react-icons/fa";
 import { QRCodeCanvas } from "qrcode.react";
 import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
-import { trackEvent } from '@/services/amplitude';
+import { trackEvent } from "@/services/amplitude";
 
 export default function ShareModal({
   show,
@@ -13,13 +13,23 @@ export default function ShareModal({
   copied,
   onCopy,
 }) {
-  const { t } = useTranslation();
+  const { t } = useTranslation("share_modal");
+
+  useEffect(() => {
+    if (!show) return;
+    const onKey = (e) => e.key === "Escape" && onClose?.();
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [show, onClose]);
 
   if (!show) return null;
 
   return createPortal(
     <div
       className="vibe-share-backdrop"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="share-modal-title"
       style={{
         position: "fixed",
         top: 0,
@@ -45,14 +55,19 @@ export default function ShareModal({
         onClick={(e) => e.stopPropagation()}
       >
         <button
+          type="button"
           className="btn-close position-absolute"
           style={{ top: 10, right: 10 }}
           onClick={onClose}
+          aria-label={t("close")}
+          title={t("close")}
         />
-        <h5>{t("share_modal.title")}</h5>
+
+        <h5 id="share-modal-title">{t("title")}</h5>
         <div className="text-muted" style={{ fontSize: 15 }}>
-          {t("share_modal.subtitle")}
+          {t("subtitle")}
         </div>
+
         <input
           className="form-control my-2"
           value={shareUrl}
@@ -60,29 +75,29 @@ export default function ShareModal({
           onClick={(e) => {
             e.target.select();
             onCopy(shareUrl);
-            trackEvent('Link Copied', { method: 'input_click' });
+            trackEvent("Link Copied", { method: "input_click" });
           }}
         />
+
         <button
-          className={`btn w-100 mb-2 ${
-            copied ? "btn-success" : "btn-outline-primary"
-          }`}
+          type="button"
+          className={`btn w-100 mb-2 ${copied ? "btn-success" : "btn-outline-primary"}`}
           onClick={() => {
             onCopy(shareUrl);
-            trackEvent('Link Copied', { method: 'button' });
+            trackEvent("Link Copied", { method: "button" });
           }}
         >
           {copied ? (
             <>
-              <span className="me-2">&#10003;</span>{" "}
-              {t("share_modal.copied_button")}
+              <span className="me-2">&#10003;</span> {t("copied_button")}
             </>
           ) : (
             <>
-              <BsClipboard /> {t("share_modal.copy_button")}
+              <BsClipboard className="me-2" /> {t("copy_button")}
             </>
           )}
         </button>
+
         <div className="d-flex flex-column gap-2 mb-2">
           <a
             href={`https://t.me/share/url?url=${encodeURIComponent(shareUrl)}`}
@@ -91,10 +106,10 @@ export default function ShareModal({
             className="btn btn-outline-primary d-flex align-items-center gap-2"
             onClick={() => {
               onCopy(false);
-              trackEvent('Share Clicked', { method: 'telegram' });
+              trackEvent("Share Clicked", { method: "telegram" });
             }}
           >
-            <FaTelegramPlane /> {t("share_modal.telegram")}
+            <FaTelegramPlane /> {t("telegram")}
           </a>
 
           <a
@@ -104,10 +119,10 @@ export default function ShareModal({
             className="btn btn-outline-success d-flex align-items-center gap-2"
             onClick={() => {
               onCopy(false);
-              trackEvent('Share Clicked', { method: 'whatsapp' });
+              trackEvent("Share Clicked", { method: "whatsapp" });
             }}
           >
-            <FaWhatsapp /> {t("share_modal.whatsapp")}
+            <FaWhatsapp /> {t("whatsapp")}
           </a>
 
           <a
@@ -117,16 +132,17 @@ export default function ShareModal({
             className="btn btn-outline-danger d-flex align-items-center gap-2"
             onClick={() => {
               onCopy(false);
-              trackEvent('Share Clicked', { method: 'instagram' });
+              trackEvent("Share Clicked", { method: "instagram" });
             }}
           >
-            <FaInstagram /> {t("share_modal.instagram")}
+            <FaInstagram /> {t("instagram")}
           </a>
         </div>
+
         <div className="text-center my-3">
           <QRCodeCanvas value={shareUrl} size={112} />
           <div style={{ fontSize: 12, color: "#888", marginTop: 7 }}>
-            {t("share_modal.qr_note")}
+            {t("qr_note")}
           </div>
         </div>
       </div>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useTranslation } from "react-i18next";
@@ -6,7 +6,6 @@ import { useStartAuthForm } from "./hooks/useStartAuthForm";
 import { AnimatePresence } from "framer-motion";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
-import { useEffect } from "react";
 
 import StepsNav from "./components/StepsNav";
 import ProgressBar from "./components/ProgressBar";
@@ -20,7 +19,12 @@ function StartAuth({ questions, setQuestions }) {
   const params = new URLSearchParams(location.search);
   const redirectTo = params.get("redirectTo");
   const subscribe = params.get("subscribe");
-  const { t } = useTranslation();
+
+  // ✅ неймспейс "auth"
+  const { t: tNs } = useTranslation("auth");
+  // шим: поддерживает и "key", и "auth.key"
+  const t = (key, opts) =>
+    tNs(key.startsWith("auth.") ? key.slice("auth.".length) : key, opts);
 
   const {
     email,
@@ -44,19 +48,19 @@ function StartAuth({ questions, setQuestions }) {
     setQuestions,
     login,
     navigate,
-    t,
+    t,            // ✔️ передаём шим в хук
     subscribe,
     redirectTo,
     user,
   });
 
   useEffect(() => {
-    resetForm(); 
-  }, []);
+    resetForm();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <section className="container mt-4">
-      <h2 className="mb-4">{t("auth.title")}</h2>
+      <h2 className="mb-4">{t("title")}</h2>
 
       <div className="mb-3">
         <div className="d-flex align-items-center">
@@ -68,7 +72,8 @@ function StartAuth({ questions, setQuestions }) {
             onKeyDown={(e) => {
               if (e.key === "Enter") verifyEmail(email);
             }}
-            placeholder="Enter your email"
+            placeholder={t("email_placeholder")}
+            aria-label={t("email_label")}
             style={{ maxWidth: "400px" }}
           />
 
@@ -77,29 +82,22 @@ function StartAuth({ questions, setQuestions }) {
             className="btn btn-primary ms-2"
             onClick={() => verifyEmail(email)}
           >
-            Next
+            {t("next")}
           </button>
         </div>
       </div>
 
       {Array.isArray(questions) && questions.length > 0 && (
-        <div
-          className="d-flex gap-4 align-items-start"
-          style={{ minHeight: 380 }}
-        >
+        <div className="d-flex gap-4 align-items-start" style={{ minHeight: 380 }}>
           <StepsNav
             questions={questions}
             currentStep={currentStep}
             setCurrentStep={setCurrentStep}
             answersList={answersList}
-            t={t}
           />
 
           <div className="flex-grow-1 position-relative">
-            <ProgressBar
-              currentStep={currentStep}
-              totalSteps={questions.length}
-            />
+            <ProgressBar currentStep={currentStep} totalSteps={questions.length} />
 
             <AnimatePresence mode="wait">
               <QuestionCard
@@ -111,7 +109,6 @@ function StartAuth({ questions, setQuestions }) {
                 showPassword={showPassword}
                 setShowPassword={setShowPassword}
                 handleKeyDown={handleKeyDown}
-                t={t}
                 currentStep={currentStep}
                 totalQuestions={questions.length}
               />
@@ -123,7 +120,6 @@ function StartAuth({ questions, setQuestions }) {
               handleBack={handleBack}
               handleNext={handleNext}
               inputAnswer={inputAnswer}
-              t={t}
             />
           </div>
         </div>
@@ -132,20 +128,19 @@ function StartAuth({ questions, setQuestions }) {
       {authResult && <div className="alert alert-info mt-3">{authResult}</div>}
 
       <p className="text-center mt-3">
-        {t("auth.no_account")}{" "}
+        {t("no_account")}{" "}
         <button
           onClick={() => {
             const newParams = new URLSearchParams();
             if (redirectTo) newParams.set("redirectTo", redirectTo);
             if (subscribe === "true") newParams.set("subscribe", "true");
-
             const query = newParams.toString();
             navigate(query ? `/signup?${query}` : "/signup");
           }}
           className="btn btn-link p-0"
-          style={{ textDecoration: "underline", fontWeight: "500" }}
+          style={{ textDecoration: "underline", fontWeight: 500 }}
         >
-          {t("auth.signup")}
+          {t("signup")}
         </button>
       </p>
     </section>

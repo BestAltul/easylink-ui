@@ -1,0 +1,9 @@
+{
+  "label": "Entrez le code pour voir",
+  "placeholder": "Entrez un code à 4–5 chiffres",
+  "button": "Rechercher",
+  "searching": "Ouverture…",
+  "invalid_code": "Veuillez entrer un code valide à 4–5 chiffres.",
+  "not_found": "Vibe introuvable ou non disponible publiquement.",
+  "error_generic": "Impossible d’ouvrir le vibe. Veuillez réessayer."
+}

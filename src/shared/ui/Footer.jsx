@@ -1,20 +1,22 @@
 import React from "react";
 import "./Footer.css";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 
 export default function Footer() {
-  const { t } = useTranslation();
+  const { t } = useTranslation("footer");
+  const year = new Date().getFullYear();
 
   return (
-    <footer className="footer">
+    <footer className="footer" role="contentinfo">
       <div className="footer__links">
-        <a href="/terms">{t("footer.terms")}</a>
-        <a href="/privacy">{t("footer.privacy")}</a>
-        <a href="/ads">{t("footer.ads")}</a>
+        <Link to="/terms">{t("terms")}</Link>
+        <Link to="/privacy">{t("privacy")}</Link>
+        <Link to="/ads">{t("ads")}</Link>
       </div>
 
       <div className="footer__address">
-        © {new Date().getFullYear()} {t("footer.brand")}. {t("footer.copyright")}
+        © {year} {t("brand")}. {t("copyright")}
       </div>
     </footer>
   );

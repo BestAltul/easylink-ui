@@ -1,0 +1,27 @@
+{
+  "back": "← Retour",
+  "title": "Interactions",
+  "loading_vibe": "Chargement du vibe...",
+  "not_found": "Vibe non trouvé.",
+  "no_name": "Sans nom",
+  "info_text": "C’est votre vibe. Ci-dessous, vous pouvez voir qui vous suit et qui vous suivez.",
+  "following": "Abonnements",
+  "followers": "Abonnés",
+  "following_empty": "Vous n’êtes encore abonné à personne.",
+  "followers_empty": "Personne ne vous suit pour l’instant.",
+  "sections": {
+    "offers": "Offres",
+    "following": "Abonnements"
+  },
+  "tabs": {
+    "offers": "Offres",
+    "following": "Abonnements"
+  },
+  "cta": {
+    "offer": "Ne le manquez pas !"
+  },
+  "table": {
+    "vibe": "Vibe",
+    "offer": "Offre"
+  }
+}
