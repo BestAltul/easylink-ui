@@ -30,7 +30,7 @@ export default function PersonalVibeForm({
   onCancel
 }) {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t } = useTranslation("personal_form"); 
   const [showMobilePreview, setShowMobilePreview] = React.useState(false);
 
   const {
@@ -49,10 +49,11 @@ export default function PersonalVibeForm({
   } = usePersonalVibeForm({ navigate, initialData, mode, onSave, onCancel });
 
   return (
-    <div className="d-flex flex-column flex-lg-row gap-5 align-items-start justify-content-center w-100"
-         style={{ maxWidth: 1200, margin: "0 auto" }}>
+    <div
+      className="d-flex flex-column flex-lg-row gap-5 align-items-start justify-content-center w-100"
+      style={{ maxWidth: 1200, margin: "0 auto" }}
+    >
       <div style={{ flex: "1 1 500px", maxWidth: 540, minWidth: 320 }}>
-
         {/* mobile preview btn */}
         <div className="d-lg-none mb-3">
           <button
@@ -60,7 +61,7 @@ export default function PersonalVibeForm({
             className="btn btn-outline-secondary w-100"
             onClick={() => setShowMobilePreview(true)}
           >
-            {t("personal_form.preview")}
+            {t("preview")}
           </button>
         </div>
 
@@ -71,11 +72,11 @@ export default function PersonalVibeForm({
 
           {/* name */}
           <div className="mb-3">
-            <label className="form-label">{t("personal_form.name_label")}</label>
+            <label className="form-label">{t("name_label")}</label>
             <input
               type="text"
               className="form-control"
-              placeholder={t("personal_form.name_placeholder")}
+              placeholder={t("name_placeholder")}
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
@@ -84,10 +85,10 @@ export default function PersonalVibeForm({
 
           {/* bio */}
           <div className="mb-3">
-            <label className="form-label">{t("personal_form.bio_label")}</label>
+            <label className="form-label">{t("bio_label")}</label>
             <textarea
               className="form-control"
-              placeholder={t("personal_form.bio_placeholder")}
+              placeholder={t("bio_placeholder")}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={2}
@@ -104,9 +105,9 @@ export default function PersonalVibeForm({
               onOpenPicker={() => setShowModal(true)}
               contactTypes={CONTACT_TYPES}
               iconMap={iconMap}
-              titleKey="personal_form.contacts_label"
-              emptyKey="personal_form.no_contacts"
-              addKey="personal_form.add_contact"
+              titleKey="contacts_label"
+              emptyKey="no_contacts"
+              addKey="add_contact"
             />
           </div>
 
@@ -118,8 +119,8 @@ export default function PersonalVibeForm({
               onOpenPicker={() => setShowBlockModal(true)}
               onChange={handleBlockChange}
               onRemove={removeBlock}
-              titleKey="personal_form.additional_info"
-              addKey="personal_form.add_info_block"
+              titleKey="additional_info"
+              addKey="add_info_block"
               isDateType={(type) => type === "birthday"}
             />
           </div>
@@ -127,8 +128,8 @@ export default function PersonalVibeForm({
           <PhotoUploader
             t={t}
             onFileChange={setPhotoFile}
-            labelKey="personal_form.photo_label"
-            hintKey="personal_form.photo_hint"
+            labelKey="photo_label"
+            hintKey="photo_hint"
           />
 
           {/* buttons */}
@@ -140,7 +141,7 @@ export default function PersonalVibeForm({
                 onClick={onCancel}
                 disabled={loading}
               >
-                {t("personal_form.cancel")}
+                {t("cancel")}
               </button>
             )}
             <button
@@ -149,12 +150,8 @@ export default function PersonalVibeForm({
               disabled={loading}
             >
               {loading
-                ? mode === "edit"
-                  ? t("personal_form.saving")
-                  : t("personal_form.creating")
-                : mode === "edit"
-                ? t("personal_form.save_button")
-                : t("personal_form.create_button")}
+                ? (mode === "edit" ? t("saving") : t("creating"))
+                : (mode === "edit" ? t("save_button") : t("create_button"))}
             </button>
           </div>
         </form>
@@ -177,12 +174,15 @@ export default function PersonalVibeForm({
             extraBlocks={extraBlocks}
             onClose={() => setShowBlockModal(false)}
             onSelect={(block) => {
-              setExtraBlocks([...extraBlocks, {
-                type: block.key,
-                label: block.label,
-                value: "",
-                placeholder: block.placeholder
-              }]);
+              setExtraBlocks([
+                ...extraBlocks,
+                {
+                  type: block.key,
+                  label: block.label,
+                  value: "",
+                  placeholder: block.placeholder
+                }
+              ]);
               setShowBlockModal(false);
             }}
           />

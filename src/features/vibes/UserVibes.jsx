@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 import "./styles/UserVibes.css";
 
 export default function UserVibes() {
-  const { t } = useTranslation();
+  const { t } = useTranslation("myvibes");
   const [vibes, setVibes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [shareVibe, setShareVibe] = useState(null);
@@ -16,24 +16,33 @@ export default function UserVibes() {
   const token = localStorage.getItem("jwt");
 
   useEffect(() => {
+    if (!token) {
+      setVibes([]);
+      setLoading(false);
+      return;
+    }
+    let cancelled = false;
     setLoading(true);
     getUserVibes(token)
-      .then(setVibes)
+      .then((data) => !cancelled && setVibes(data))
       .catch((err) => {
         console.error("Error loading Vibes", err);
-        setVibes([]);
+        if (!cancelled) setVibes([]);
       })
-      .finally(() => setLoading(false));
-  }, []);
+      .finally(() => !cancelled && setLoading(false));
+    return () => {
+      cancelled = true;
+    };
+  }, [token]);
 
   const handleDelete = async (vibeId) => {
-    if (!window.confirm(t("myvibes.delete_confirm"))) return;
+    if (!window.confirm(t("delete_confirm"))) return;
     setLoading(true);
     try {
       await deleteVibe(vibeId, token);
       setVibes((prev) => prev.filter((v) => v.id !== vibeId));
     } catch (err) {
-      alert("Error: " + err.message);
+      alert(t("toast_error") ?? "Error: " + err.message);
     } finally {
       setLoading(false);
     }
@@ -64,14 +73,11 @@ export default function UserVibes() {
         <Loader />
       ) : vibes.length === 0 ? (
         <div className="text-center text-muted mt-4">
-          {t("myvibes.no_vibes") || "You have no Vibes yet."}
+          <div>{t("no_vibes")}</div>
+          <div className="small">{t("no_vibes_hint")}</div>
         </div>
       ) : (
-        <VibesList
-          vibes={vibes}
-          onDelete={handleDelete}
-          onShare={handleShare}
-        />
+        <VibesList vibes={vibes} onDelete={handleDelete} onShare={handleShare} />
       )}
       <ShareModal
         show={!!shareVibe}

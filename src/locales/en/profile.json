@@ -1,0 +1,25 @@
+{
+  "welcome": "Welcome back!",
+  "dashboard": "This is your personal dashboard. Manage your interests, hobbies, groups, and communities — and share what matters through different types of Vibes.",
+  "vibes": "Vibes",
+  "friends": "Friends",
+  "streak": "Streak: {{count}}d",
+  "cards": [
+    {
+      "title": "❤️ My Vibes",
+      "text": "See the vibes you've already created!",
+      "button": "View My Vibes"
+    },
+    {
+      "title": "💙 Create New Vibe",
+      "text": "Add a new personal, business, or event Vibe to your account.",
+      "button": "Create Vibe"
+    }
+  ],
+  "sidebar": {
+    "edit": "Edit",
+    "settings": "Settings",
+    "logout": "Logout"
+  },
+  "user_name": "User Name"
+}

@@ -1,13 +1,27 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
-export default function InfoAlert({ t, onClose }) {
+export default function InfoAlert({ onClose }) {
+  const { t } = useTranslation("personal_form");
+
   return (
-    <div className="alert alert-info d-flex align-items-center justify-content-between" style={{ fontSize: 15 }}>
+    <div
+      className="alert alert-info d-flex align-items-center justify-content-between"
+      style={{ fontSize: 15 }}
+      role="alert"
+      aria-live="polite"
+    >
       <div>
-        <b>{t("personal_form.alert_title")}</b> {t("personal_form.alert_desc")}<br/>
-        <span className="text-danger">{t("personal_form.alert_warn")}</span>
+        <b>{t("alert_title")}</b> {t("alert_desc")}<br/>
+        <span className="text-danger">{t("alert_warn")}</span>
       </div>
-      <button type="button" className="btn-close ms-2" aria-label="Close" onClick={onClose} style={{ filter:"invert(0.5)" }}/>
+      <button
+        type="button"
+        className="btn-close ms-2"
+        aria-label={t("close")}
+        onClick={onClose}
+        style={{ filter: "invert(0.5)" }}
+      />
     </div>
   );
 }

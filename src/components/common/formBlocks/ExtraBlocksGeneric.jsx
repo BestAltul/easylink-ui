@@ -1,31 +1,40 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 export default function ExtraBlocksGeneric({
-  t,
-  blocks,               // [{type, label, value, placeholder?}]
-  onOpenPicker,         // () => void — open
-  onChange,             // (index, newValue) => void
-  onRemove,             // (index) => void
-  titleKey,             // "event_form.info_label" | "personal_form.additional_info"
-  addKey,               // "event_form.add_info_block" | "personal_form.add_info_block"
-  isDateType,           // (blockType) => boolean  (for ex., type === 'date' | 'birthday')
+  t: tProp,                 
+  ns,                       
+  blocks = [],              // [{type, label, value, placeholder?}]
+  onOpenPicker,             // () => void
+  onChange,                 // (index, newValue) => void
+  onRemove,                 // (index) => void
+  titleKey = "additional_info",
+  addKey = "add_info_block",
+  removeKey = "remove_button_title",
+  isDateType,               // (blockType) => boolean
 }) {
+  const { t: tNs } = useTranslation(ns);
+  const t = tProp ?? tNs;
+  const tr = (key, fallback) => (t ? t(key, fallback ?? key) : (fallback ?? key));
+
   return (
     <>
-      <label className="form-label">{t ? t(titleKey) : "Additional info"}</label>
+      <label className="form-label">{tr(titleKey, "Additional info")}</label>
+
       <button
         type="button"
         className="btn btn-outline-secondary w-100 mb-2"
         onClick={onOpenPicker}
       >
-        {t ? t(addKey) : "Add info block"}
+        {tr(addKey, "Add info block")}
       </button>
 
       {blocks.map((block, i) => (
-        <div className="input-group mb-2" key={i}>
+        <div className="input-group mb-2" key={`${block.type}-${i}`}>
           <span className="input-group-text" style={{ minWidth: 80 }}>
             {block.label}
           </span>
+
           <input
             type={isDateType?.(block.type) ? "date" : "text"}
             className="form-control"
@@ -34,11 +43,13 @@ export default function ExtraBlocksGeneric({
             onChange={(e) => onChange(i, e.target.value)}
             required
           />
+
           <button
             type="button"
             className="btn btn-outline-danger"
             onClick={() => onRemove(i)}
-            title={t ? t("personal_form.remove_button_title") : "Remove"}
+            title={tr(removeKey, "Remove")}
+            aria-label={tr(removeKey, "Remove")}
           >
             ×
           </button>

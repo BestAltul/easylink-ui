@@ -1,25 +1,32 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import "./Interactions.css";
+import { useTranslation } from "react-i18next";
 
-export default function FollowingTable({ following, t, subscriberVibeId }) {
-  if (following.length === 0) {
-    return (
-      <div className="text-muted">{t("interactions.following_empty")}</div>
-    );
+export default function FollowingTable({ following, subscriberVibeId }) {
+  const { t } = useTranslation("interactions");
+
+  const rows = Array.isArray(following)
+    ? following
+    : Array.isArray(following?.content)
+    ? following.content
+    : [];
+
+  if (rows.length === 0) {
+    return <div className="text-muted">{t("following_empty")}</div>;
   }
 
   return (
     <table className="table table-hover align-middle">
       <thead>
         <tr>
-          <th>Vibe</th>
-          <th>Offer</th>
+          <th>{t("table.vibe")}</th>
+          <th>{t("table.offer")}</th>
         </tr>
       </thead>
       <tbody>
-        {following.map((f) => (
-          <tr key={f.id}>
+        {rows.map((f, idx) => (
+          <tr key={f.id ?? `${f.targetVibeId}-${idx}`}>
             <td>
               <Link
                 to={`/view/${f.targetVibeId}?subscriberVibeId=${subscriberVibeId}`}
@@ -41,11 +48,11 @@ export default function FollowingTable({ following, t, subscriberVibeId }) {
               <Link
                 to={`/offer-table-Users?vibeId=${f.targetVibeId}`}
                 className={`btn btn-outline-primary btn-sm ${
-                  f.count > 0 ? "highlight" : ""
+                  (f.count ?? 0) > 0 ? "highlight" : ""
                 }`}
               >
-                {t("Don't miss it! ")}
-                {f.count > 0 && ` (${f.count})`}
+                {t("cta.offer")}
+                {(f.count ?? 0) > 0 && ` (${f.count})`}
               </Link>
             </td>
           </tr>

@@ -1,6 +1,5 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { FaGlobe } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 
 import { useEventVibeForm } from "./useEventVibeForm";
@@ -20,12 +19,6 @@ import iconMap from "@/data/contactIcons";
 // modals
 import ContactTypeModal from "@/features/vibes/components/Modals/ContactTypeModal";
 
-const EVENT_INFO_BLOCKS = [
-  { key: "date", label: "Event Date", placeholder: "YYYY-MM-DD" },
-  { key: "location", label: "Location", placeholder: "Venue / City" },
-  { key: "organizer", label: "Organizer", placeholder: "Organizer Name" },
-];
-
 export default function EventVibeForm({
   mode = "create",
   initialData = {},
@@ -33,32 +26,28 @@ export default function EventVibeForm({
   onSave,
 }) {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t } = useTranslation("event_form"); // ⬅️ фиксируем ns
   const [showMobilePreview, setShowMobilePreview] = React.useState(false);
 
   const {
-    name,
-    setName,
-    description,
-    setDescription,
-    photoFile,
-    setPhotoFile,
-    contacts,
-    setContacts,
-    showModal,
-    setShowModal,
-    extraBlocks,
-    setExtraBlocks,
-    showBlockModal,
-    setShowBlockModal,
+    name, setName,
+    description, setDescription,
+    photoFile, setPhotoFile,
+    contacts, setContacts,
+    showModal, setShowModal,
+    extraBlocks, setExtraBlocks,
+    showBlockModal, setShowBlockModal,
     loading,
-    addContact,
-    handleContactChange,
-    removeContact,
-    handleBlockChange,
-    removeBlock,
+    addContact, handleContactChange, removeContact,
+    handleBlockChange, removeBlock,
     handleSubmit,
   } = useEventVibeForm({ navigate, initialData, mode, onSave });
+
+  const INFO_BLOCKS = React.useMemo(() => ([
+    { key: "date",      label: t("info.date"),      placeholder: t("info.date_ph") },
+    { key: "location",  label: t("info.location"),  placeholder: t("info.location_ph") },
+    { key: "organizer", label: t("info.organizer"), placeholder: t("info.organizer_ph") },
+  ]), [t]);
 
   return (
     <div
@@ -73,7 +62,7 @@ export default function EventVibeForm({
             className="btn btn-outline-secondary w-100"
             onClick={() => setShowMobilePreview(true)}
           >
-            {t("event_form.preview")}
+            {t("preview")}
           </button>
         </div>
 
@@ -84,11 +73,11 @@ export default function EventVibeForm({
         >
           {/* name */}
           <div className="mb-3">
-            <label className="form-label">{t("event_form.name_label")}</label>
+            <label className="form-label">{t("name_label")}</label>
             <input
               type="text"
               className="form-control"
-              placeholder={t("event_form.name_placeholder")}
+              placeholder={t("name_placeholder")}
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
@@ -97,10 +86,10 @@ export default function EventVibeForm({
 
           {/* description */}
           <div className="mb-3">
-            <label className="form-label">{t("event_form.desc_label")}</label>
+            <label className="form-label">{t("desc_label")}</label>
             <textarea
               className="form-control"
-              placeholder={t("event_form.desc_placeholder")}
+              placeholder={t("desc_placeholder")}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={2}
@@ -117,9 +106,9 @@ export default function EventVibeForm({
               onOpenPicker={() => setShowModal(true)}
               contactTypes={CONTACT_TYPES}
               iconMap={iconMap}
-              titleKey="event_form.contacts_label"
-              emptyKey="event_form.no_contacts"
-              addKey="event_form.add_contact"
+              titleKey="contacts_label"
+              emptyKey="no_contacts"
+              addKey="add_contact"
             />
           </div>
 
@@ -131,8 +120,8 @@ export default function EventVibeForm({
               onOpenPicker={() => setShowBlockModal(true)}
               onChange={handleBlockChange}
               onRemove={removeBlock}
-              titleKey="event_form.info_label"
-              addKey="event_form.add_info_block"
+              titleKey="info_label"
+              addKey="add_info_block"
               isDateType={(type) => type === "date"}
             />
           </div>
@@ -141,8 +130,8 @@ export default function EventVibeForm({
           <PhotoUploader
             t={t}
             onFileChange={setPhotoFile}
-            labelKey="event_form.photo_label"
-            hintKey="event_form.photo_hint"
+            labelKey="photo_label"
+            hintKey="photo_hint"
           />
 
           {/* buttons */}
@@ -154,7 +143,7 @@ export default function EventVibeForm({
                 onClick={onCancel}
                 disabled={loading}
               >
-                {t("event_form.cancel")}
+                {t("cancel")}
               </button>
             )}
             <button
@@ -163,12 +152,8 @@ export default function EventVibeForm({
               disabled={loading}
             >
               {loading
-                ? mode === "edit"
-                  ? t("event_form.saving")
-                  : t("event_form.creating")
-                : mode === "edit"
-                ? t("event_form.save_button")
-                : t("event_form.create_button")}
+                ? (mode === "edit" ? t("saving") : t("creating"))
+                : (mode === "edit" ? t("save_button") : t("create_button"))}
             </button>
           </div>
         </form>
@@ -200,12 +185,10 @@ export default function EventVibeForm({
             <div className="modal-dialog">
               <div className="modal-content">
                 <div className="modal-header">
-                  <h5 className="modal-title">
-                    {t("event_form.modal_info_title")}
-                  </h5>
+                  <h5 className="modal-title">{t("modal_info_title")}</h5>
                 </div>
                 <div className="modal-body d-flex flex-wrap gap-2">
-                  {EVENT_INFO_BLOCKS.map((block) => (
+                  {INFO_BLOCKS.map((block) => (
                     <button
                       key={block.key}
                       className="btn btn-light"
@@ -239,7 +222,7 @@ export default function EventVibeForm({
                     className="btn btn-secondary"
                     onClick={() => setShowBlockModal(false)}
                   >
-                    {t("event_form.cancel")}
+                    {t("cancel")}
                   </button>
                 </div>
               </div>
@@ -256,7 +239,7 @@ export default function EventVibeForm({
           photoFile={photoFile}
           contacts={contacts}
           extraBlocks={extraBlocks}
-          type="EVENT"
+          type="OTHER"
         />
       )}
 
@@ -270,7 +253,7 @@ export default function EventVibeForm({
         photoFile={photoFile}
         contacts={contacts}
         extraBlocks={extraBlocks}
-        type="EVENT"
+        type="OTHER"
       />
     </div>
   );

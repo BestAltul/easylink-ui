@@ -1,5 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 
 export default function QuestionCard({
   keyProp,
@@ -10,10 +11,12 @@ export default function QuestionCard({
   showPassword,
   setShowPassword,
   handleKeyDown,
-  t,
   currentStep,
   totalQuestions,
 }) {
+  const { t } = useTranslation("auth");
+  const inputId = `auth-answer-${currentStep}`;
+
   return (
     <motion.div
       key={keyProp}
@@ -24,36 +27,42 @@ export default function QuestionCard({
       className="card shadow-lg p-4 rounded-4 border-0"
       style={{ minHeight: 240 }}
     >
-      <div className="mb-1 text-muted" style={{ fontSize: 14 }}>
-        {totalQuestions > 1 &&
-          t("auth.progress", {
-            current: currentStep + 1,
-            total: totalQuestions,
-          })}
-      </div>
-      <div className="mb-2 fw-semibold" style={{ fontSize: 18 }}>
+      {totalQuestions > 1 && (
+        <div className="mb-1 text-muted" style={{ fontSize: 14 }}>
+          {t("progress", { current: currentStep + 1, total: totalQuestions })}
+        </div>
+      )}
+
+      <label htmlFor={inputId} className="mb-2 fw-semibold" style={{ fontSize: 18 }}>
         {question}
-      </div>
+      </label>
+
       <div className="text-secondary mb-3" style={{ fontSize: 13 }}>
-        {t("auth.case_insensitive")}
+        {t("case_insensitive")}
       </div>
+
       <div className="input-group mb-2">
         <input
+          id={inputId}
           ref={inputRef}
           type={showPassword ? "text" : "password"}
           className="form-control"
           value={inputAnswer}
           onChange={(e) => setInputAnswer(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder={t("auth.answer_placeholder")}
+          placeholder={t("answer_placeholder")}
+          spellCheck={false}
+          autoComplete="off"
           style={{ borderRadius: "14px 0 0 14px" }}
         />
         <button
           className="btn btn-outline-secondary"
           type="button"
           onClick={() => setShowPassword((v) => !v)}
+          onMouseDown={(e) => e.preventDefault()}
+          title={showPassword ? "Hide" : "Show"}
         >
-          <i className={`bi bi-eye${showPassword ? "-slash" : ""}`}></i>
+          <i className={`bi bi-eye${showPassword ? "-slash" : ""}`} />
         </button>
       </div>
     </motion.div>

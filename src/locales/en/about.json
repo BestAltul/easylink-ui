@@ -1,0 +1,25 @@
+{
+  "title": "What is YMK?",
+  "subtitle": "A fast, modern way to connect and build your own digital Vibe.",
+  "steps": [
+    {
+      "title": "No Passwords",
+      "text": "Sign in with your personal associations — no passwords, codes, or emails. Only what matters to you."
+    },
+    {
+      "title": "Private & Secure",
+      "text": "Your data is encrypted and never shared. Only you control access."
+    },
+    {
+      "title": "Fast Authentication",
+      "text": "Quick access with your answers — no codes or password resets."
+    },
+    {
+      "title": "Your Vibe, Your Rules",
+      "text": "Your digital Vibe is all about you. Share contacts, links, and more on your own terms."
+    }
+  ],
+  "cta": "Try creating your Vibe!",
+  "mission_title": "Our Mission",
+  "mission": "YMK was built for those who value simplicity and privacy. Forget dozens of passwords and unnecessary data — your digital world, under your control."
+}

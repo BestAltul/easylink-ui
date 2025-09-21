@@ -1,0 +1,9 @@
+{
+  "share_code_label": "Код для поделиться:",
+  "your_name": "Ваше имя",
+  "default_type": "Бизнес",
+  "default_description": "Описание здесь...",
+  "no_contacts": "Контактов пока нет",
+  "share_qr": "Поделиться QR-кодом",
+  "qr_hint": "QR-код появится после создания вайба"
+}

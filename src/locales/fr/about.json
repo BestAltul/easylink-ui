@@ -1,0 +1,25 @@
+{
+  "title": "Qu'est-ce que YMK ?",
+  "subtitle": "Un moyen rapide et moderne de vous connecter et de créer votre propre Vibe numérique.",
+  "steps": [
+    {
+      "title": "Sans mots de passe",
+      "text": "Connectez-vous grâce à vos associations personnelles — sans mots de passe, codes ni e-mails. Seulement ce qui compte pour vous."
+    },
+    {
+      "title": "Privé et sécurisé",
+      "text": "Vos données sont chiffrées et ne sont jamais partagées. Vous seul contrôlez l’accès."
+    },
+    {
+      "title": "Authentification rapide",
+      "text": "Accédez rapidement grâce à vos réponses — sans codes ni réinitialisations de mot de passe."
+    },
+    {
+      "title": "Votre Vibe, vos règles",
+      "text": "Votre Vibe numérique vous appartient. Partagez vos contacts, liens et plus encore selon vos propres conditions."
+    }
+  ],
+  "cta": "Essayez de créer votre Vibe !",
+  "mission_title": "Notre mission",
+  "mission": "YMK a été créé pour ceux qui valorisent la simplicité et la confidentialité. Oubliez les dizaines de mots de passe et les données inutiles — votre monde numérique est sous votre contrôle."
+}

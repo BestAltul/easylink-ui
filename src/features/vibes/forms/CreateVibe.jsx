@@ -1,68 +1,60 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 import BusinessVibeForm from "./business/BusinessVibeForm";
 import PersonalVibeForm from "./personal/PersonalVibeForm";
 import EventVibeForm from "./events/EventVibeForm";
+import BackButton from "@/components/common/BackButton";
+
+const TYPE_COMPONENTS = {
+  BUSINESS: BusinessVibeForm,
+  PERSONAL: PersonalVibeForm,
+  EVENT: EventVibeForm,
+};
 
 export default function CreateVibe() {
-  const [type, setType] = useState("BUSINESS");
+  const { t } = useTranslation("create_vibe"); 
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const [type, setType] = React.useState("BUSINESS");
+
+  const Form = TYPE_COMPONENTS[type] || BusinessVibeForm;
 
   return (
     <div className="container py-5">
       <div style={{ maxWidth: 1020, margin: "0 auto", position: "relative" }}>
-        {/* Back Button */}
+        {/* Back */}
         <div style={{ marginBottom: 18 }}>
-          <button
-            className="btn btn-outline-secondary d-inline-flex align-items-center"
-            style={{
-              borderRadius: 12,
-              fontWeight: 500,
-              boxShadow: "0 2px 8px rgba(70,110,255,0.06)",
-              gap: 6,
-              paddingLeft: 15,
-              paddingRight: 18,
-            }}
-            onClick={() => navigate("/profile")}
-          >
-            <svg
-              width="18"
-              height="18"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              viewBox="0 0 20 20"
-              style={{ marginRight: 6, marginLeft: -3 }}
-            >
-              <path d="M13 5l-5 5 5 5" />
-            </svg>
-            {t("create_vibe.back")}
-          </button>
+          <BackButton
+            to="/profile"
+            label={t("back")}
+            className="d-inline-flex align-items-center"
+            style={{ paddingLeft: 15, paddingRight: 18 }}
+          />
         </div>
 
         <h2 className="mb-4 text-center" style={{ fontWeight: 600 }}>
-          {t("create_vibe.title")}
+          {t("title")}
         </h2>
 
         <div className="mb-4" style={{ maxWidth: 420, margin: "0 auto" }}>
-          <label className="form-label">{t("create_vibe.type_label")}</label>
+          <label className="form-label" htmlFor="vibe-type">
+            {t("type_label")}
+          </label>
           <select
+            id="vibe-type"
             className="form-select"
             value={type}
             onChange={(e) => setType(e.target.value)}
+            aria-label={t("type_label")}
           >
-            <option value="BUSINESS">{t("create_vibe.type_business")}</option>
-            <option value="PERSONAL">{t("create_vibe.type_personal")}</option>
-            <option value="EVENT">{t("create_vibe.type_event")}</option>
+            <option value="BUSINESS">{t("types.business")}</option>
+            <option value="PERSONAL">{t("types.personal")}</option>
+            <option value="EVENT">{t("types.event")}</option>
           </select>
         </div>
 
-        {type === "BUSINESS" && <BusinessVibeForm mode="create" />}
-        {type === "PERSONAL" && <PersonalVibeForm mode="create" />}
-        {type === "EVENT" && <EventVibeForm mode="create" />}
+        <Form mode="create" />
       </div>
     </div>
   );

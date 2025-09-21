@@ -1,0 +1,17 @@
+{
+  "back": "Retour au profil",
+  "title": "Mes Vibes",
+  "create": "+ Créer un nouveau vibe",
+  "loading": "Chargement des vibes...",
+  "no_vibes": "Aucun vibe trouvé.",
+  "no_vibes_hint": "Créez votre premier vibe !",
+  "share": "Partager",
+  "share_title": "Partagez votre vibe",
+  "share_subtitle": "Envoyez le lien du vibe ou montrez le code QR !",
+  "copy": "Copier le lien",
+  "copied": "Copié !",
+  "scan": "Scannez pour ouvrir le vibe",
+  "no_description": "Pas de description.",
+  "delete": "Supprimer",
+  "delete_confirm": "Supprimer ce vibe ? Cette action est irréversible."
+}

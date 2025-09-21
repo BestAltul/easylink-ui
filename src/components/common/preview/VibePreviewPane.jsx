@@ -1,6 +1,5 @@
 import React from "react";
-import VibePreview from "@/features/vibes/components/VibePreview"; // проверь путь к компоненту превью!
-
+import VibePreview from "@/features/vibes/components/VibePreview"; 
 export default function VibePreviewPane({
   name, description, photoFile, contacts, extraBlocks, type = "PERSONAL",
 }) {
