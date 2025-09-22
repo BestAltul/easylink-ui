@@ -7,6 +7,19 @@ import useCreateOffer from "./useCreateOffer";
 import useUpdateOffer from "./useUpdateOffer";
 import PageLayout from "../../../components/common/PageLayout";
 
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+} from "recharts";
+
 export default function OfferForm() {
   const location = useLocation();
   const subscriberVibeId = location.state?.vibeId;
@@ -37,6 +50,14 @@ export default function OfferForm() {
     startTime: new Date().toISOString().slice(0, 16),
     endTime: new Date().toISOString().slice(0, 16),
   });
+
+  // Temporary static data for charts. Can be replaced with real data from backend.
+  const viewsData = [
+    { hour: "10:00", views: 5 },
+    { hour: "11:00", views: 12 },
+    { hour: "12:00", views: 9 },
+    { hour: "13:00", views: 20 },
+  ];
 
   useEffect(() => {
     if (isEditMode && offer) {
@@ -102,7 +123,6 @@ export default function OfferForm() {
               {isEditMode ? t("Edit Offer") : t("Create Offer")}
             </h3>
 
-            {/* Вкладки */}
             <ul className="nav nav-tabs mb-3">
               <li className="nav-item">
                 <button
@@ -119,7 +139,7 @@ export default function OfferForm() {
                   className={`nav-link ${activeTab === "edit" ? "active" : ""}`}
                   onClick={() => setActiveTab("edit")}
                 >
-                  {t("Edit")}
+                  {t("Edit Offer")}
                 </button>
               </li>
             </ul>
@@ -127,12 +147,37 @@ export default function OfferForm() {
             {activeTab === "analytics" && (
               <div>
                 <h5>{t("Offer Analytics")}</h5>
-                <p className="text-muted">
-                  {t(
-                    "Here will be analytics data from Amplitude (clicks, views, conversion, etc.)"
-                  )}
-                </p>
-                {/* TODO: сюда подключишь данные из бэкенда */}
+                <div style={{ width: "100%", height: 300 }}>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <LineChart data={viewsData}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis
+                        dataKey="hour"
+                        label={{
+                          value: "Time",
+                          position: "insideBottom",
+                          offset: -5,
+                        }}
+                      />
+                      <YAxis
+                        label={{
+                          value: "Views",
+                          angle: -90,
+                          position: "insideLeft",
+                        }}
+                      />
+                      <Tooltip />
+                      <Legend verticalAlign="top" align="right" />{" "}
+                      <Line
+                        type="monotone"
+                        dataKey="views"
+                        stroke="#8884d8"
+                        name="Views by customer"
+                        dot
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
               </div>
             )}
 
