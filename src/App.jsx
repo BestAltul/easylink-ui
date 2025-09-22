@@ -23,6 +23,7 @@ import InteractionsPage from "./features/vibes/interactions/InteractionsPage";
 import InteractionsPageBasic from "./features/vibes/interactions/InteractionsPageBasic";
 import OfferForm from "./features/vibes/offers/OfferForm";
 import ViewOfferForm from "./features/vibes/offers/ViewOfferForm";
+import OfferViewAnalytics from "@/analytics/OfferViewAnalytics";
 import OfferTableUsers from "./features/vibes/offers/OffersTableForUsers";
 
 import EmailVerificationSent from "@/features/auth/EmailVerificationSent";
@@ -78,8 +79,15 @@ function App() {
         <Route path="/offers/new" element={<OfferForm />} />
         <Route path="/offers/:id" element={<OfferForm />} />
         <Route path="/offer-table-users" element={<OfferTableUsers />} />
-        <Route path="/view-offer-form/:id" element={<ViewOfferForm />} />
-
+        <Route
+          path="/view-offer-form/:id"
+          element={
+            <>
+              <OfferViewAnalytics />
+              <ViewOfferForm />
+            </>
+          }
+        />
         <Route path="/email-verification-sent" element={<EmailVerificationSent />} />
         <Route path="/email-verified" element={<EmailVerified />} />
 

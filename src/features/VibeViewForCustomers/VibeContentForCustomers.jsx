@@ -8,7 +8,9 @@ import SelectVibeModalWithLogic from "./SelectVibeModalWithLogic";
 import { useTranslation } from "react-i18next";
 import useGetOffersByVibeId from "../vibes/offers/useGetOfferByVibeId";
 import OfferCard from "../vibes/offers/OfferCard";
+import { trackEvent } from "@/services/amplitude";
 import useItemsByVibeId from "../vibes/catalog/useItemByVibeId";
+
 
 export default function VibeContentForCustomers({
   id,
@@ -224,11 +226,26 @@ export default function VibeContentForCustomers({
                         <OfferCard
                           key={offer.id}
                           offer={offer}
-                          onDoubleClick={() =>
-                            navigate(`/view-offer-form/${offer.id}`)
-                          }
+                          onDoubleClick={() => {
+                            trackEvent("Offer Clicked", {
+                              offerId: offer.id,
+                              origin: "vibe_view_offers",
+                              ownerVibeId: id,                          
+                              viewerVibeId: subscriberVibeId || null,   
+                              path: window.location.pathname,
+                              ts: Date.now(),
+                            });
+
+                            navigate(`/view-offer-form/${offer.id}`, {
+                              state: {
+                                origin: "vibe_view_offers",
+                                ownerVibeId: id,
+                                viewerVibeId: subscriberVibeId || null,
+                              },
+                            });
+                          }}
                         />
-                      ))}
+                    ))}
                   </div>
                 ) : (
                   <div className="alert alert-info text-center">
