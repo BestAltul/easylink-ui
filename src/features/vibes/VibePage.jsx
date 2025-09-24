@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import VibePreview from "./components/VibePreview";
 import VibeFormRenderer from "@/features/vibes/components/VibeFormRenderer";
+import BusinessVibeOwnerView from "@/features/vibes/forms/business/BusinessVibeOwnerView";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import "./styles/VibePage.css";
@@ -9,7 +10,7 @@ import useVibeSave from "@/features/vibes/hooks/useVibeSave";
 import BackButton from "@/components/common/BackButton";
 
 export default function VibePage() {
-  const { t } = useTranslation("vibe"); 
+  const { t } = useTranslation("vibe");
   const { id } = useParams();
   const [editing, setEditing] = useState(false);
   const navigate = useNavigate();
@@ -31,12 +32,15 @@ export default function VibePage() {
 
   if (loading) return <div className="text-center my-5">{t("loading")}</div>;
   if (!vibe)
-    return <div className="alert alert-danger my-5 text-center">{t("not_found")}</div>;
+    return (
+      <div className="alert alert-danger my-5 text-center">
+        {t("not_found")}
+      </div>
+    );
 
   return (
     <div className="container py-5 vibe-container">
       <div className="vibe-header">
-       
         <BackButton to="/my-vibes" tKey="back" />
 
         <h2 className="vibe-heading fw-bold">{t("title")}</h2>
@@ -46,7 +50,8 @@ export default function VibePage() {
             type="button"
             className="btn btn-primary btn-sm d-flex align-items-center vibe-interaction-btn"
             onClick={() => {
-              if (vibe.type === "BUSINESS") navigate(`/vibes/${id}/interactions`);
+              if (vibe.type === "BUSINESS")
+                navigate(`/vibes/${id}/interactions`);
               else navigate(`/vibes/${id}/interactions-basic`);
             }}
           >
@@ -75,6 +80,7 @@ export default function VibePage() {
       <div className="vibe-main">
         {editing ? (
           <VibeFormRenderer
+            key={`${vibe.type}:${vibe.id}`}
             type={vibe.type}
             initialData={{
               id: vibe.id,
@@ -87,8 +93,33 @@ export default function VibePage() {
             onCancel={() => setEditing(false)}
             onSave={handleSave}
           />
+        ) : vibe.type === "BUSINESS" ? (
+          <div
+            key={`view-business-${vibe.id}`}
+            className="card shadow rounded-4 p-4 vibe-preview"
+            style={{
+              background: "linear-gradient(135deg, #f6fafe 65%, #f8f4fd 100%)",
+              border: "none",
+              maxWidth: 400,
+              margin: "0 auto",
+              position: "relative",
+            }}
+          >
+          <BusinessVibeOwnerView
+            id={vibe.id}
+            name={name}
+            description={description}
+            photoFile={vibe.photo}
+            contacts={contacts}
+            type={vibe.type}
+            extraBlocks={extraBlocks}
+            publicCode={publicCode}
+            visible={visible}
+          />
+          </div>
         ) : (
           <VibePreview
+            key={`view-generic-${vibe.id}`}
             id={vibe.id}
             name={name}
             description={description}

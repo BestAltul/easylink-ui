@@ -35,22 +35,44 @@ function parseFields(fieldsDTO = []) {
 
     if (fieldLabel === "hours") {
       let hoursValue = field.value;
+
       if (typeof hoursValue === "string") {
-        try {
-          hoursValue = JSON.parse(hoursValue);
-        } catch {
-          hoursValue = {};
+        try { hoursValue = JSON.parse(hoursValue); } catch { hoursValue = {}; }
+      }
+
+      const base = {
+        monday:"", tuesday:"", wednesday:"",
+        thursday:"", friday:"", saturday:"", sunday:""
+      };
+      const alias = {
+        mon:"monday", monday:"monday",
+        tue:"tuesday", tues:"tuesday", tuesday:"tuesday",
+        wed:"wednesday", weds:"wednesday", wednesday:"wednesday",
+        thu:"thursday", thur:"thursday", thurs:"thursday", thursday:"thursday",
+        fri:"friday", friday:"friday",
+        sat:"saturday", saturday:"saturday",
+        sun:"sunday", sunday:"sunday",
+      };
+
+      const out = { ...base };
+      if (hoursValue && typeof hoursValue === "object" && !Array.isArray(hoursValue)) {
+        for (const [k, v] of Object.entries(hoursValue)) {
+          const norm = String(k).trim().toLowerCase().replace(/\.$/, "");
+          const day = alias[norm];
+          if (day) out[day] = typeof v === "string" ? v : "";
         }
       }
+
       extraBlocks.push({
         id: field.id,
-        label: field.label || "Custom",
-        type: field.type || "custom",
-        value: hoursValue,
+        label: field.label || "Hours",
+        type: "hours",     
+        value: out,
         fromBackend: true
       });
       return;
     }
+
 
     if (fieldLabel === "description") {
       description = field.value;
