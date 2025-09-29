@@ -14,9 +14,12 @@ function Review() {
   const { user, isAuthenticated } = useAuth();
   const reviewsEndRef = React.useRef(null);
 
-  const { t, i18n } = useTranslation("review"); 
+  const { t, i18n } = useTranslation("review");
+
+  const token = localStorage.getItem("jwt");
 
   const API_URL = "/api/v3/reviews";
+  const [errorMessage, setErrorMessage] = React.useState("");
 
   const formatDate = (iso) =>
     new Intl.DateTimeFormat(i18n.language || undefined, {
@@ -73,10 +76,17 @@ function Review() {
       setPosting(true);
       const res = await fetch(API_URL, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify(newReview),
       });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      if (!res.ok) {
+        const errorMessage = await res.text();
+        throw new Error(errorMessage || `HTTP ${res.status}`);
+      }
+
       await res.json();
       await loadReviews();
       setSubmitted(true);
@@ -86,6 +96,7 @@ function Review() {
       scrollToBottom(true);
     } catch (err) {
       console.error("Error posting review:", err);
+      setErrorMessage(err.message);
     } finally {
       setPosting(false);
     }
@@ -107,7 +118,9 @@ function Review() {
             reviews.map((review, index) => (
               <div key={index}>
                 <ReviewCard
-                  avatarUrl={review.avatarUrl || "https://via.placeholder.com/64"}
+                  avatarUrl={
+                    review.avatarUrl || "https://via.placeholder.com/64"
+                  }
                   text={review.content}
                   rating={review.rating || 5}
                   author={review.username || t("anonymous")}
@@ -118,7 +131,9 @@ function Review() {
                   }
                   location={review.location || ""}
                 />
-                <div ref={index === reviews.length - 1 ? reviewsEndRef : null} />
+                <div
+                  ref={index === reviews.length - 1 ? reviewsEndRef : null}
+                />
               </div>
             ))
           )}
@@ -144,7 +159,11 @@ function Review() {
                 className={`btn btn-link p-0 me-1 ${
                   star <= rating ? "text-warning" : "text-muted"
                 }`}
-                style={{ fontSize: "1.75rem", textDecoration: "none", lineHeight: 1 }}
+                style={{
+                  fontSize: "1.75rem",
+                  textDecoration: "none",
+                  lineHeight: 1,
+                }}
                 aria-label={t("rating_star", { count: star })}
                 aria-pressed={star <= rating}
               >
@@ -153,12 +172,17 @@ function Review() {
             ))}
           </div>
 
-          <button type="submit" className="btn btn-success px-4" disabled={isSubmitDisabled}>
+          <button
+            type="submit"
+            className="btn btn-success px-4"
+            disabled={isSubmitDisabled}
+          >
             {posting ? t("submitting") : t("submit")}
           </button>
         </form>
 
         {submitted && <p className="mt-3 text-success">{t("thank_you")}</p>}
+        {errorMessage && <p className="mt-3 text-danger">{errorMessage}</p>}
       </div>
     </div>
   );
