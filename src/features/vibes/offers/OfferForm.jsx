@@ -16,8 +16,6 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
-  BarChart,
-  Bar,
 } from "recharts";
 
 export default function OfferForm() {
@@ -29,6 +27,7 @@ export default function OfferForm() {
 
   const [activeTab, setActiveTab] = useState("analytics");
   const [changedFields, setChangedFields] = useState({});
+  const [viewsData, setViewsData] = useState([]);
 
   const token = localStorage.getItem("jwt");
 
@@ -37,6 +36,19 @@ export default function OfferForm() {
   const { updateOffer } = useUpdateOffer(token);
 
   const navigate = useNavigate();
+
+  // форматируем дату для input[type=datetime-local]
+  const formatForInput = (date) => date.toISOString().slice(0, 16);
+
+  const now = new Date();
+  const startOfDay = new Date(now);
+  startOfDay.setHours(0, 0, 0, 0);
+
+  const endOfDay = new Date(now);
+  endOfDay.setHours(23, 59, 59, 999);
+
+  const [start, setStart] = useState(formatForInput(startOfDay));
+  const [end, setEnd] = useState(formatForInput(endOfDay));
 
   const [form, setForm] = useState({
     title: "",
@@ -47,17 +59,9 @@ export default function OfferForm() {
     decreaseStep: 0,
     decreaseIntervalMinutes: 0,
     active: true,
-    startTime: new Date().toISOString().slice(0, 16),
-    endTime: new Date().toISOString().slice(0, 16),
+    startTime: formatForInput(new Date()),
+    endTime: formatForInput(new Date()),
   });
-
-  // Temporary static data for charts. Can be replaced with real data from backend.
-  const viewsData = [
-    { hour: "10:00", views: 5 },
-    { hour: "11:00", views: 12 },
-    { hour: "12:00", views: 9 },
-    { hour: "13:00", views: 20 },
-  ];
 
   useEffect(() => {
     if (isEditMode && offer) {
@@ -72,14 +76,61 @@ export default function OfferForm() {
         active: offer.active ?? true,
         startTime: offer.startTime
           ? offer.startTime.slice(0, 16)
-          : new Date().toISOString().slice(0, 16),
+          : formatForInput(new Date()),
         endTime: offer.endTime
           ? offer.endTime.slice(0, 16)
-          : new Date().toISOString().slice(0, 16),
+          : formatForInput(new Date()),
       });
       setChangedFields({});
     }
   }, [offer, isEditMode]);
+
+  // --- загрузка аналитики ---
+  useEffect(() => {
+    const fetchAnalytics = async () => {
+      if (!id) return;
+      try {
+        // формируем строку без использования new Date(...).toISOString()
+        const url = `/api/v3/analytics/events?type=offer&id=${id}&start=${start}:00Z&end=${end}:59Z`;
+
+        console.log("Fetching analytics with URL:", url);
+
+        const res = await fetch(url, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          console.log("Backend response:", data);
+
+          const chartData = data.map((ev) => ({
+            hour:
+              new Date(ev.timestamp).getHours().toString().padStart(2, "0") +
+              ":00",
+            views: 1,
+          }));
+
+          const aggregated = chartData.reduce((acc, cur) => {
+            const found = acc.find((x) => x.hour === cur.hour);
+            if (found) {
+              found.views += 1;
+            } else {
+              acc.push({ hour: cur.hour, views: cur.views });
+            }
+            return acc;
+          }, []);
+
+          setViewsData(aggregated);
+        } else {
+          console.error("Bad response:", res.status);
+        }
+      } catch (err) {
+        console.error("Failed to fetch analytics:", err);
+      }
+    };
+
+    fetchAnalytics();
+  }, [id, start, end, token]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -147,6 +198,22 @@ export default function OfferForm() {
             {activeTab === "analytics" && (
               <div>
                 <h5>{t("Offer Analytics")}</h5>
+
+                <div className="d-flex mb-3">
+                  <input
+                    type="datetime-local"
+                    value={start}
+                    onChange={(e) => setStart(e.target.value)}
+                    className="form-control me-2"
+                  />
+                  <input
+                    type="datetime-local"
+                    value={end}
+                    onChange={(e) => setEnd(e.target.value)}
+                    className="form-control"
+                  />
+                </div>
+
                 <div style={{ width: "100%", height: 300 }}>
                   <ResponsiveContainer width="100%" height={300}>
                     <LineChart data={viewsData}>
@@ -167,7 +234,7 @@ export default function OfferForm() {
                         }}
                       />
                       <Tooltip />
-                      <Legend verticalAlign="top" align="right" />{" "}
+                      <Legend verticalAlign="top" align="right" />
                       <Line
                         type="monotone"
                         dataKey="views"
@@ -183,6 +250,7 @@ export default function OfferForm() {
 
             {activeTab === "edit" && (
               <form onSubmit={handleSubmit}>
+                {/* --- форма оффера --- */}
                 <div className="row g-3">
                   <div className="col-12">
                     <label className="form-label">{t("Title")}</label>
