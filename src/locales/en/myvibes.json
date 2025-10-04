@@ -1,7 +1,9 @@
 {
   "back": "Back to Profile",
   "title": "My Vibes",
+  "back_short": "Back",
   "create": "+ Create New Vibe",
+  "create_short": "Create New",
   "loading": "Loading Vibes...",
   "no_vibes": "No Vibes found.",
   "no_vibes_hint": "Create your first Vibe!",

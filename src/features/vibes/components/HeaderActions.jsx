@@ -2,38 +2,39 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import BackButton from "@/components/common/BackButton";
+import "./HeaderActions.css";
 
 export default function HeaderActions() {
   const { t } = useTranslation("myvibes");
   const navigate = useNavigate();
 
   return (
-    <div className="d-flex align-items-center mb-4" style={{ minHeight: 54 }}>
-      <div style={{ flex: 1, display: "flex", justifyContent: "flex-start" }}>
-        <BackButton to="/profile" label={t("back")} />
+    <header className="header-actions">
+      <div className="header-actions__left">
+        <BackButton
+          to="/profile"
+          label={
+            <>
+              <span className="btn-text-full">{t("back")}</span>
+              <span className="btn-text-short">{t("back_short")}</span>
+            </>
+          }
+          className="btn-secondary"
+        />
       </div>
 
-      <div style={{ flex: 2, display: "flex", justifyContent: "center" }}>
-        <h2 className="fw-bold mb-0" style={{ letterSpacing: ".02em" }}>
-          {t("title")}
-        </h2>
-      </div>
+      <h2 className="header-actions__title">{t("title")}</h2>
 
-      <div style={{ flex: 1, display: "flex", justifyContent: "flex-end" }}>
+      <div className="header-actions__right">
         <button
           type="button"
-          className="btn btn-primary"
-          style={{
-            borderRadius: 12,
-            fontWeight: 500,
-            boxShadow: "0 2px 8px rgba(70,110,255,0.06)",
-          }}
+          className="btn-main"
           onClick={() => navigate("/create-vibe")}
-          aria-label={t("create")}
         >
-          {t("create")}
+          <span className="btn-text-full">{t("create")}</span>
+          <span className="btn-text-short">{t("create_short")}</span>
         </button>
       </div>
-    </div>
+    </header>
   );
 }

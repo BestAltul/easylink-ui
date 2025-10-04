@@ -2,6 +2,8 @@
   "back": "Retour au profil",
   "title": "Mes Vibes",
   "create": "+ Créer un nouveau vibe",
+  "back_short": "Retour",
+  "create_short": "Créer",
   "loading": "Chargement des vibes...",
   "no_vibes": "Aucun vibe trouvé.",
   "no_vibes_hint": "Créez votre premier vibe !",

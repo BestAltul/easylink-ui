@@ -40,42 +40,67 @@ export default function VibePage() {
 
   return (
     <div className="container py-5 vibe-container">
-      <div className="vibe-header">
-        <BackButton to="/my-vibes" tKey="back" />
+      <header className="vibe-header">
+        <div className="vibe-header__left">
+          <BackButton
+            to="/my-vibes"
+            className="btn-secondary"
+            label={
+              <>
+                <span className="btn-text-full">{t("back")}</span>
+                <span className="btn-text-short">{t("back_short")}</span>
+              </>
+            }
+          />
+        </div>
 
-        <h2 className="vibe-heading fw-bold">{t("title")}</h2>
+        <h2 className="vibe-header__title fw-bold">{t("title")}</h2>
 
-        <div className="vibe-top-buttons">
+        <div className="vibe-header__right">
           <button
             type="button"
-            className="btn btn-primary btn-sm d-flex align-items-center vibe-interaction-btn"
+            className="btn-main btn-compact d-flex align-items-center gap-2"
             onClick={() => {
-              if (vibe.type === "BUSINESS")
-                navigate(`/vibes/${id}/interactions`);
+              if (vibe.type === "BUSINESS") navigate(`/vibes/${id}/interactions`);
               else navigate(`/vibes/${id}/interactions-basic`);
             }}
           >
-            <svg width="16" height="16" fill="none" stroke="#fff" strokeWidth="2" viewBox="0 0 20 20">
+            <svg
+              width="16"
+              height="16"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              viewBox="0 0 20 20"
+              aria-hidden="true"
+            >
               <circle cx="10" cy="10" r="6" />
               <path d="M14 10h-4" />
               <path d="M10 6v8" />
             </svg>
             {t("interactions")}
           </button>
-
           <button
             type="button"
-            className="btn btn-light btn-sm d-flex align-items-center vibe-edit-btn"
+            className="btn-light-outline btn-compact d-flex align-items-center gap-2"
             onClick={() => setEditing(true)}
           >
-            <svg width="18" height="18" fill="none" stroke="#2f57d7" strokeWidth="2" viewBox="0 0 20 20">
+            <svg
+              width="18"
+              height="18"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              viewBox="0 0 20 20"
+              aria-hidden="true"
+            >
               <path d="M4 13.5V16h2.5l7.6-7.6-2.5-2.5L4 13.5z" />
               <path d="M13.7 5.3l1.1-1.1a1 1 0 0 1 1.4 1.4l-1.1 1.1" />
             </svg>
             {t("edit")}
           </button>
         </div>
-      </div>
+      </header>
 
       <div className="vibe-main">
         {editing ? (
@@ -105,17 +130,17 @@ export default function VibePage() {
               position: "relative",
             }}
           >
-          <BusinessVibeOwnerView
-            id={vibe.id}
-            name={name}
-            description={description}
-            photoFile={vibe.photo}
-            contacts={contacts}
-            type={vibe.type}
-            extraBlocks={extraBlocks}
-            publicCode={publicCode}
-            visible={visible}
-          />
+            <BusinessVibeOwnerView
+              id={vibe.id}
+              name={name}
+              description={description}
+              photoFile={vibe.photo}
+              contacts={contacts}
+              type={vibe.type}
+              extraBlocks={extraBlocks}
+              publicCode={publicCode}
+              visible={visible}
+            />
           </div>
         ) : (
           <VibePreview

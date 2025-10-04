@@ -1,9 +1,63 @@
+/* animations как были — оставляем */
 @keyframes fadeIn {
-from { opacity: 0; transform: translateY(20px); }
-to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-in-1 { animation: fadeIn 0.8s ease both; }
+.fade-in-2 { animation: fadeIn 1.2s ease both; }
+.fade-in-3 { animation: fadeIn 1.6s ease both; }
+.fade-in-4 { animation: fadeIn 2.0s ease both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-in-1, .fade-in-2, .fade-in-3, .fade-in-4 { animation: none !important; }
 }
 
-.card:hover {
+/* ---- убираем лишние внутренние паддинги, чтобы страница не казалась узкой ---- */
+.home {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* безопасные зоны — только для очень узких экранов с вырезами */
+@media (max-width: 576px) {
+  .home {
+    padding-left: max(0px, env(safe-area-inset-left));
+    padding-right: max(0px, env(safe-area-inset-right));
+  }
+}
+
+/* ---- типографика как в оригинале ---- */
+.home__title {
+  font-weight: 700;
+  font-size: 3rem;     /* было clamp — возвращаем 3rem */
+  margin-bottom: 0.75rem;
+  line-height: 1.15;
+}
+@media (max-width: 576px) {
+  .home__title { font-size: 2.25rem; } /* только на телефонах чуть меньше */
+}
+
+.home__subtitle { margin-bottom: 1.25rem; }
+
+/* learn more — без визуальных изменений */
+.home__learn-link { text-underline-offset: 2px; }
+
+/* ---- кнопка «Get Started»: возвращаем прежний размер ---- */
+/* классы px-5/py-3 уже добавили в JSX, тут фиксируем шрифт */
+.home__cta {
+  font-size: 1.25rem;      /* как в исходнике */
+  /* никаких width:100% на мобилках — оставляем естественную ширину */
+}
+
+/* поиск — как было */
+.home__search { width: 100%; }
+.home__search-inner { width: 100%; max-width: 420px; }
+
+/* hover для карточек только на курсоре */
+@media (hover: hover) and (pointer: fine) {
+  .card:hover {
     transform: scale(1.03);
     box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    transition: transform .15s ease, box-shadow .2s ease;
+  }
 }

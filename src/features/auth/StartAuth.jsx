@@ -20,9 +20,7 @@ function StartAuth({ questions, setQuestions }) {
   const redirectTo = params.get("redirectTo");
   const subscribe = params.get("subscribe");
 
-  // ✅ неймспейс "auth"
   const { t: tNs } = useTranslation("auth");
-  // шим: поддерживает и "key", и "auth.key"
   const t = (key, opts) =>
     tNs(key.startsWith("auth.") ? key.slice("auth.".length) : key, opts);
 
@@ -48,7 +46,7 @@ function StartAuth({ questions, setQuestions }) {
     setQuestions,
     login,
     navigate,
-    t,            // ✔️ передаём шим в хук
+    t,           
     subscribe,
     redirectTo,
     user,
@@ -88,42 +86,49 @@ function StartAuth({ questions, setQuestions }) {
       </div>
 
       {Array.isArray(questions) && questions.length > 0 && (
-        <div className="d-flex gap-4 align-items-start" style={{ minHeight: 380 }}>
-          <StepsNav
-            questions={questions}
-            currentStep={currentStep}
-            setCurrentStep={setCurrentStep}
-            answersList={answersList}
-          />
+  <div
+    className="d-flex flex-column flex-md-row gap-4 align-items-start w-100"
+    style={{ minHeight: 380 }}
+  >
+    {/* слева шаги */}
+    <StepsNav
+      questions={questions}
+      currentStep={currentStep}
+      setCurrentStep={setCurrentStep}
+      answersList={answersList}
+    />
 
-          <div className="flex-grow-1 position-relative">
-            <ProgressBar currentStep={currentStep} totalSteps={questions.length} />
+    {/* справа контент */}
+    <div className="flex-grow-1 position-relative w-100" style={{ minWidth: 0 }}>
+      <ProgressBar currentStep={currentStep} totalSteps={questions.length} />
 
-            <AnimatePresence mode="wait">
-              <QuestionCard
-                keyProp={currentStep}
-                question={questions[currentStep]?.question}
-                inputRef={inputRef}
-                inputAnswer={inputAnswer}
-                setInputAnswer={setInputAnswer}
-                showPassword={showPassword}
-                setShowPassword={setShowPassword}
-                handleKeyDown={handleKeyDown}
-                currentStep={currentStep}
-                totalQuestions={questions.length}
-              />
-            </AnimatePresence>
+      <AnimatePresence mode="wait">
+        <QuestionCard
+          keyProp={currentStep}
+          question={questions[currentStep]?.question}
+          inputRef={inputRef}
+          inputAnswer={inputAnswer}
+          setInputAnswer={setInputAnswer}
+          showPassword={showPassword}
+          setShowPassword={setShowPassword}
+          handleKeyDown={handleKeyDown}
+          currentStep={currentStep}
+          totalQuestions={questions.length}
+        />
+      </AnimatePresence>
 
-            <NavigationButtons
-              currentStep={currentStep}
-              totalSteps={questions.length}
-              handleBack={handleBack}
-              handleNext={handleNext}
-              inputAnswer={inputAnswer}
-            />
-          </div>
-        </div>
-      )}
+      <NavigationButtons
+        currentStep={currentStep}
+        totalSteps={questions.length}
+        handleBack={handleBack}
+        handleNext={handleNext}
+        inputAnswer={inputAnswer}
+      />
+    </div>
+  </div>
+)}
+
+
 
       {authResult && <div className="alert alert-info mt-3">{authResult}</div>}
 
@@ -144,6 +149,7 @@ function StartAuth({ questions, setQuestions }) {
         </button>
       </p>
     </section>
+    
   );
 }
 
