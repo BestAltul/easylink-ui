@@ -1,0 +1,3 @@
+export const PRIVACY_UPDATED_AT = "2025-10-03 (YYYY-MM-DD)";
+export const TERMS_UPDATED_AT = "2025-10-03 (YYYY-MM-DD)";
+export const ADS_UPDATED_AT = "2025-10-03 (YYYY-MM-DD)";

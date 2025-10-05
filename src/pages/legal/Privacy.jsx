@@ -6,6 +6,7 @@ import Section from "@/components/legal/Section";
 import TOC from "@/components/legal/TOC";
 import ProcessorTable from "@/components/legal/ProcessorTable";
 import { useTranslation } from "react-i18next";
+import { PRIVACY_UPDATED_AT } from "@/pages/legal/versions";
 import "./privacy.css";
 
 const CONTACT_EMAIL = "help.youmeknow@gmail.com";
@@ -19,11 +20,6 @@ function copyAnchor(id) {
 export default function Privacy() {
   const { t } = useTranslation("legal_privacy");
   useScrollToHash();
-
-  const UPDATED_AT = useMemo(
-    () => new Date().toISOString().slice(0, 10),
-    []
-  );
 
   const tocItems = [
     { id: "data-we-collect", label: t("toc.data") },
@@ -74,7 +70,9 @@ export default function Privacy() {
 
       <header className="legal-header" role="banner">
         <h1 className="legal-h1">{t("title")}</h1>
-        <p className="legal-meta"><em>{t("updated", { date: UPDATED_AT })}</em></p>
+          <p className="legal-meta">
+            <em>{t("updated", { date: PRIVACY_UPDATED_AT })}</em>
+          </p>
         <p className="legal-intro">
           {t("intro", { brand: BRAND })}
         </p>
