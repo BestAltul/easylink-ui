@@ -4,7 +4,6 @@ import { useTranslation } from "react-i18next";
 export default function SidebarSteps({ step, totalQuestions }) {
   const { t } = useTranslation("signup");
 
-  // 1: email, 2: count, 3: questions (диапазон), 4: preview
   const LABELS = [
     t("step1_label"),
     t("step2_label"),
@@ -44,7 +43,6 @@ export default function SidebarSteps({ step, totalQuestions }) {
                 width: 44,
                 height: 44,
                 fontSize: 22,
-                boxShadow: isActive ? "0 0 0 3px #e2f8e5" : "none",
               }}
               aria-hidden="true"
             >

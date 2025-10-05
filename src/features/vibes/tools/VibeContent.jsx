@@ -1,6 +1,6 @@
 import React from "react";
 import Avatar from "./Avatar";
-import ExtraBlock from "./ExtraBlock";
+import ExtraBlock from "./HoursBlock.jsx";
 import ContactButton from "./ContactButton";
 import { QRCodeCanvas } from "qrcode.react";
 import useVisibilityToggle from "../useVisibilityToggle.jsx";

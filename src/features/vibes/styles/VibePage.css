@@ -3,51 +3,86 @@
   min-height: 420px;
   position: relative;
 }
+
+/* ---------- HEADER ---------- */
 .vibe-header {
-  position: relative;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  min-height: 56px;
-  margin-bottom: 36px;
-}
-
-.vibe-heading {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  margin: 0;
-  text-align: center;
-  font-size: 26px;
-  letter-spacing: 0.02em;
-  z-index: 1;
-}
-
-.vibe-back-button {
-  position: relative;
-  z-index: 2;
-}
-
-.vibe-top-buttons {
-
-
-  display: flex;
+  justify-content: flex-start;
   gap: 10px;
-  position: relative;
-  z-index: 2;
+  min-height: 56px;
+  margin-bottom: 16px;
+  flex-wrap: nowrap; 
 }
 
-.vibe-interaction-btn,
-.vibe-edit-btn,
-.vibe-settings-btn {
+.vibe-header .btn-secondary,
+.vibe-header .btn-main,
+.vibe-header .btn-light-outline {
   border-radius: 20px;
-  box-shadow: 0 1px 4px #d6d7fc;
   font-weight: 500;
   font-size: 15px;
-  gap: 7px;
-  padding: 5px 14px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  padding: 10px 18px;   
+  min-height: 42px;     
+  box-shadow: 0 1px 4px #d6d7fc;
 }
 
+@media (max-width: 768px) {
+  .vibe-header .btn-secondary,
+  .vibe-header .btn-main,
+  .vibe-header .btn-light-outline {
+    padding: 6px 10px;
+    font-size: 14px;
+  }
+}
+
+.vibe-header__left,
+.vibe-header__right {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.vibe-header__title {
+  margin: 0 12px;
+  flex: 1 1 auto;
+  text-align: center;
+  font-size: clamp(18px, 2.1vw, 26px);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* кнопки */
+.btn-compact {
+  padding: 8px 12px;
+  line-height: 1;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 15px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: transform 0.08s ease;
+}
+
+.btn-compact:active {
+  transform: translateY(1px);
+}
+
+.vibe-header__left .btn-text-full {
+  display: inline;
+}
+.vibe-header__left .btn-text-short {
+  display: none;
+}
+
+/* ---------- MAIN ---------- */
 .vibe-main {
   min-height: 420px;
 }
@@ -110,15 +145,52 @@
 
 @media (max-width: 768px) {
   .vibe-header {
-    flex-direction: column;
-    align-items: flex-start;
+    flex-wrap: wrap;
+    row-gap: 8px;
   }
 
-  .vibe-heading {
-    position: static;
-    transform: none;
+  .vibe-header__left {
+    order: 1;
+  }
+
+  .vibe-header__title {
+    order: 2;
+    flex: 1 1 100%;
+    margin: 0;
+  }
+
+  .vibe-header__right {
+    order: 3;
     width: 100%;
-    text-align: left;
-    margin-top: 12px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .vibe-header__right > .btn-main,
+  .vibe-header__right > .btn-light-outline {
+    width: 100%;
+    justify-content: center;
+    padding: 7px 10px;
+    font-size: 14px;
+  }
+
+  .vibe-header__left .btn-text-full {
+    display: none;
+  }
+  .vibe-header__left .btn-text-short {
+    display: inline;
+  }
+}
+
+@media (max-width: 420px) {
+  .vibe-header__right {
+    grid-template-columns: 1fr; 
+  }
+
+  .vibe-header__right > .btn-main,
+  .vibe-header__right > .btn-light-outline {
+    padding: 6px 9px;
+    font-size: 13px;
   }
 }

@@ -57,7 +57,7 @@ export default function InteractionsPage() {
             <h5 className="mb-3" style={{ color: "#476dfe" }}>
               {t("sections.offers")}
             </h5>
-            <OffersTable offers={offers} subscriberVibeId={id} />
+            <OffersTable offers={offers} subscriberVibeId={id} t={t} />
           </>
         )}
         {activeTab === "following" && (
@@ -65,7 +65,7 @@ export default function InteractionsPage() {
             <h5 className="mb-3" style={{ color: "#476dfe" }}>
               {t("sections.following")}
             </h5>
-            <FollowingTable following={following} subscriberVibeId={id} />
+            <FollowingTable following={following} subscriberVibeId={id} t={t} />
           </>
         )}
       </div>

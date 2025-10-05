@@ -13,18 +13,20 @@ export default function UserVibes() {
   const [loading, setLoading] = useState(true);
   const [shareVibe, setShareVibe] = useState(null);
   const [copied, setCopied] = useState(false);
-  const token = localStorage.getItem("jwt");
+  const [token] = useState(() => localStorage.getItem("jwt") || "");
 
   useEffect(() => {
+    let cancelled = false;
+    
     if (!token) {
       setVibes([]);
       setLoading(false);
       return;
     }
-    let cancelled = false;
+
     setLoading(true);
     getUserVibes(token)
-      .then((data) => !cancelled && setVibes(data))
+      .then((data) => !cancelled && setVibes(Array.isArray(data) ? data : []))
       .catch((err) => {
         console.error("Error loading Vibes", err);
         if (!cancelled) setVibes([]);
@@ -67,8 +69,21 @@ export default function UserVibes() {
   };
 
   return (
-    <div className="container py-5">
+    <main
+      className="container myvibes py-5"
+      style={{
+        paddingLeft: "max(16px, env(safe-area-inset-left))",
+        paddingRight: "max(16px, env(safe-area-inset-right))",
+        paddingBottom: "max(16px, env(safe-area-inset-bottom))",
+      }}
+      aria-labelledby="myvibes-title"
+    >
       <HeaderActions />
+
+      <h1 id="myvibes-title" className="visually-hidden">
+        {t("title", "My Vibes")}
+      </h1>
+
       {loading ? (
         <Loader />
       ) : vibes.length === 0 ? (
@@ -77,8 +92,16 @@ export default function UserVibes() {
           <div className="small">{t("no_vibes_hint")}</div>
         </div>
       ) : (
-        <VibesList vibes={vibes} onDelete={handleDelete} onShare={handleShare} />
+        // grid-wrap: 1 column for mobile devices, auto-fit - desctop/tablets
+        <section className="vibes-grid" role="list" aria-label={t("list_aria", "Your vibes")}>
+          <VibesList
+            vibes={vibes}
+            onDelete={handleDelete}
+            onShare={handleShare}
+          />
+        </section>
       )}
+
       <ShareModal
         show={!!shareVibe}
         onClose={handleCloseShare}
@@ -86,6 +109,6 @@ export default function UserVibes() {
         copied={copied}
         onCopy={handleCopy}
       />
-    </div>
+    </main>
   );
 }

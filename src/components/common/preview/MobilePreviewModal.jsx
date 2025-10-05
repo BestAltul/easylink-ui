@@ -14,7 +14,7 @@ export default function MobilePreviewModal({
         <div className="modal-content">
           <div className="modal-header">
             <h5 id="previewTitle" className="modal-title">
-              {t ? t("personal_form.preview_title") : "Preview"}
+              {t ? t("preview_title") : "Preview"}
             </h5>
             <button type="button" className="btn-close" aria-label="Close" onClick={onClose}/>
           </div>
@@ -30,7 +30,7 @@ export default function MobilePreviewModal({
           </div>
           <div className="modal-footer">
             <button className="btn btn-secondary" onClick={onClose}>
-              {t ? t("personal_form.close") : "Close"}
+              {t ? t("close") : "Close"}
             </button>
           </div>
         </div>
