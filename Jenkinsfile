@@ -60,7 +60,7 @@ pipeline {
       }
     }
 
-  stage('build ui') {
+    stage('build ui') {
       steps {
         sh '''
           bash -lc '
@@ -69,7 +69,6 @@ pipeline {
             [ -f package.json ] || { echo "[ui][error] package.json not found in ."; exit 1; }
     
             rm -rf ui-dist ui-dist.tar
-    
             git -C "$UI_DIR" archive --format=tar HEAD \
             | docker -H "$DOCKER_HOST" run --rm -i \
                 -e VITE_AMPLITUDE_API_KEY="${AMPLITUDE_API_KEY}" \
@@ -80,7 +79,7 @@ pipeline {
                   cd /app
                   npm ci 1>&2 || npm i 1>&2
                   npm run build 1>&2
-                  exec tar -C /app/dist -cf -
+                  exec tar -C /app/dist -cf - .
                 " > ui-dist.tar
     
             mkdir -p ui-dist
