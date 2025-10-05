@@ -103,19 +103,24 @@ export default function OfferForm() {
           const data = await res.json();
           console.log("Backend response:", data);
 
+          console.log("Raw analytics data:", data);
+
           const chartData = data.map((ev) => ({
-            hour:
-              new Date(ev.timestamp).getHours().toString().padStart(2, "0") +
-              ":00",
+            time: new Date(ev.serverUploadTime).toLocaleString("en-US", {
+              month: "short",
+              day: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+            }),
             views: 1,
           }));
 
           const aggregated = chartData.reduce((acc, cur) => {
-            const found = acc.find((x) => x.hour === cur.hour);
+            const found = acc.find((x) => x.time === cur.time);
             if (found) {
               found.views += 1;
             } else {
-              acc.push({ hour: cur.hour, views: cur.views });
+              acc.push({ time: cur.time, views: cur.views });
             }
             return acc;
           }, []);
@@ -219,7 +224,7 @@ export default function OfferForm() {
                     <LineChart data={viewsData}>
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis
-                        dataKey="hour"
+                        dataKey="time"
                         label={{
                           value: "Time",
                           position: "insideBottom",
