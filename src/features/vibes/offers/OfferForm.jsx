@@ -101,7 +101,6 @@ export default function OfferForm() {
 
         if (res.ok) {
           const data = await res.json();
-          console.log("Backend response:", data);
 
           console.log("Raw analytics data:", data);
 
@@ -135,7 +134,7 @@ export default function OfferForm() {
     };
 
     fetchAnalytics();
-  }, [id, start, end, token]);
+  }, [id, start, end]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
