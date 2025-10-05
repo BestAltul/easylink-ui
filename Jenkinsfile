@@ -61,36 +61,38 @@ pipeline {
     }
 
   stage('build ui') {
-    steps {
-      sh '''
-        set -euo pipefail
-        UI_DIR="."
-        [ -f package.json ] || { echo "[ui][error] package.json not found in ."; exit 1; }
-  
-        rm -rf ui-dist ui-dist.tar
-  
-        # стабильный вариант — архив из git HEAD, без гонок tar
-        git -C "$UI_DIR" archive --format=tar HEAD \
-        | docker -H "$DOCKER_HOST" run --rm -i \
-            -e VITE_AMPLITUDE_API_KEY="${AMPLITUDE_API_KEY}" \
-            node:20-bullseye bash -lc "
-              set -e
-              mkdir -p /app
-              tar -C /app -xf -
-              cd /app
-              npm ci 1>&2 || npm i 1>&2
-              npm run build 1>&2
-              exec tar -C /app/dist -cf -
-            " > ui-dist.tar
-  
-        mkdir -p ui-dist
-        tar -C ui-dist -xf ui-dist.tar
-        rm -f ui-dist.tar
-        echo "[ui] dist files: $(ls -1 ui-dist | wc -l)"
-      '''
-      stash name: 'ui-dist', includes: 'ui-dist/**'
+      steps {
+        sh '''
+          bash -lc '
+            set -euo pipefail
+            UI_DIR="."
+            [ -f package.json ] || { echo "[ui][error] package.json not found in ."; exit 1; }
+    
+            rm -rf ui-dist ui-dist.tar
+    
+            git -C "$UI_DIR" archive --format=tar HEAD \
+            | docker -H "$DOCKER_HOST" run --rm -i \
+                -e VITE_AMPLITUDE_API_KEY="${AMPLITUDE_API_KEY}" \
+                node:20-bullseye bash -lc "
+                  set -e
+                  mkdir -p /app
+                  tar -C /app -xf -
+                  cd /app
+                  npm ci 1>&2 || npm i 1>&2
+                  npm run build 1>&2
+                  exec tar -C /app/dist -cf -
+                " > ui-dist.tar
+    
+            mkdir -p ui-dist
+            tar -C ui-dist -xf ui-dist.tar
+            rm -f ui-dist.tar
+            echo "[ui] dist files: $(ls -1 ui-dist | wc -l)"
+          '
+        '''
+        stash name: 'ui-dist', includes: 'ui-dist/**'
+      }
     }
-  }
+
 
     stage('put dist into backend static') {
       steps {
