@@ -4,6 +4,7 @@ import useScrollToHash from "@/components/legal/useScrollToHash";
 import Section from "@/components/legal/Section";
 import TOC from "@/components/legal/TOC";
 import { useTranslation, Trans } from "react-i18next";
+import { ADS_UPDATED_AT } from "@/pages/legal/versions";
 
 const BRAND = "YouMeKnow (YMK)";
 const CONTACT_EMAIL = "help.youmeknow@gmail.com";
@@ -16,8 +17,6 @@ function copyAnchor(id) {
 export default function Ads() {
   const { t } = useTranslation("legal_ads");
   useScrollToHash();
-
-  const UPDATED_AT = useMemo(() => new Date().toISOString().slice(0, 10), []);
 
   const tocItems = [
     { id: "ads", label: t("toc.ads") },
@@ -32,7 +31,9 @@ export default function Ads() {
 
       <header className="legal-header" role="banner">
         <h1 className="legal-h1">{t("title")}</h1>
-        <p className="legal-meta"><em>{t("updated", { date: UPDATED_AT })}</em></p>
+        <p className="legal-meta">
+          <em>{t("updated", { date: ADS_UPDATED_AT })}</em>
+        </p>
         <p className="legal-intro">{t("intro", { brand: BRAND })}</p>
         <TOC items={tocItems} title={t("toc.title")} />
       </header>

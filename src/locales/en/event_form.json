@@ -19,5 +19,8 @@
   "modal_contact_placeholder": "Contact type (e.g. instagram, phone)",
   "modal_contact_hint": "Press Enter to add",
   "modal_info_title": "Add Info Block",
-  "remove_button_title": "Remove"
+  "remove_button_title": "Remove",
+  "preview": "Preview",
+  "preview_title": "Other Vibe Preview",
+  "close": "Close"
 }

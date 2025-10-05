@@ -21,61 +21,57 @@ export default function Home() {
   };
 
   return (
-    <div className="container text-center py-5">
+    <main className="container text-center py-5 home" role="main">
       {/* Heading and CTA */}
-      <h1
-        className="mb-3"
-        style={{ fontWeight: "700", fontSize: "3rem", animation: "fadeIn 1s" }}
-      >
+      <h1 className="home__title fade-in-1">
         {t("welcome")}
       </h1>
-      <p className="lead mb-4" style={{ animation: "fadeIn 1.5s" }}>
+
+      <p className="lead home__subtitle fade-in-2">
         {t("subtitle")}
       </p>
-      <p className="text-muted" style={{ animation: "fadeIn 2s" }}>
+
+      <p className="text-muted fade-in-3">
         {t("curious")}{" "}
-        <Link to="/about" className="text-primary">
+        <Link to="/about" className="text-primary home__learn-link">
           {t("learn_more")}
         </Link>
       </p>
+
       <button
         onClick={handleClick}
-        className="btn btn-primary px-5 py-3 mt-4"
-        style={{ fontSize: "1.25rem", animation: "fadeIn 2.5s" }}
+        className="btn btn-primary px-5 py-3 mt-4 home__cta fade-in-4"
         aria-label={t("get_started")}
       >
         {t("get_started")}
       </button>
 
-      {/* Features Section */}
-      <div
-        className="row mt-5 justify-content-center"
-        style={{ animation: "fadeIn 2s" }}
-      >
-        {/* 🔍 Vibe Code Search */}
-        <div className="d-flex justify-content-center my-4">
-          <div style={{ width: "100%", maxWidth: "420px" }}>
+      {/* Vibe Code Search */}
+      <section className="row mt-5 justify-content-center fade-in-3" aria-label={t("search_section", "Vibe search")}>
+        <div className="d-flex justify-content-center my-4 home__search">
+          <div className="home__search-inner">
             <VibeSearch />
           </div>
         </div>
-
-        {/*
-        <h2 className="mb-5 text-center">{t("why")}</h2>
-        {[{
-            emoji: "🔒",
-            title: t("secure_title"),
-            text: t("secure_text"),
-          },{
-            emoji: "⚡",
-            title: t("fast_title"),
-            text: t("fast_text"),
-          },{
-            emoji: "😊",
-            title: t("friendly_title"),
-            text: t("friendly_text"),
-          },
-        ].map((item, idx) => (...))} */}
-      </div>
-    </div>
+      </section>
+    </main>
   );
 }
+
+
+{/*
+<h2 className="mb-5 text-center">{t("why")}</h2>
+{[{
+    emoji: "🔒",
+    title: t("secure_title"),
+    text: t("secure_text"),
+  },{
+    emoji: "⚡",
+    title: t("fast_title"),
+    text: t("fast_text"),
+  },{
+    emoji: "😊",
+    title: t("friendly_title"),
+    text: t("friendly_text"),
+  },
+].map((item, idx) => (...))} */}

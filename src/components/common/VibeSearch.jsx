@@ -6,53 +6,100 @@ import { trackEvent } from "@/services/amplitude";
 
 export default function VibeSearch() {
   const { t } = useTranslation("vibe_search");
+  const navigate = useNavigate();
   const [code, setCode] = useState("");
   const [error, setError] = useState("");
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
-  const handleSearch = async () => {
-    setError("");
-    const value = code.trim();
+  const isValid = /^\d{4,5}$/.test(code);
 
-    if (!/^\d{4,5}$/.test(value)) {
+  const onChange = (e) => {
+    const next = e.target.value.replace(/\D/g, "").slice(0, 5);
+    setCode(next);
+    if (error) setError("");
+  };
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    if (!isValid) {
       setError(t("invalid_code"));
-      trackEvent("Vibe Search Failed", { reason: "invalid_format", code: value });
+      trackEvent("Vibe Search Failed", { reason: "invalid_format", code });
       return;
     }
 
     try {
-      const res = await axios.get(`/api/v3/vibes/visibility/${value}`);
-      trackEvent("Vibe Search Success", { code: value });
+      setLoading(true);
+      trackEvent("Vibe Search Submit", { code_length: code.length });
+      const res = await axios.get(`/api/v3/vibes/visibility/${code}`);
+      trackEvent("Vibe Search Success", { code, id: res?.data?.id });
       navigate(`/view/${res.data.id}`);
     } catch (err) {
       setError(t("not_found"));
-      trackEvent("Vibe Search Failed", { reason: "not_found", code: value });
+      trackEvent("Vibe Search Failed", { reason: "not_found", code });
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") handleSearch();
-  };
-
   return (
-    <div
-      className="d-flex justify-content-center align-items-center mb-4"
-      style={{ gap: 12, width: "100%", maxWidth: 600, margin: "0 auto" }}
+    <form
+      onSubmit={onSubmit}
+      className="w-100"
+      style={{ maxWidth: 600, margin: "0 auto" }}
+      noValidate
+      aria-label={t("label", "Vibe code search")}
     >
-      <input
-        type="text"
-        className="form-control"
-        placeholder={t("placeholder")}
-        value={code}
-        onChange={(e) => setCode(e.target.value)}
-        onKeyDown={handleKeyDown}
-        autoFocus
-        aria-label={t("placeholder")}
-      />
-      <button className="btn btn-primary" onClick={handleSearch}>
-        {t("button")}
-      </button>
-      {error && <div className="text-danger mt-2">{error}</div>}
-    </div>
+      <div
+        className="d-flex justify-content-center align-items-stretch"
+        style={{ gap: 12 }}
+      >
+        <input
+          id="vibeCode"
+          className="form-control"
+          type="tel"
+          inputMode="numeric"
+          pattern="[0-9]*"
+          maxLength={5}
+          placeholder={t("placeholder")}
+          value={code}
+          onChange={onChange}
+          aria-describedby="vibeSearchHint"
+          aria-invalid={!!error}
+          autoFocus
+          style={{ minWidth: 0 }}
+          autoComplete="off" 
+        />
+
+        <button
+          type="submit"
+          className="btn btn-primary"
+          disabled={loading || !isValid}
+          aria-busy={loading ? "true" : "false"}
+          style={{ whiteSpace: "nowrap" }}
+        >
+          {loading ? (
+            <>
+              <span
+                className="spinner-border spinner-border-sm me-2"
+                role="status"
+                aria-hidden="true"
+              />
+              {t("searching", "Searching…")}
+            </>
+          ) : (
+            t("button")
+          )}
+        </button>
+      </div>
+
+      <div
+        id="vibeSearchHint"
+        className={`mt-2 small ${error ? "text-danger" : "text-muted"}`}
+        style={{ minHeight: "1.2em" }}
+        aria-live="polite"
+      >
+        {error}
+      </div>
+    </form>
   );
 }

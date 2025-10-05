@@ -9,13 +9,13 @@ export default function Footer() {
 
   return (
     <footer className="footer" role="contentinfo">
-      <div className="footer__links">
+      <nav className="footer__links" aria-label={t("nav_label", "Footer navigation")}>
         <Link to="/terms">{t("terms")}</Link>
         <Link to="/privacy">{t("privacy")}</Link>
         <Link to="/ads">{t("ads")}</Link>
-      </div>
+      </nav>
 
-      <div className="footer__address">
+      <div className="footer__copy">
         © {year} {t("brand")}. {t("copyright")}
       </div>
     </footer>
