@@ -1,0 +1,9 @@
+{
+  "label": "Enter a code to view",
+  "placeholder": "Enter 4–5 digit code",
+  "button": "Search",
+  "searching": "Opening…",
+  "invalid_code": "Please enter a valid 4–5 digit code.",
+  "not_found": "Vibe not found or not publicly available.",
+  "error_generic": "Couldn't open the Vibe. Please try again."
+}

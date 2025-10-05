@@ -1,0 +1,78 @@
+{
+  "title": "Terms of Service",
+  "updated": "Last updated: {{date}}",
+  "intro": "These Terms of Service (the \"Terms\") govern your use of {{brand}}. By accessing or using our services, you agree to be bound by these Terms.",
+  "a11y": { "skip": "Skip to main content" },
+  "toc": {
+    "title": "Contents",
+    "acceptance": "Acceptance",
+    "accounts": "Accounts",
+    "use": "Use of Service",
+    "liability": "Liability",
+    "contact": "Contact"
+  },
+  "links": {
+    "privacy": "Privacy Policy"
+  },
+  "sections": {
+    "acceptance": {
+      "title": "1. Acceptance",
+      "text1": "By using our services, you acknowledge that you have read and understood these Terms and agree to comply with them.",
+      "items": {
+        "read": "Review these Terms carefully before using the Service.",
+        "updates": "We may update these Terms; material changes will be communicated via the Service or email.",
+        "continue": "Your continued use after changes take effect means you accept the updated Terms."
+      }
+    },
+    "accounts": {
+      "title": "2. Accounts",
+      "eligibility": {
+        "title": "Eligibility",
+        "text": "You must be of legal age in your jurisdiction or have valid parental/guardian consent to use the Service."
+      },
+      "security": {
+        "title": "Security",
+        "items": {
+          "credential": "Keep your credentials confidential and secure.",
+          "notify": "Notify us promptly of any suspected unauthorized access or breach."
+        }
+      },
+      "termination": {
+        "title": "Termination",
+        "text": "We may suspend or terminate access if you violate these Terms or pose risk to the Service or others."
+      }
+    },
+    "use": {
+      "title": "3. Use of Service",
+      "allowed": {
+        "title": "Allowed",
+        "items": {
+          "create": "Create and manage your Vibes and profile information.",
+          "share": "Share links or QR codes consistent with our policies.",
+          "api": "Use provided APIs/SDKs within documented limits."
+        }
+      },
+      "prohibited": {
+        "title": "Prohibited",
+        "items": {
+          "reverse": "Reverse engineering, scraping, or bypassing access controls.",
+          "unlawful": "Uploading unlawful, infringing, or harmful content.",
+          "integrity": "Interfering with Service integrity (spam, malware, DDoS, rate abuse)."
+        }
+      },
+      "note": "For details about data and cookies, see our <privacy>Privacy Policy</privacy>."
+    },
+    "liability": {
+      "title": "4. Disclaimers & Liability",
+      "disclaimer_caps": "THE SERVICE IS PROVIDED \"AS IS\" AND \"AS AVAILABLE\" WITHOUT WARRANTIES OF ANY KIND.",
+      "cap": "To the extent permitted by law, our total liability for any claim will not exceed the greater of (a) amounts you paid in the 12 months before the event, or (b) USD $100.",
+      "indemnity": "You agree to indemnify and hold {{brand}} harmless from claims arising from your use of the Service or violation of these Terms."
+    },
+    "contact": {
+      "title": "5. Contact",
+      "text": "Questions about these Terms? Contact us at {{email}}.",
+      "links": "For privacy matters, see our <privacy>Privacy Policy</privacy>."
+    }
+  },
+  "back_to_top": "↑ Back to top"
+}

@@ -1,0 +1,78 @@
+{
+  "title": "Conditions d'utilisation",
+  "updated": "Dernière mise à jour : {{date}}",
+  "intro": "Ces Conditions d'utilisation (« Conditions ») régissent votre utilisation de {{brand}}. En accédant à nos services ou en les utilisant, vous acceptez d'être lié par ces Conditions.",
+  "a11y": { "skip": "Aller au contenu principal" },
+  "toc": {
+    "title": "Sommaire",
+    "acceptance": "Acceptation",
+    "accounts": "Comptes",
+    "use": "Utilisation du service",
+    "liability": "Responsabilité",
+    "contact": "Contact"
+  },
+  "links": {
+    "privacy": "Politique de confidentialité"
+  },
+  "sections": {
+    "acceptance": {
+      "title": "1. Acceptation",
+      "text1": "En utilisant nos services, vous reconnaissez avoir lu et compris ces Conditions et acceptez de vous y conformer.",
+      "items": {
+        "read": "Lisez attentivement ces Conditions avant d'utiliser le Service.",
+        "updates": "Nous pouvons mettre à jour ces Conditions ; les changements importants seront communiqués via le Service ou par e-mail.",
+        "continue": "Si vous continuez à utiliser le Service après l'entrée en vigueur des changements, vous acceptez les Conditions mises à jour."
+      }
+    },
+    "accounts": {
+      "title": "2. Comptes",
+      "eligibility": {
+        "title": "Éligibilité",
+        "text": "Vous devez avoir l'âge légal dans votre juridiction ou disposer du consentement d'un parent/tuteur."
+      },
+      "security": {
+        "title": "Sécurité",
+        "items": {
+          "credential": "Conservez vos identifiants confidentiels et en sécurité.",
+          "notify": "Avertissez-nous rapidement de tout accès non autorisé ou incident."
+        }
+      },
+      "termination": {
+        "title": "Résiliation",
+        "text": "Nous pouvons suspendre ou résilier l'accès en cas de violation des Conditions ou de risque pour le Service ou autrui."
+      }
+    },
+    "use": {
+      "title": "3. Utilisation du service",
+      "allowed": {
+        "title": "Autorisé",
+        "items": {
+          "create": "Créer et gérer vos Vibes et les informations de profil.",
+          "share": "Partager des liens ou des QR codes conformément à nos politiques.",
+          "api": "Utiliser les API/SDK fournies dans les limites documentées."
+        }
+      },
+      "prohibited": {
+        "title": "Interdit",
+        "items": {
+          "reverse": "Rétro-ingénierie, scraping ou contournement des contrôles d'accès.",
+          "unlawful": "Téléverser du contenu illégal, contrefaisant ou nuisible.",
+          "integrity": "Porter atteinte à l'intégrité du Service (spam, malware, DDoS, abus de débit)."
+        }
+      },
+      "note": "Pour plus de détails sur les données et les cookies, consultez notre <privacy>Politique de confidentialité</privacy>."
+    },
+    "liability": {
+      "title": "4. Responsabilité et exclusions",
+      "disclaimer_caps": "LE SERVICE EST FOURNI « TEL QUEL » ET « SOUS RÉSERVE DE DISPONIBILITÉ », SANS AUCUNE GARANTIE.",
+      "cap": "Dans la mesure permise par la loi, notre responsabilité totale est limitée au plus élevé des montants suivants : (a) les sommes payées par vous au cours des 12 mois précédant l'événement, ou (b) 100 USD.",
+      "indemnity": "Vous acceptez d'indemniser et de dégager {{brand}} de toute responsabilité découlant de votre utilisation du Service ou de la violation des présentes Conditions."
+    },
+    "contact": {
+      "title": "5. Contact",
+      "text": "Questions concernant ces Conditions : {{email}}.",
+      "links": "Pour les sujets de confidentialité, consultez notre <privacy>Politique de confidentialité</privacy>."
+    }
+  },
+  "back_to_top": "↑ Retour en haut"
+}

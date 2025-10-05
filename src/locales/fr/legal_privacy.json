@@ -1,0 +1,156 @@
+{
+  "title": "Politique de confidentialité",
+  "updated": "Dernière mise à jour : {{date}}",
+  "intro": "La présente Politique de confidentialité explique comment {{brand}} collecte, utilise, partage et protège vos informations lorsque vous utilisez nos sites web, applications et services associés (collectivement, le « Service »). Si vous n’acceptez pas cette Politique, veuillez ne pas utiliser le Service.",
+  "a11y": { "skip": "Aller au contenu" },
+  "toc": {
+    "title": "Sur cette page :",
+    "data": "1. Données que nous collectons",
+    "use": "2. Comment nous utilisons les données",
+    "bases": "3. Bases juridiques",
+    "sharing": "4. Partage et sous-traitants",
+    "cookies": "5. Cookies et suivi",
+    "choices": "6. Vos choix et vos droits",
+    "retention": "7. Conservation",
+    "security": "8. Sécurité",
+    "international": "9. Transferts internationaux",
+    "children": "10. Enfants",
+    "changes": "11. Modifications",
+    "contact": "12. Contact"
+  },
+  "terms": "Conditions",
+  "ads": "Publicités et suivi",
+  "links": {
+    "privacy_settings": "Paramètres de confidentialité",
+    "account_settings": "Paramètres du compte"
+  },
+  "table": {
+    "provider": "Fournisseur",
+    "purpose": "Finalité",
+    "categories": "Catégories de données",
+    "region": "Région"
+  },
+  "processors": {
+    "amplitude": {
+      "purpose": "Analyse produit et événements",
+      "categories": "Événements d’usage, infos appareil, localisation approximative, identifiants",
+      "region": "États-Unis/UE (selon le routage du fournisseur)"
+    },
+    "smtp": {
+      "name": "Fournisseur Email/SMTP",
+      "purpose": "Emails transactionnels (p. ex. vérification)",
+      "categories": "Email, IP, métadonnées du message",
+      "region": "Selon le fournisseur"
+    },
+    "cloud": {
+      "name": "Hébergement cloud",
+      "purpose": "Hébergement de l’app et de la base, stockage, journaux",
+      "categories": "Données de compte, contenu Vibe, journaux",
+      "region": "Canada/États-Unis/UE (voir notre infrastructure)"
+    }
+  },
+  "sections": {
+    "data": {
+      "title": "1. Données que nous collectons",
+      "account": {
+        "title": "Données de compte",
+        "items": {
+          "identifiers": "Identifiants : email, nom (facultatif), nom d’utilisateur, photo de profil.",
+          "auth": "Authentification : jetons, statut de vérification.",
+          "vibe": "Contenu « Vibe » que vous créez (profils, liens, descriptions, icônes, données QR, paramètres)."
+        }
+      },
+      "usage": {
+        "title": "Données d’utilisation et de l’appareil",
+        "items": {
+          "events": "Analyse des événements (p. ex. création/partage/ouverture de Vibe, clics), durée de session.",
+          "device": "Localisation approximative (via IP), appareil/OS, navigateur, langue, référent/UTM."
+        }
+      },
+      "support": {
+        "title": "Transactionnel et support",
+        "items": {
+          "messages": "Emails/messages que vous nous envoyez ; rapports de bugs et diagnostics.",
+          "billing": "Informations de facturation ou d’abonnement (si vous achetez des fonctionnalités payantes ; traitées par nos prestataires)."
+        }
+      },
+      "note": "Nous ne vendons pas d’informations personnelles. Nous ne collectons pas intentionnellement de catégories sensibles, sauf si vous les fournissez directement dans des champs de texte libre (évitez d’y partager des données sensibles)."
+    },
+    "use": {
+      "title": "2. Comment nous utilisons les données",
+      "items": {
+        "provide": "Fournir et faire fonctionner le Service (création de compte, authentification, affichage de vos Vibes).",
+        "improve": "Améliorer l’UX et les performances (mesurer les temps de chargement, les parcours et l’adoption des fonctionnalités).",
+        "personalize": "Personnaliser le contenu (langue/région par défaut, blocs récemment utilisés).",
+        "security": "Sécurité, prévention de la fraude et détection des abus.",
+        "communicate": "Communiquer avec vous au sujet des mises à jour, conseils ou notifications importantes.",
+        "legal": "Respecter les obligations légales et faire appliquer nos {{terms}}."
+      }
+    },
+    "bases": {
+      "title": "3. Bases juridiques (RGPD)",
+      "items": {
+        "contract": { "title": "Contrat", "text": "pour fournir le Service que vous demandez." },
+        "legit": { "title": "Intérêts légitimes", "text": "analyse, amélioration et sécurité (équilibrés avec vos droits)." },
+        "consent": { "title": "Consentement", "text": "lorsque requis pour les cookies/SDK facultatifs ou les emails marketing." },
+        "obligation": { "title": "Obligation légale", "text": "répondre aux demandes légitimes et tenir les registres requis." }
+      }
+    },
+    "sharing": {
+      "title": "4. Partage et sous-traitants",
+      "intro": "Nous partageons des données avec des prestataires qui les traitent pour notre compte, conformément à des contrats et des garanties :",
+      "note": "Nous pouvons divulguer des informations si la loi l’exige ou pour protéger les droits, la sécurité et l’intégrité de {{brand}} et des utilisateurs. Nous ne partageons pas de données personnelles avec des annonceurs pour vous diffuser des publicités ciblées dans des produits tiers."
+    },
+    "cookies": {
+      "title": "5. Cookies et suivi",
+      "intro": "Nous utilisons des cookies/SDK pour :",
+      "items": {
+        "essential": { "title": "Essentiels", "text": "connexion/session, CSRF, répartition de charge." },
+        "analytics": { "title": "Analyse", "text": "comprendre l’usage des fonctionnalités (Amplitude)." },
+        "prefs": { "title": "Préférences", "text": "mémoriser la langue et les choix d’interface." }
+      },
+      "controls": "Vous pouvez gérer les cookies dans votre navigateur et dans les {{privacy}} de l’application. Si vous refusez l’analyse, nous arrêterons l’envoi d’événements, sauf ceux strictement nécessaires à la sécurité et aux fonctionnalités de base.",
+      "dnt": "Nous respectons, le cas échéant, les signaux « Do Not Track/Global Privacy Control » pour le suivi non essentiel."
+    },
+    "choices": {
+      "title": "6. Vos choix et vos droits",
+      "items": {
+        "manage": "Accéder à vos données, les corriger, les exporter ou les supprimer dans {{account}} ou par email.",
+        "optout": "Refuser l’analyse et les emails marketing dans {{privacy}} ou via les liens présents dans les emails.",
+        "rights": "RGPD/R.-U. : droits d’accès/de rectification/d’effacement/de limitation/d’opposition/de portabilité ; CPRA : droits de savoir/supprimer/corriger/limiter l’usage des données sensibles."
+      },
+      "contact": "Pour exercer vos droits, contactez-nous à {{email}}. Nous pourrions devoir vérifier votre demande."
+    },
+    "retention": {
+      "title": "7. Conservation des données",
+      "text": "Nous conservons les données personnelles uniquement le temps nécessaire pour fournir le Service et pour des finalités commerciales ou juridiques légitimes. Exemples : journaux de session (jusqu’à 30–90 jours), événements d’analyse (agrégés/avec conservation limitée), enregistrements de compte (tant que votre compte est actif) et sauvegardes (fenêtres glissantes limitées dans le temps)."
+    },
+    "security": {
+      "title": "8. Sécurité",
+      "items": {
+        "transport": "Chiffrement en transit (HTTPS/TLS) et au repos lorsque pris en charge.",
+        "controls": "Contrôles d’accès, isolation des environnements, supervision et mises à jour régulières.",
+        "vuln": "Gestion des vulnérabilités et principe du moindre privilège."
+      },
+      "disclaimer": "Aucune méthode de transmission ou de stockage n’est sûre à 100 % ; nous œuvrons en continu à renforcer les protections."
+    },
+    "international": {
+      "title": "9. Transferts internationaux",
+      "text": "Vos données peuvent être traitées en dehors de votre pays. Le cas échéant, nous utilisons des garanties telles que les Clauses Contractuelles Types (CCT) et des avenants fournisseurs pour protéger les transferts transfrontaliers."
+    },
+    "children": {
+      "title": "10. Enfants",
+      "text": "Le Service s’adresse aux utilisateurs de 16 ans et plus (ou l’âge du consentement numérique dans votre région). Nous ne collectons pas sciemment de données personnelles d’enfants en dessous de cet âge. Si vous pensez qu’un enfant a fourni des données, contactez-nous pour les supprimer."
+    },
+    "changes": {
+      "title": "11. Modifications de cette Politique",
+      "text": "Nous pouvons mettre à jour cette Politique de temps à autre. Les changements importants seront mis en avant dans l’application ou par email. La poursuite de l’utilisation après les changements vaut acceptation."
+    },
+    "contact": {
+      "title": "12. Contact",
+      "text": "Questions ou demandes : {{email}}.",
+      "links": "Vous pouvez également consulter nos {{terms}} et {{ads}}."
+    }
+  },
+  "back_to_top": "↑ Retour en haut"
+}

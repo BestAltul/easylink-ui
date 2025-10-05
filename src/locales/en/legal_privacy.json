@@ -1,0 +1,151 @@
+{
+  "title": "Privacy Policy",
+  "updated": "Last updated: {{date}}",
+  "intro": "This Privacy Policy explains how {{brand}} collects, uses, shares, and safeguards your information when you use our websites, apps, and related services (collectively, the “Service”). If you do not agree with this Policy, please do not use the Service.",
+  "a11y": { "skip": "Skip to content" },
+  "toc": {
+    "title": "On this page:",
+    "data": "1. Data we collect",
+    "use": "2. How we use data",
+    "bases": "3. Legal bases",
+    "sharing": "4. Sharing & processors",
+    "cookies": "5. Cookies & tracking",
+    "choices": "6. Your choices & rights",
+    "retention": "7. Retention",
+    "security": "8. Security",
+    "international": "9. International transfers",
+    "children": "10. Children",
+    "changes": "11. Changes",
+    "contact": "12. Contact"
+  },
+  "terms": "Terms",
+  "ads": "Ads & Tracking",
+  "links": {
+    "privacy_settings": "Privacy settings",
+    "account_settings": "Account settings"
+  },
+  "table": { "provider": "Provider", "purpose": "Purpose", "categories": "Data categories", "region": "Region" },
+  "processors": {
+    "amplitude": {
+      "purpose": "Product analytics & events",
+      "categories": "Usage events, device info, approximate location, identifiers",
+      "region": "US/EU (per vendor routing)"
+    },
+    "smtp": {
+      "name": "Email/SMTP provider",
+      "purpose": "Transactional emails (e.g., verification)",
+      "categories": "Email, IP, message metadata",
+      "region": "Varies by provider"
+    },
+    "cloud": {
+      "name": "Cloud hosting",
+      "purpose": "App & database hosting, storage, logs",
+      "categories": "Account data, Vibe content, logs",
+      "region": "Canada/US/EU (see our infrastructure)"
+    }
+  },
+  "sections": {
+    "data": {
+      "title": "1. Data we collect",
+      "account": {
+        "title": "Account data",
+        "items": {
+          "identifiers": "Identifiers: email, name (optional), username, profile photo.",
+          "auth": "Authentication: tokens, verification status.",
+          "vibe": "“Vibe” content you create (profiles, links, descriptions, icons, QR data, settings)."
+        }
+      },
+      "usage": {
+        "title": "Usage & device data",
+        "items": {
+          "events": "Event analytics (e.g., create/share/open Vibe, button clicks), session duration.",
+          "device": "Approximate location (by IP), device/OS, browser, language, referrer/UTM."
+        }
+      },
+      "support": {
+        "title": "Transactional & support",
+        "items": {
+          "messages": "Emails/messages you send us; bug reports and diagnostics.",
+          "billing": "Billing or subscription info (if you buy paid features; processed by our providers)."
+        }
+      },
+      "note": "We do not sell personal information. We also do not intentionally collect sensitive categories unless you directly provide them in free-text fields (please avoid sharing sensitive data there)."
+    },
+    "use": {
+      "title": "2. How we use data",
+      "items": {
+        "provide": "Provide and operate the Service (account creation, authentication, rendering your Vibes).",
+        "improve": "Improve UX and performance (measure load times, flows, and feature adoption).",
+        "personalize": "Personalize content (e.g., default language/region, recently used blocks).",
+        "security": "Security, fraud prevention, and abuse detection.",
+        "communicate": "Communicate with you about updates, tips, or important notices.",
+        "legal": "Comply with legal obligations and enforce our {{terms}}."
+      }
+    },
+    "bases": {
+      "title": "3. Legal bases (GDPR)",
+      "items": {
+        "contract": { "title": "Contract", "text": "to provide the Service you request." },
+        "legit": { "title": "Legitimate interests", "text": "analytics, improvement, and security (balanced with your rights)." },
+        "consent": { "title": "Consent", "text": "where required for optional cookies/SDKs or marketing emails." },
+        "obligation": { "title": "Legal obligation", "text": "responding to lawful requests and recordkeeping duties." }
+      }
+    },
+    "sharing": {
+      "title": "4. Sharing & processors",
+      "intro": "We share data with service providers who process it on our behalf, under contracts and safeguards:",
+      "note": "We may disclose information if required by law or to protect rights, safety, and integrity of {{brand}} and users. We do not share personal data with advertisers to serve you targeted ads in third-party products."
+    },
+    "cookies": {
+      "title": "5. Cookies & tracking",
+      "intro": "We use cookies/SDKs to:",
+      "items": {
+        "essential": { "title": "Essential", "text": "sign-in/session, CSRF, load balancing." },
+        "analytics": { "title": "Analytics", "text": "understand feature usage (Amplitude)." },
+        "prefs": { "title": "Preferences", "text": "remember language, UI choices." }
+      },
+      "controls": "You can control cookies in your browser and in the app’s {{privacy}}. If you opt out of analytics, we will stop sending event data except strictly necessary events for security and core functionality.",
+      "dnt": "We honor applicable “Do Not Track/Global Privacy Control” signals for non-essential tracking where required."
+    },
+    "choices": {
+      "title": "6. Your choices & rights",
+      "items": {
+        "manage": "Access, correct, export, or delete your data in {{account}} or by email.",
+        "optout": "Opt out of analytics and marketing emails in {{privacy}} or via links in emails.",
+        "rights": "GDPR/UK: rights to access/rectify/erase/restrict/object/portability; CPRA: rights to know/delete/correct/limit use of sensitive data."
+      },
+      "contact": "To exercise rights, contact us at {{email}}. We may need to verify your request."
+    },
+    "retention": {
+      "title": "7. Data retention",
+      "text": "We keep personal data only as long as necessary to provide the Service and for legitimate business or legal purposes. Typical examples: session logs (up to 30–90 days), analytics events (aggregated/limited retention), account records (while your account is active), and backups (time-limited rolling windows)."
+    },
+    "security": {
+      "title": "8. Security",
+      "items": {
+        "transport": "Transport encryption (HTTPS/TLS) and encryption at rest where supported.",
+        "controls": "Access controls, environment isolation, monitoring, and regular updates.",
+        "vuln": "Vulnerability management and least-privilege practices."
+      },
+      "disclaimer": "No method of transmission or storage is 100% secure; we work to continually improve protections."
+    },
+    "international": {
+      "title": "9. International transfers",
+      "text": "Your data may be processed outside your country. Where applicable, we use safeguards like Standard Contractual Clauses (SCCs) and vendor addenda to protect cross-border transfers."
+    },
+    "children": {
+      "title": "10. Children",
+      "text": "The Service is intended for users aged 16+ (or the age of digital consent in your region). We do not knowingly collect personal data from children under that age. If you believe a child has provided data, contact us to remove it."
+    },
+    "changes": {
+      "title": "11. Changes to this Policy",
+      "text": "We may update this Policy from time to time. Material changes will be highlighted in-app or via email. Your continued use after changes indicates acceptance."
+    },
+    "contact": {
+      "title": "12. Contact",
+      "text": "Questions or requests: {{email}}.",
+      "links": "You can also review our {{terms}} and {{ads}}."
+    }
+  },
+  "back_to_top": "↑ Back to top"
+}

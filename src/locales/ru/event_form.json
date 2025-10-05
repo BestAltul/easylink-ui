@@ -1,0 +1,23 @@
+{
+  "name_label": "Название события",
+  "name_placeholder": "Введите название события",
+  "desc_label": "Описание",
+  "desc_placeholder": "Опишите своё событие...",
+  "contacts_label": "Контакты",
+  "no_contacts": "Контакты ещё не добавлены.",
+  "add_contact": "+ Добавить контакт",
+  "info_label": "Детали события",
+  "add_info_block": "+ Добавить блок информации",
+  "photo_label": "Фото / Постер события",
+  "photo_hint": "PNG или JPG, до 2MB",
+  "cancel": "Отмена",
+  "creating": "Создание...",
+  "create_button": "Создать карту события",
+  "saving": "Сохранение...",
+  "save_button": "Сохранить изменения",
+  "modal_contact_title": "Добавить тип контакта",
+  "modal_contact_placeholder": "Тип контакта (например, Instagram, телефон)",
+  "modal_contact_hint": "Нажмите Enter, чтобы добавить",
+  "modal_info_title": "Добавить блок информации",
+  "remove_button_title": "Удалить"
+}

@@ -1,0 +1,19 @@
+{
+  "back": "Back to Profile",
+  "title": "My Vibes",
+  "back_short": "Back",
+  "create": "+ Create New Vibe",
+  "create_short": "Create New",
+  "loading": "Loading Vibes...",
+  "no_vibes": "No Vibes found.",
+  "no_vibes_hint": "Create your first Vibe!",
+  "share": "Share",
+  "share_title": "Share your Vibe",
+  "share_subtitle": "Send your Vibe link or show the QR code!",
+  "copy": "Copy Link",
+  "copied": "Copied!",
+  "scan": "Scan to open Vibe",
+  "no_description": "No description.",
+  "delete": "Delete",
+  "delete_confirm": "Delete this Vibe? This cannot be undone."
+}

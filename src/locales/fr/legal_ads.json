@@ -1,0 +1,57 @@
+{
+  "title": "Politique publicitaire et de suivi",
+  "updated": "Dernière mise à jour : {{date}}",
+  "intro": "Cette politique explique comment {{brand}} utilise la publicité, le contenu sponsorisé et les technologies de suivi.",
+  "a11y": { "skip": "Aller au contenu principal" },
+  "toc": {
+    "title": "Sommaire",
+    "ads": "Publicités",
+    "tracking": "Suivi",
+    "preferences": "Préférences",
+    "contact": "Contact"
+  },
+  "sections": {
+    "ads": {
+      "title": "1. Publicités",
+      "text1": "Nous pouvons afficher des publicités ou du contenu sponsorisé. Nous visons la transparence :",
+      "items": {
+        "labels": "Les publicités seront toujours indiquées comme « Sponsorisé » ou équivalent.",
+        "thirdparties": "Certaines annonces peuvent être diffusées par des réseaux tiers de confiance.",
+        "controls": "Nous essayons de fournir des contrôles pour gérer la pertinence des publicités."
+      }
+    },
+    "tracking": {
+      "title": "2. Suivi",
+      "text1": "Nous utilisons des cookies et des SDK pour améliorer le service et mesurer ses performances.",
+      "cookies": {
+        "title": "Cookies",
+        "items": {
+          "essential": "Cookies essentiels pour le fonctionnement de base.",
+          "analytics": "Cookies d’analyse pour les statistiques d’utilisation.",
+          "prefs": "Cookies de préférences pour mémoriser vos choix."
+        }
+      },
+      "sdks": {
+        "title": "SDK",
+        "items": {
+          "analytics": "SDK d’analyse (ex. Amplitude).",
+          "ads": "SDK publicitaires pouvant personnaliser les annonces."
+        }
+      },
+      "note": "Pour plus de détails sur l’utilisation des données, consultez notre <privacy>Politique de confidentialité</privacy>."
+    },
+    "preferences": {
+      "title": "3. Préférences",
+      "items": {
+        "settings": "Gérez vos paramètres de publicité et de suivi dans les <settings>paramètres de confidentialité</settings>.",
+        "email": "Vous pouvez également ajuster vos préférences de communication par e-mail.",
+        "dnt": "Nous respectons les signaux Do-Not-Track lorsque cela est techniquement possible."
+      }
+    },
+    "contact": {
+      "title": "4. Contact",
+      "text": "Questions concernant cette politique ? Écrivez-nous à {{email}}."
+    }
+  },
+  "back_to_top": "↑ Retour en haut"
+}

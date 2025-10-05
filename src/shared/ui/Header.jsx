@@ -12,7 +12,9 @@ import HeaderMobileMenu from "./HeaderMobileMenu";
 function Header() {
   const { isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
-  const { t } = useTranslation();
+
+  const { t } = useTranslation("header");
+  const { t: tc } = useTranslation("common"); 
 
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -30,10 +32,8 @@ function Header() {
   } = useEarlyAccessCheckable();
 
   useEffect(() => {
-    if (isAuthenticated) {
-      checkEarlyAccess();
-    }
-  }, [isAuthenticated]);
+    if (isAuthenticated) checkEarlyAccess();
+  }, [isAuthenticated, checkEarlyAccess]);
 
   const subscribed = subscribedAfterRequest || subscribedStatus;
 
@@ -50,69 +50,67 @@ function Header() {
       <header className="header">
         <div className="header__container">
           <div className="header__top">
-            <Link to="/" className="logo">
-              <img src="/clearviewblue.png" alt="logo" />
+            <Link to="/" className="logo" aria-label="YMK home">
+              <img src="/clearviewblue.png" alt="YMK logo" />
               <span>YMK</span>
             </Link>
 
             <div className={`early-access-bubble ${subscribed ? "subscribed-green" : ""}`}>
               <div className="early-access-text">
-                {subscribed ? "✅ Subscribed!" : t("header.lifetime_offer")}
+                {subscribed ? `✅ ${t("subscribed")}` : t("lifetime_offer")}
               </div>
 
               {!subscribed && (
                 <button
-                  onClick={() =>
-                    isAuthenticated ? requestEarlyAccess() : navigate("/signin")
-                  }
+                  onClick={() => (isAuthenticated ? requestEarlyAccess() : navigate("/signin"))}
                   className="early-subscribe-highlighted"
                   disabled={loadingSubscribe}
                 >
-                  {loadingSubscribe ? "Loading..." : t("header.early_subscribtion")}
+                  {loadingSubscribe ? tc("loading") : t("early_subscribtion")}
                 </button>
               )}
             </div>
 
             <nav className="nav">
               <Link to="/" onClick={() => trackEvent("Header Home Clicked")}>
-                {t("header.home")}
+                {t("home")}
               </Link>
 
               {!isAuthenticated && (
                 <Link to="/signup" onClick={() => trackEvent("Header Sign Up Clicked")}>
-                  {t("header.sign_up")}
+                  {t("sign_up")}
                 </Link>
               )}
 
               {!isAuthenticated && (
                 <Link to="/signin" onClick={() => trackEvent("Header Sign In Clicked")}>
-                  {t("header.log_in")}
+                  {t("log_in")}
                 </Link>
               )}
 
               {isAuthenticated && (
                 <Link to="/profile" onClick={() => trackEvent("Header Profile Clicked")}>
-                  {t("header.profile")}
+                  {t("profile")}
                 </Link>
               )}
 
               <Link to="/about" onClick={() => trackEvent("Header About Clicked")}>
-                {t("header.about")}
+                {t("about")}
               </Link>
 
               <Link to="/review" onClick={() => trackEvent("Header Review Clicked")}>
-                {t("header.review")}
+                {t("review")}
               </Link>
 
               {isAuthenticated && (
                 <Link
                   to="/"
                   onClick={(e) => {
-                    e.preventDefault(); 
+                    e.preventDefault();
                     handleLogout();
                   }}
                 >
-                  {t("header.log_out")}
+                  {t("log_out")}
                 </Link>
               )}
 
@@ -127,16 +125,13 @@ function Header() {
               ☰
             </button>
           </div>
-
-
         </div>
       </header>
 
       <HeaderMobileMenu
         isOpen={menuOpen}
         onClose={() => setMenuOpen(false)}
-        isAuthenticated={isAuthenticated}
-        t={t}
+        isAuthenticated={isAuthenticated}     
         handleLogout={handleLogout}
         trackEvent={trackEvent}
       />

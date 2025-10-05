@@ -1,6 +1,6 @@
 import React from "react";
 import Avatar from "./Avatar";
-import ExtraBlock from "./ExtraBlock";
+import ExtraBlock from "./HoursBlock.jsx";
 import ContactButton from "./ContactButton";
 import { QRCodeCanvas } from "qrcode.react";
 import useVisibilityToggle from "../useVisibilityToggle.jsx";
@@ -17,13 +17,24 @@ export default function VibeContent({
   visible,
   publicCode,
 }) {
-  const { t } = useTranslation();
+  // ⬇️ фиксируем ns
+  const { t } = useTranslation("vibe_content");
 
   const [vibeVisible, code, visibilityButton] = useVisibilityToggle(
     id,
     visible,
     publicCode
   );
+
+  // красивый лейбл типа (BUSINESS -> Business -> перевод types.business)
+  const slug = (type || "").toString().toLowerCase();
+  const pretty = slug ? slug.charAt(0).toUpperCase() + slug.slice(1) : t("default_type");
+  const typeLabel = slug ? t(`types.${slug}`, pretty) : t("default_type");
+
+  const origin =
+    typeof window !== "undefined" && window.location?.origin
+      ? window.location.origin
+      : "";
 
   return (
     <div className="d-flex flex-column align-items-center">
@@ -36,9 +47,7 @@ export default function VibeContent({
                 className="text-primary fw-bold d-flex align-items-center"
                 style={{ fontSize: "1.15rem" }}
               >
-                <span style={{ marginRight: 4 }}>
-                  {t("vibe_content.share_code_label")}
-                </span>
+                <span style={{ marginRight: 4 }}>{t("share_code_label")}</span>
                 <strong>{code}</strong>
               </div>
             )}
@@ -48,14 +57,16 @@ export default function VibeContent({
 
       <Avatar name={name} photoFile={photoFile} />
       <h3 className="mb-0" style={{ fontWeight: 700 }}>
-        {name || t("vibe_content.your_name")}
+        {name || t("your_name")}
       </h3>
+
       <div
         className="text-primary mb-2"
         style={{ fontWeight: 600, textTransform: "uppercase" }}
       >
-        {type?.charAt(0).toUpperCase() + type?.slice(1) || t("vibe_content.default_type")}
+        {typeLabel}
       </div>
+
       <div
         style={{
           background: "rgba(250, 250, 255, 0.92)",
@@ -69,10 +80,9 @@ export default function VibeContent({
           textAlign: "center",
         }}
       >
-        {description || (
-          <span style={{ color: "#bbb" }}>{t("vibe_content.default_description")}</span>
-        )}
+        {description || <span style={{ color: "#bbb" }}>{t("default_description")}</span>}
       </div>
+
       <div
         style={{
           width: "40%",
@@ -82,6 +92,7 @@ export default function VibeContent({
           marginBottom: 16,
         }}
       />
+
       <div className="d-flex flex-wrap gap-2 justify-content-center w-100">
         {contacts && contacts.length > 0 ? (
           contacts.map((c, i) => (
@@ -89,7 +100,7 @@ export default function VibeContent({
           ))
         ) : (
           <span className="text-muted" style={{ fontSize: 15 }}>
-            {t("vibe_content.no_contacts")}
+            {t("no_contacts")}
           </span>
         )}
       </div>
@@ -106,12 +117,12 @@ export default function VibeContent({
         {id ? (
           <>
             <QRCodeCanvas
-              value={`${window.location.origin}/vibes/${id}`}
+              value={`${origin}/vibes/${id}`}
               size={60}
+              includeMargin={false}
+              aria-label={t("qr_aria")}
             />
-            <div style={{ fontSize: 12, color: "#aaa" }}>
-              {t("vibe_content.share_qr")}
-            </div>
+            <div style={{ fontSize: 12, color: "#aaa" }}>{t("share_qr")}</div>
           </>
         ) : (
           <div
@@ -128,7 +139,7 @@ export default function VibeContent({
               fontSize: 18,
               color: "#aaa",
             }}
-            title={t("vibe_content.qr_hint")}
+            title={t("qr_hint")}
           >
             QR
           </div>

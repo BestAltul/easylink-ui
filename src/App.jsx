@@ -23,6 +23,7 @@ import InteractionsPage from "./features/vibes/interactions/InteractionsPage";
 import InteractionsPageBasic from "./features/vibes/interactions/InteractionsPageBasic";
 import OfferForm from "./features/vibes/offers/OfferForm";
 import ViewOfferForm from "./features/vibes/offers/ViewOfferForm";
+import OfferViewAnalytics from "@/analytics/OfferViewAnalytics";
 import OfferTableUsers from "./features/vibes/offers/OffersTableForUsers";
 
 import EmailVerificationSent from "@/features/auth/EmailVerificationSent";
@@ -30,6 +31,9 @@ import EmailVerified from "@/features/auth/EmailVerified";
 
 import CatalogForm from "./features/vibes/catalog/catalogForm";
 
+import Terms from "./pages/legal/Terms";
+import Privacy from "./pages/legal/Privacy";
+import Ads from "./pages/legal/Ads";
 import "./i18n";
 
 function App() {
@@ -75,14 +79,24 @@ function App() {
         <Route path="/offers/new" element={<OfferForm />} />
         <Route path="/offers/:id" element={<OfferForm />} />
         <Route path="/offer-table-users" element={<OfferTableUsers />} />
-        <Route path="/view-offer-form/:id" element={<ViewOfferForm />} />
-
+        <Route
+          path="/view-offer-form/:id"
+          element={
+            <>
+              <OfferViewAnalytics />
+              <ViewOfferForm />
+            </>
+          }
+        />
         <Route path="/email-verification-sent" element={<EmailVerificationSent />} />
         <Route path="/email-verified" element={<EmailVerified />} />
 
         <Route path="/catalog/new" element={<CatalogForm />} />
         <Route path="/catalog/:id/edit" element={<CatalogForm />} />
-
+        
+        <Route path="/terms" element={<Terms />} />
+        <Route path="/privacy" element={<Privacy />} />
+        <Route path="/ads" element={<Ads />} />
       </Routes>
       <Footer />
     </>

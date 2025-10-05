@@ -1,29 +1,64 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 export default function NavigationButtons({
   currentStep,
   totalSteps,
   handleBack,
   handleNext,
-  inputAnswer,
-  t,
+  inputAnswer = "",
 }) {
+  const { t } = useTranslation("auth");
+
+  const isFirst = currentStep === 0;
+  const isLast = currentStep === totalSteps - 1;
+  const canNext = inputAnswer.trim().length > 0;
+
   return (
-    <div className="d-flex justify-content-between align-items-center mt-3">
+    <div
+      className="
+        d-flex
+        flex-column flex-sm-row              /* xs: колонка, ≥sm: в ряд */
+        align-items-stretch align-items-sm-center
+        justify-content-sm-center
+        gap-2                                /* стабильный зазор между кнопками */
+        mt-3
+      "
+      style={{ width: "100%" }}
+    >
+      {/* Back */}
       <button
-        className="btn btn-outline-secondary px-3"
+        type="button"
+        className="
+          btn btn-outline-secondary
+          d-flex align-items-center justify-content-center gap-2
+          w-100 w-sm-auto                    /* xs: 100% ширины, ≥sm: авто */
+          px-3 py-2                          /* компактнее на мобилке */
+        "
         onClick={handleBack}
-        disabled={currentStep === 0}
+        disabled={isFirst}
       >
-        <i className="bi bi-arrow-left"></i> {t("auth.back")}
+        <i className="bi bi-arrow-left" aria-hidden="true" />
+        {t("back")}
       </button>
+
+      {/* Next / Login */}
       <button
-        className="btn btn-success px-4"
+        type="button"
+        className="
+          btn btn-success
+          d-flex align-items-center justify-content-center gap-2
+          w-100 w-sm-auto                    /* xs: 100%, ≥sm: авто */
+          px-4 py-2
+        "
         onClick={handleNext}
-        disabled={!inputAnswer.trim()}
+        disabled={!canNext}
+        /* на широких экранах пусть будет длиннее, на узких — адаптивно */
+        style={{ minWidth: "min(140px, 48vw)" }}
+        aria-label={isLast ? t("login") : t("next")}
       >
-        {currentStep === totalSteps - 1 ? t("auth.login") : t("auth.next")}
-        <i className="bi bi-arrow-right ms-2"></i>
+        {isLast ? t("login") : t("next")}
+        <i className="bi bi-arrow-right" aria-hidden="true" />
       </button>
     </div>
   );

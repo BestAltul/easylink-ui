@@ -1,0 +1,57 @@
+{
+  "title": "Ads & Tracking Policy",
+  "updated": "Last updated: {{date}}",
+  "intro": "This policy explains how {{brand}} uses ads, sponsored content, and tracking technologies.",
+  "a11y": { "skip": "Skip to main content" },
+  "toc": {
+    "title": "Contents",
+    "ads": "Ads",
+    "tracking": "Tracking",
+    "preferences": "Preferences",
+    "contact": "Contact"
+  },
+  "sections": {
+    "ads": {
+      "title": "1. Ads",
+      "text1": "We may show ads or sponsored content. We aim to keep them clear and transparent:",
+      "items": {
+        "labels": "Ads will always be labeled as 'Sponsored' or similar.",
+        "thirdparties": "Some ads may be delivered by trusted third-party networks.",
+        "controls": "We try to provide controls to help you manage ad relevance."
+      }
+    },
+    "tracking": {
+      "title": "2. Tracking",
+      "text1": "We use cookies and SDKs to improve the Service and measure performance.",
+      "cookies": {
+        "title": "Cookies",
+        "items": {
+          "essential": "Essential cookies for basic functionality.",
+          "analytics": "Analytics cookies for usage metrics.",
+          "prefs": "Preference cookies to remember your settings."
+        }
+      },
+      "sdks": {
+        "title": "SDKs",
+        "items": {
+          "analytics": "Analytics SDKs (e.g., Amplitude).",
+          "ads": "Advertising SDKs that may personalize ads."
+        }
+      },
+      "note": "For details about data use, see our <privacy>Privacy Policy</privacy>."
+    },
+    "preferences": {
+      "title": "3. Preferences",
+      "items": {
+        "settings": "Manage ad/tracking settings in your <settings>privacy settings</settings>.",
+        "email": "You can also adjust your communication preferences by email.",
+        "dnt": "We respect Do-Not-Track signals where technically possible."
+      }
+    },
+    "contact": {
+      "title": "4. Contact",
+      "text": "Questions about this policy? Contact us at {{email}}."
+    }
+  },
+  "back_to_top": "↑ Back to top"
+}

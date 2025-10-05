@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import FollowingTable from "./FollowingTable";
@@ -7,14 +7,13 @@ import useGetOfferByVibeId from "../offers/useGetOfferByVibeId";
 import useFollowing from "../interactions/useFollowing";
 
 export default function InteractionsPage() {
-  const { t } = useTranslation();
+  const { t } = useTranslation("interactions");
   const { id } = useParams();
   const navigate = useNavigate();
 
   const token = localStorage.getItem("jwt");
 
   const following = useFollowing(id, token);
-
   const offers = useGetOfferByVibeId(id, token);
 
   const [activeTab, setActiveTab] = useState("offers");
@@ -26,10 +25,10 @@ export default function InteractionsPage() {
           className="btn btn-outline-secondary"
           onClick={() => navigate(-1)}
         >
-          {t("interactions.back")}
+          {t("back")}
         </button>
         <h2 className="fw-bold mx-auto mb-0" style={{ letterSpacing: ".02em" }}>
-          {t("interactions.title")}
+          {t("title")}
         </h2>
       </div>
 
@@ -39,7 +38,7 @@ export default function InteractionsPage() {
             className={`nav-link ${activeTab === "offers" ? "active" : ""}`}
             onClick={() => setActiveTab("offers")}
           >
-            {t("Offers")}
+            {t("tabs.offers")}
           </button>
         </li>
         <li className="nav-item">
@@ -47,7 +46,7 @@ export default function InteractionsPage() {
             className={`nav-link ${activeTab === "following" ? "active" : ""}`}
             onClick={() => setActiveTab("following")}
           >
-            {t("Following")}
+            {t("tabs.following")}
           </button>
         </li>
       </ul>
@@ -56,17 +55,17 @@ export default function InteractionsPage() {
         {activeTab === "offers" && (
           <>
             <h5 className="mb-3" style={{ color: "#476dfe" }}>
-              {t("Offers")}
+              {t("sections.offers")}
             </h5>
-            <OffersTable offers={offers} t={t} subscriberVibeId={id} />
+            <OffersTable offers={offers} subscriberVibeId={id} t={t} />
           </>
         )}
         {activeTab === "following" && (
           <>
             <h5 className="mb-3" style={{ color: "#476dfe" }}>
-              {t("Following")}
+              {t("sections.following")}
             </h5>
-            <FollowingTable following={following} t={t} subscriberVibeId={id} />
+            <FollowingTable following={following} subscriberVibeId={id} t={t} />
           </>
         )}
       </div>

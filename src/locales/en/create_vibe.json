@@ -1,0 +1,11 @@
+{
+  "back": "Back to Profile",
+  "back_short" : "Back",
+  "title": "Create Your Digital Card",
+  "type_label": "Card Type",
+  "types": {
+    "business": "Business",
+    "personal": "Personal",
+    "event": "Other"
+  }
+}

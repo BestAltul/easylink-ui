@@ -1,0 +1,22 @@
+{
+  "name_label": "Название бизнеса",
+  "name_placeholder": "CoffeeSpace",
+  "desc_label": "Описание",
+  "desc_placeholder": "Кофейня в центре Торонто. Лучший латте в городе!",
+  "contacts_label": "Контакты",
+  "no_contacts": "Контакты ещё не добавлены.",
+  "add_contact": "+ Добавить контакт",
+  "additional_info": "Дополнительная информация",
+  "add_info_block": "+ Добавить блок информации",
+  "photo_label": "Фото / Логотип",
+  "photo_hint": "PNG или JPG, до 2MB",
+  "cancel": "Отмена",
+  "creating": "Создание...",
+  "create_button": "Создать бизнес-карту",
+  "saving": "Сохранение...",
+  "save_button": "Сохранить изменения",
+  "modal_contact_title": "Добавить тип контакта",
+  "modal_info_title": "Добавить блок информации",
+  "modal_cancel": "Отмена",
+  "remove_button_title": "Удалить"
+}

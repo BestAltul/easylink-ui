@@ -1,69 +1,102 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 import BusinessVibeForm from "./business/BusinessVibeForm";
 import PersonalVibeForm from "./personal/PersonalVibeForm";
 import EventVibeForm from "./events/EventVibeForm";
+import BackButton from "@/components/common/BackButton";
+import "./CreateVibe.css"
+
+const TYPE_COMPONENTS = {
+  BUSINESS: BusinessVibeForm,
+  PERSONAL: PersonalVibeForm,
+  EVENT: EventVibeForm,
+};
+
+function useIsMobile(breakpoint = 768) {
+  const [isMobile, setIsMobile] = React.useState(
+    typeof window !== "undefined" ? window.innerWidth < breakpoint : false
+  );
+  React.useEffect(() => {
+    const onResize = () => setIsMobile(window.innerWidth < breakpoint);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, [breakpoint]);
+  return isMobile;
+}
 
 export default function CreateVibe() {
-  const [type, setType] = useState("BUSINESS");
+  const { t } = useTranslation("create_vibe");
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const [type, setType] = React.useState("BUSINESS");
+  const isMobile = useIsMobile();
+
+  const Form = TYPE_COMPONENTS[type] || BusinessVibeForm;
+
+  const typeOptions = [
+    { value: "BUSINESS", label: t("types.business") },
+    { value: "PERSONAL", label: t("types.personal") },
+    { value: "EVENT", label: t("types.event") },
+  ];
 
   return (
-    <div className="container py-5">
-      <div style={{ maxWidth: 1020, margin: "0 auto", position: "relative" }}>
-        {/* Back Button */}
-        <div style={{ marginBottom: 18 }}>
-          <button
-            className="btn btn-outline-secondary d-inline-flex align-items-center"
-            style={{
-              borderRadius: 12,
-              fontWeight: 500,
-              boxShadow: "0 2px 8px rgba(70,110,255,0.06)",
-              gap: 6,
-              paddingLeft: 15,
-              paddingRight: 18,
-            }}
-            onClick={() => navigate("/profile")}
-          >
-            <svg
-              width="18"
-              height="18"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              viewBox="0 0 20 20"
-              style={{ marginRight: 6, marginLeft: -3 }}
-            >
-              <path d="M13 5l-5 5 5 5" />
-            </svg>
-            {t("create_vibe.back")}
-          </button>
+    <main className="create-vibe">
+      {/* sticky header */}
+      <div className="cv-header">
+        <div className="cv-header__left">
+          <BackButton
+            to="/profile"
+            label={isMobile ? t("back_short") : t("back")}
+            className="cv-back-btn"
+          />
         </div>
-
-        <h2 className="mb-4 text-center" style={{ fontWeight: 600 }}>
-          {t("create_vibe.title")}
-        </h2>
-
-        <div className="mb-4" style={{ maxWidth: 420, margin: "0 auto" }}>
-          <label className="form-label">{t("create_vibe.type_label")}</label>
-          <select
-            className="form-select"
-            value={type}
-            onChange={(e) => setType(e.target.value)}
-          >
-            <option value="BUSINESS">{t("create_vibe.type_business")}</option>
-            <option value="PERSONAL">{t("create_vibe.type_personal")}</option>
-            <option value="EVENT">{t("create_vibe.type_event")}</option>
-          </select>
-        </div>
-
-        {type === "BUSINESS" && <BusinessVibeForm mode="create" />}
-        {type === "PERSONAL" && <PersonalVibeForm mode="create" />}
-        {type === "EVENT" && <EventVibeForm mode="create" />}
+        <h2 className="cv-header__title">{t("title")}</h2>
+        <div className="cv-header__right" />
       </div>
-    </div>
+
+      <section className="cv-type">
+        {isMobile ? (
+          <div className="cv-segments" role="tablist" aria-label={t("type_label")}>
+            {typeOptions.map((opt) => {
+              const active = type === opt.value;
+              return (
+                <button
+                  key={opt.value}
+                  role="tab"
+                  aria-selected={active}
+                  className={`cv-segment ${active ? "is-active" : ""}`}
+                  onClick={() => setType(opt.value)}
+                >
+                  {opt.label}
+                </button>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="cv-select-wrap">
+            <label className="form-label" htmlFor="vibe-type">
+              {t("type_label")}
+            </label>
+            <select
+              id="vibe-type"
+              className="form-select"
+              value={type}
+              onChange={(e) => setType(e.target.value)}
+              aria-label={t("type_label")}
+            >
+              {typeOptions.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+      </section>
+      <section className="cv-form">
+        <Form mode="create" />
+      </section>
+    </main>
   );
 }

@@ -1,39 +1,92 @@
+.myvibes, .container.myvibes {
+  padding-left: max(16px, env(safe-area-inset-left));
+  padding-right: max(16px, env(safe-area-inset-right));
+  padding-bottom: max(16px, env(safe-area-inset-bottom));
+}
+
+.vibes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+@media (max-width: 768px) {
+  .vibes-grid {
+    grid-template-columns: 1fr;  
+    gap: 12px;
+  }
+}
+
+/* ====== card ====== */
 .myvibe-card {
-  background: white;
+  background: #fff;
   border-radius: 18px;
   box-shadow: 0 2px 12px rgba(40,48,70,0.10);
   padding: 22px 20px 18px;
-  width: 260px;
+
+  width: 100%;
+  max-width: 460px;          
   min-height: 180px;
+  margin-inline: auto;       
+
+  border: 1px solid rgba(0,0,0,0.05);
   cursor: pointer;
   opacity: 1;
-  border: 1px solid rgba(0, 0, 0, 0.05);
+
+  will-change: transform, box-shadow;
   transition:
     transform 0.18s cubic-bezier(.48,.07,.75,.95),
     box-shadow 0.20s cubic-bezier(.48,.07,.75,.95);
+  
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
-.myvibe-card:hover,
-.myvibe-card:focus {
-  transform: translateY(-10px) scale(1.035) rotate(-0.7deg);
-  box-shadow: 0 2px 12px rgba(40,48,70,0.10);  
-  filter: none; 
-  outline: none;
+@media (hover: hover) and (pointer: fine) {
+  .myvibe-card:hover,
+  .myvibe-card:focus {
+    transform: translateY(-8px) scale(1.02) rotate(-0.4deg);
+    box-shadow: 0 12px 40px rgba(65,84,255,0.13), 0 2px 12px rgba(60,80,150,0.12);
+    outline: none;
+  }
+}
+
+
+@media (hover: none) {
+  .myvibe-card:active {
+    transform: scale(0.995);
+  }
 }
 
 .myvibe-card:focus-visible {
   box-shadow:
-    0 12px 40px 0 rgba(65,84,255,0.13),
+    0 12px 40px rgba(65,84,255,0.13),
     0 2px 12px rgba(60,80,150,0.12),
     0 0 0 3px #d6e0ff;
+  outline: none;
 }
 
-/* mobile */
+/* ====== mobile settings ====== */
 @media (max-width: 768px) {
   .myvibe-card {
-    width: 94vw;
-    padding: 16px 8px 13px;
+    padding: 16px 12px 14px;
     font-size: 15px;
     box-shadow: 0 2px 9px rgba(40,48,70,0.10);
+    border-radius: 16px;
+  }
+}
+
+/* узкие экраны (iPhone SE и т.п.) */
+@media (max-width: 360px) {
+  .myvibe-card {
+    padding: 14px 10px 12px;
+    font-size: 14px;
+    border-radius: 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .myvibe-card {
+    transition: none;
   }
 }

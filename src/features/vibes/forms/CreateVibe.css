@@ -1,0 +1,108 @@
+/* контейнер и отступы */
+.create-vibe {
+  padding: clamp(12px, 3vw, 24px);
+  padding-top: calc(env(safe-area-inset-top, 0px) + 12px);
+  max-width: 1020px;
+  margin: 0 auto;
+}
+
+/* sticky header */
+.cv-header {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0 12px;
+  background: color-mix(in oklab, white 90%, transparent);
+  backdrop-filter: saturate(1.2) blur(6px);
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+.cv-header__title {
+  margin: 0;
+  font-weight: 600;
+  font-size: clamp(16px, 4vw, 22px);
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cv-header__left,
+.cv-header__right {
+  display: flex;
+  align-items: center;
+}
+
+.cv-back-btn {
+  padding-left: 10px !important;
+  padding-right: 12px !important;
+}
+
+/* блок выбора типа */
+.cv-type {
+  margin-top: 14px;
+  margin-bottom: 14px;
+}
+
+/* мобильные сегменты */
+.cv-segments {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: max-content;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: thin;
+}
+.cv-segment {
+  border: 1px solid #ddd;
+  border-radius: 999px;
+  padding: 8px 14px;
+  background: #fff;
+  font-size: 14px;
+  line-height: 1;
+  white-space: nowrap;
+}
+.cv-segment.is-active {
+  border-color: #000;
+}
+
+/* десктопный select */
+.cv-select-wrap {
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+/* секция формы */
+.cv-form {
+  margin-top: 10px;
+}
+
+/* чуть меньше боковых отступов на очень узких экранах */
+@media (max-width: 480px) {
+  .create-vibe {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+}
+@media (max-width: 600px) {
+  .cv-header {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    text-align: center;
+    gap: 6px;
+  }
+
+  .cv-header__left {
+    justify-content: flex-start;
+  }
+
+  .cv-header__title {
+    justify-self: center;
+    margin-top: 4px;
+  }
+}

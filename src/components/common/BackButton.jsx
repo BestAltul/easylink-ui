@@ -4,14 +4,33 @@ import { useTranslation } from "react-i18next";
 export default function BackButton({
   to = "/",
   labelKey = "vibe.back",
+  label,
+  ns,
   className = "",
   style = {},
 }) {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  let nsName = ns;
+  let tKey = labelKey;
+
+  if (!nsName) {
+    if (labelKey.includes(":")) {
+      const [fromKeyNs, ...rest] = labelKey.split(":");
+      nsName = fromKeyNs;
+      tKey = rest.join(":") || "back";
+    } else if (labelKey.includes(".")) {
+      const [fromKeyNs, ...rest] = labelKey.split(".");
+      nsName = fromKeyNs;
+      tKey = rest.join(".") || "back";
+    }
+  }
+
+  const { t } = useTranslation(nsName);
+  const text = label ?? t(tKey);
 
   return (
     <button
+      type="button"
       className={`btn btn-outline-secondary d-flex align-items-center ${className}`}
       style={{
         borderRadius: 12,
@@ -21,6 +40,7 @@ export default function BackButton({
         ...style,
       }}
       onClick={() => navigate(to)}
+      aria-label={text}
     >
       <svg
         width="18"
@@ -30,10 +50,12 @@ export default function BackButton({
         strokeWidth="2"
         viewBox="0 0 20 20"
         style={{ marginRight: 6, marginLeft: -3 }}
+        aria-hidden="true"
+        focusable="false"
       >
         <path d="M13 5l-5 5 5 5" />
       </svg>
-      {t(labelKey)}
+      {text}
     </button>
   );
 }

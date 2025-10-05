@@ -1,0 +1,22 @@
+{
+  "name_label": "Nom de l'entreprise",
+  "name_placeholder": "CoffeeSpace",
+  "desc_label": "Description",
+  "desc_placeholder": "Café au centre de Toronto. Le meilleur latte de la ville !",
+  "contacts_label": "Contacts",
+  "no_contacts": "Aucun contact ajouté pour l’instant.",
+  "add_contact": "+ Ajouter un contact",
+  "additional_info": "Informations supplémentaires",
+  "add_info_block": "+ Ajouter un bloc d’informations",
+  "photo_label": "Photo / Logo",
+  "photo_hint": "PNG ou JPG, jusqu’à 2 Mo",
+  "cancel": "Annuler",
+  "creating": "Création...",
+  "create_button": "Créer une carte d’entreprise",
+  "saving": "Enregistrement...",
+  "save_button": "Enregistrer les modifications",
+  "modal_contact_title": "Ajouter un type de contact",
+  "modal_info_title": "Ajouter un bloc d’informations",
+  "modal_cancel": "Annuler",
+  "remove_button_title": "Supprimer"
+}
