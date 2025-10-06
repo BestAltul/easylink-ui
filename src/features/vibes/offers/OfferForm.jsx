@@ -105,24 +105,27 @@ export default function OfferForm() {
           console.log("Raw analytics data:", data);
 
           const chartData = data.map((ev) => ({
-            time: new Date(ev.serverUploadTime).toLocaleString("en-US", {
+            date: new Date(ev.serverUploadTime).toLocaleDateString("en-US", {
+              timeZone: "UTC",
               month: "short",
               day: "numeric",
-              hour: "2-digit",
-              minute: "2-digit",
             }),
             views: 1,
           }));
 
           const aggregated = chartData.reduce((acc, cur) => {
-            const found = acc.find((x) => x.time === cur.time);
+            const found = acc.find((x) => x.date === cur.date);
             if (found) {
               found.views += 1;
             } else {
-              acc.push({ time: cur.time, views: cur.views });
+              acc.push({ date: cur.date, views: cur.views });
             }
             return acc;
           }, []);
+
+          aggregated.sort(
+            (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+          );
 
           setViewsData(aggregated);
         } else {
@@ -223,13 +226,14 @@ export default function OfferForm() {
                     <LineChart data={viewsData}>
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis
-                        dataKey="time"
+                        dataKey="date"
                         label={{
-                          value: "Time",
+                          value: "Date",
                           position: "insideBottom",
                           offset: -5,
                         }}
                       />
+
                       <YAxis
                         label={{
                           value: "Views",
