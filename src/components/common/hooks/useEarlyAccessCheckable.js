@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useAuth } from "../../../context/AuthContext";
 
 export function useEarlyAccessCheckable() {
@@ -7,28 +7,22 @@ export function useEarlyAccessCheckable() {
   const [subscribed, setSubscribed] = useState(false);
   const { user } = useAuth();
 
-  const email = user?.username;
-  const token = user?.token;
+  const checkEarlyAccess = useCallback(async () => {
+    if (!user?.username || !user?.token) return;
 
-  const checkEarlyAccess = async () => {
     setLoading(true);
     setError(null);
-
-    const email = user?.username;
-    const token = user?.token;
-
-    console.log("token from check", token);
 
     try {
       const response = await fetch(
         `/api/v3/interactions/early-access/status?email=${encodeURIComponent(
-          email
+          user.username
         )}`,
         {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${user.token}`,
           },
         }
       );
@@ -38,7 +32,6 @@ export function useEarlyAccessCheckable() {
       }
 
       const result = await response.json();
-
       setSubscribed(result);
     } catch (err) {
       console.error("Early access check error:", err);
@@ -46,7 +39,7 @@ export function useEarlyAccessCheckable() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
 
   return { checkEarlyAccess, loading, error, subscribed, setSubscribed };
 }

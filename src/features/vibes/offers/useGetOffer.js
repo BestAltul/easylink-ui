@@ -4,14 +4,12 @@ export default function useGetOffer(id, token) {
   const [offer, setOffer] = useState(null);
 
   useEffect(() => {
-    if (!id || !token) return;
+    if (!id) return;
 
-    fetch(`/api/v3/offers/${id}`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    })
+    const headers = { "Content-Type": "application/json" };
+    if (token) headers["Authorization"] = `Bearer ${token}`;
+
+    fetch(`/api/v3/offers/${id}`, { headers })
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch");
         return res.json();

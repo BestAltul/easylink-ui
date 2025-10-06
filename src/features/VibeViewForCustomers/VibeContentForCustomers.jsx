@@ -11,7 +11,6 @@ import OfferCard from "../vibes/offers/OfferCard";
 import { trackEvent } from "@/services/amplitude";
 import useItemsByVibeId from "../vibes/catalog/useItemByVibeId";
 
-
 export default function VibeContentForCustomers({
   id,
   name,
@@ -29,7 +28,7 @@ export default function VibeContentForCustomers({
   const token = localStorage.getItem("jwt");
   const navigate = useNavigate();
   const location = useLocation();
-  const offers = useGetOffersByVibeId(id, token);
+  const offers = useGetOffersByVibeId(id);
   const { items, loading: itemsLoading } = useItemsByVibeId(id, token);
 
   const resolveServerUrl = (path) => {
@@ -230,8 +229,8 @@ export default function VibeContentForCustomers({
                             trackEvent("Offer Clicked", {
                               offerId: offer.id,
                               origin: "vibe_view_offers",
-                              ownerVibeId: id,                          
-                              viewerVibeId: subscriberVibeId || null,   
+                              ownerVibeId: id,
+                              viewerVibeId: subscriberVibeId || null,
                               path: window.location.pathname,
                               ts: Date.now(),
                             });
@@ -245,7 +244,7 @@ export default function VibeContentForCustomers({
                             });
                           }}
                         />
-                    ))}
+                      ))}
                   </div>
                 ) : (
                   <div className="alert alert-info text-center">
