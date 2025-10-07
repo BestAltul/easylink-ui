@@ -23,38 +23,47 @@ export default function MainTab({
   setDescription,
 
   contacts = [],
-  onContactChange,     // (index, value)
-  onContactRemove,     // (index)
+  onContactChange, // (index, value)
+  onContactRemove, // (index)
   onOpenContactPicker, // () => void
 
   extraBlocks = [],
-  onBlockChange,       // (index, value) -> void (индекс из ОРИГ массива)
-  onBlockRemove,       // (index) -> void
-  onOpenBlockPicker,   // () => void
+  onBlockChange, // (index, value) -> void (индекс из ОРИГ массива)
+  onBlockRemove, // (index) -> void
+  onOpenBlockPicker, // () => void
 
-  photoFile,
-  setPhotoFile,
+  photo,
+  setPhoto,
 
   onCancel,
 }) {
   const nonHourIndexMap = React.useMemo(
-    () => extraBlocks.reduce((acc, b, i) => {
-      if (!isHoursBlock(b)) acc.push(i);
-      return acc;
-    }, []),
+    () =>
+      extraBlocks.reduce((acc, b, i) => {
+        if (!isHoursBlock(b)) acc.push(i);
+        return acc;
+      }, []),
     [extraBlocks]
   );
 
-  const DAY_KEYS = ["monday","tuesday","wednesday","thursday","friday","saturday","sunday"];
+  const DAY_KEYS = [
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+    "sunday",
+  ];
 
   function looksLikeHoursObject(val) {
     if (!val || typeof val !== "object" || Array.isArray(val)) return false;
-    const keys = Object.keys(val).map(k => k.toLowerCase());
-    return DAY_KEYS.some(d => keys.includes(d));
+    const keys = Object.keys(val).map((k) => k.toLowerCase());
+    return DAY_KEYS.some((d) => keys.includes(d));
   }
 
   function isHoursBlock(b) {
-    const type  = String(b?.type  || "").toLowerCase();
+    const type = String(b?.type || "").toLowerCase();
     const label = String(b?.label || "").toLowerCase();
     if (type === "hours" || label === "hours") return true;
     return looksLikeHoursObject(b?.value);
@@ -62,10 +71,24 @@ export default function MainTab({
 
   function normalizeHours(val) {
     if (typeof val === "string") {
-      try { val = JSON.parse(val); } catch { val = {}; }
+      try {
+        val = JSON.parse(val);
+      } catch {
+        val = {};
+      }
     }
-    const base = { monday:"", tuesday:"", wednesday:"", thursday:"", friday:"", saturday:"", sunday:"" };
-    return (val && typeof val === "object" && !Array.isArray(val)) ? { ...base, ...val } : base;
+    const base = {
+      monday: "",
+      tuesday: "",
+      wednesday: "",
+      thursday: "",
+      friday: "",
+      saturday: "",
+      sunday: "",
+    };
+    return val && typeof val === "object" && !Array.isArray(val)
+      ? { ...base, ...val }
+      : base;
   }
 
   const nonHourBlocks = React.useMemo(
@@ -117,11 +140,10 @@ export default function MainTab({
       </div>
 
       {extraBlocks.map(
-         (b, i) =>
-           isHoursBlock(b) && (
+        (b, i) =>
+          isHoursBlock(b) && (
             <HoursBlock
               key={`hours-${i}`}
-      
               value={normalizeHours(b.value)}
               onChange={(val) => onBlockChange(i, val)}
               onRemove={() => onBlockRemove(i)}
@@ -145,7 +167,7 @@ export default function MainTab({
       {/* photo */}
       <PhotoUploader
         t={t}
-        onFileChange={setPhotoFile}
+        onFileChange={setPhoto}
         labelKey="photo_label"
         hintKey="photo_hint"
       />
@@ -162,7 +184,11 @@ export default function MainTab({
             {t("cancel")}
           </button>
         )}
-        <button type="submit" className="btn btn-primary w-100" disabled={loading}>
+        <button
+          type="submit"
+          className="btn btn-primary w-100"
+          disabled={loading}
+        >
           {loading
             ? mode === "edit"
               ? t("saving")

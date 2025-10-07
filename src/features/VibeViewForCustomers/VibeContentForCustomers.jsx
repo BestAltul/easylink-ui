@@ -15,7 +15,7 @@ export default function VibeContentForCustomers({
   id,
   name,
   description,
-  photoFile,
+  photo,
   contacts,
   type,
   extraBlocks,
@@ -111,7 +111,7 @@ export default function VibeContentForCustomers({
           <div className="tab-content w-100">
             {activeTab === "main" && (
               <div className="tab-pane fade show active">
-                <Avatar name={name} photoFile={photoFile} />
+                <Avatar name={name} photo={photo} />
                 <h3 className="mb-0" style={{ fontWeight: 700 }}>
                   {name || "Your Name"}
                 </h3>
@@ -312,7 +312,7 @@ export default function VibeContentForCustomers({
 
       {type === "PERSONAL" && (
         <div className="w-100">
-          <Avatar name={name} photoFile={photoFile} />
+          <Avatar name={name} photo={photo} />
           <h3 className="mb-0" style={{ fontWeight: 700 }}>
             {name || "Your Name"}
           </h3>

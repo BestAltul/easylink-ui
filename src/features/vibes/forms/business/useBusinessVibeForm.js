@@ -2,27 +2,38 @@ import { useState } from "react";
 import { createVibe } from "@/api/vibeApi";
 import parseFields from "@/data/parseFields";
 
-// локальные утилиты
 const EMPTY_HOURS = {
-  monday: "", tuesday: "", wednesday: "",
-  thursday: "", friday: "", saturday: "", sunday: ""
+  monday: "",
+  tuesday: "",
+  wednesday: "",
+  thursday: "",
+  friday: "",
+  saturday: "",
+  sunday: "",
 };
 
 const isHoursKey = (s) => String(s || "").toLowerCase() === "hours";
 
-export function useBusinessVibeForm({ navigate, initialData = {}, mode = "create", onSave }) {
-  // 1) берём всё из fieldsDTO, если оно есть
-  const parsed = initialData.fieldsDTO ? parseFields(initialData.fieldsDTO) : {};
+export function useBusinessVibeForm({
+  navigate,
+  initialData = {},
+  mode = "create",
+  onSave,
+}) {
+  const parsed = initialData.fieldsDTO
+    ? parseFields(initialData.fieldsDTO)
+    : {};
 
   const [name, setName] = useState(initialData.name || parsed.name || "");
-  const [description, setDescription] = useState(initialData.description || parsed.description || "");
-  const [photoFile, setPhotoFile] = useState(initialData.photo || null);
+  const [description, setDescription] = useState(
+    initialData.description || parsed.description || ""
+  );
+  const [photo, setPhoto] = useState(initialData.photo || null);
 
   const [contacts, setContacts] = useState(
     initialData.contacts || parsed.contacts || []
   );
 
-  // важное место: extraBlocks из parseFields уже содержит hours как объект
   const [extraBlocks, setExtraBlocks] = useState(
     initialData.extraBlocks || parsed.extraBlocks || []
   );
@@ -52,18 +63,15 @@ export function useBusinessVibeForm({ navigate, initialData = {}, mode = "create
 
   // ===== Info blocks (incl. Hours) =====
   const hasHours = () =>
-    extraBlocks.some(
-      (b) => isHoursKey(b.type) || isHoursKey(b.label)
-    );
+    extraBlocks.some((b) => isHoursKey(b.type) || isHoursKey(b.label));
 
-  // универсальный добавлятель инфо-блока (вызывай его из onSelect модалки)
   const addInfoBlock = (block) => {
     const key = String(block?.key || "").toLowerCase();
     const label = block?.label || "";
 
     const wantsHours = isHoursKey(key) || isHoursKey(label);
     if (wantsHours) {
-      if (hasHours()) return; // не добавляем второй раз
+      if (hasHours()) return;
       setExtraBlocks((prev) => [
         ...prev,
         { type: "hours", label: "Hours", value: { ...EMPTY_HOURS } },
@@ -83,7 +91,6 @@ export function useBusinessVibeForm({ navigate, initialData = {}, mode = "create
   };
 
   const handleBlockChange = (i, val) => {
-    // val может быть строкой (обычные блоки) или объектом (hours)
     setExtraBlocks((prev) => {
       const next = [...prev];
       next[i] = { ...next[i], value: val };
@@ -99,9 +106,9 @@ export function useBusinessVibeForm({ navigate, initialData = {}, mode = "create
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // собираем fieldsDTO: контакты + инфо-блоки
+    const token = localStorage.getItem("jwt");
+
     const fieldsDTO = [
-      // контакты (как раньше)
       ...contacts.map((c) => ({
         ...(c.id ? { id: c.id } : {}),
         type: c.type,
@@ -109,28 +116,46 @@ export function useBusinessVibeForm({ navigate, initialData = {}, mode = "create
         label: c.type,
       })),
 
-      // инфо-блоки
       ...extraBlocks.map((b) => {
         const isHours = isHoursKey(b.type) || isHoursKey(b.label);
-        const rawValue = isHours ? (b.value || EMPTY_HOURS) : b.value;
+        const rawValue = isHours ? b.value || EMPTY_HOURS : b.value;
 
         return {
           ...(b.id ? { id: b.id } : {}),
-          type: isHours ? "hours" : (b.type || "custom"),
+          type: isHours ? "hours" : b.type || "custom",
           label: b.label || (isHours ? "Hours" : "Custom"),
-          // важное: сериализуем объект часов в строку JSON
-          value: typeof rawValue === "object" ? JSON.stringify(rawValue) : rawValue,
+
+          value:
+            typeof rawValue === "object" ? JSON.stringify(rawValue) : rawValue,
         };
       }),
     ];
+
+    let photoUrl = initialData.photo || null;
+
+    if (photo instanceof File) {
+      const formData = new FormData();
+      formData.append("file", photo);
+
+      const uploadRes = await fetch("/api/v3/upload", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
+
+      if (!uploadRes.ok) throw new Error("Photo upload failed");
+      photoUrl = await uploadRes.text();
+    }
 
     const dto = {
       id: initialData.id,
       name,
       description,
       type: "BUSINESS",
+      photo: photoUrl,
       fieldsDTO,
     };
+    console.log("2 DTO before save:", dto);
 
     try {
       setLoading(true);
@@ -151,13 +176,20 @@ export function useBusinessVibeForm({ navigate, initialData = {}, mode = "create
 
   return {
     // state
-    name, setName,
-    description, setDescription,
-    photoFile, setPhotoFile,
-    contacts, setContacts,
-    extraBlocks, setExtraBlocks,
-    showModal, setShowModal,
-    showBlockModal, setShowBlockModal,
+    name,
+    setName,
+    description,
+    setDescription,
+    photo,
+    setPhoto,
+    contacts,
+    setContacts,
+    extraBlocks,
+    setExtraBlocks,
+    showModal,
+    setShowModal,
+    showBlockModal,
+    setShowBlockModal,
     loading,
 
     // contacts api

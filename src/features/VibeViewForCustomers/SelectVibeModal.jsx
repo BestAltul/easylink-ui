@@ -37,9 +37,7 @@ export default function SelectVibeModal({
             >
               <img
                 src={
-                  vibe.photoFile
-                    ? `/uploads/${vibe.photoFile}`
-                    : "/default-avatar.png"
+                  vibe.photo ? `/uploads/${vibe.photo}` : "/default-avatar.png"
                 }
                 alt="avatar"
                 style={{
