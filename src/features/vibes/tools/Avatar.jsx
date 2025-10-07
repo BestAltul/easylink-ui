@@ -1,5 +1,8 @@
 function Avatar({ name, photo }) {
-  const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8080";
+  //const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8080";
+  const API_BASE =
+    import.meta.env.VITE_API_URL?.replace(/\/$/, "") || window.location.origin;
+
   let src = null;
 
   if (photo instanceof File) {
