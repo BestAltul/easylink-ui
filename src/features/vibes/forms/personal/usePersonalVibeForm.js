@@ -20,13 +20,7 @@ export function usePersonalVibeForm({
 
   const addContact = (type) => {
     if (contacts.some((c) => c.type === type)) return setShowModal(false);
-    setContacts([
-      ...contacts,
-      {
-        type,
-        value: "",
-      },
-    ]);
+    setContacts([...contacts, { type, value: "" }]);
     setShowModal(false);
   };
 
@@ -37,9 +31,7 @@ export function usePersonalVibeForm({
   };
 
   const removeContact = (i) => {
-    const updated = [...contacts];
-    updated.splice(i, 1);
-    setContacts(updated);
+    setContacts((prev) => prev.filter((_, idx) => idx !== i));
   };
 
   const handleBlockChange = (i, val) => {
@@ -49,40 +41,50 @@ export function usePersonalVibeForm({
   };
 
   const removeBlock = (i) => {
-    const updated = [...extraBlocks];
-    updated.splice(i, 1);
-    setExtraBlocks(updated);
+    setExtraBlocks((prev) => prev.filter((_, idx) => idx !== i));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const fieldsDTO = [
-      ...contacts.map((c) => {
-        const dto = {
-          type: c.type,
-          value: c.value,
-          label: c.type,
-        };
-        if (c.id) dto.id = c.id;
-        return dto;
-      }),
-      ...extraBlocks.map((b) => {
-        const dto = {
-          type: b.type,
-          value: b.value,
-          label: b.label || null,
-        };
-        if (b.id) dto.id = b.id;
-        return dto;
-      }),
+      ...contacts.map((c) => ({
+        ...(c.id ? { id: c.id } : {}),
+        type: c.type,
+        value: c.value,
+        label: c.type,
+      })),
+      ...extraBlocks.map((b) => ({
+        ...(b.id ? { id: b.id } : {}),
+        type: b.type,
+        value: b.value,
+        label: b.label || null,
+      })),
     ];
+
+    let photoUrl = initialData.photo || null;
+
+    if (photo instanceof File) {
+      const token = localStorage.getItem("jwt");
+      const formData = new FormData();
+      formData.append("file", photo);
+
+      const uploadRes = await fetch("/api/v3/upload", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
+
+      if (!uploadRes.ok) throw new Error("Photo upload failed");
+      photoUrl = await uploadRes.text();
+    }
 
     const dto = {
       id: initialData.id,
       name,
       description,
       type: "PERSONAL",
+      photo: photoUrl,
       fieldsDTO,
     };
 
@@ -98,6 +100,7 @@ export function usePersonalVibeForm({
       }
     } catch (err) {
       alert("Error saving Vibe");
+      console.error(err);
     } finally {
       setLoading(false);
     }
