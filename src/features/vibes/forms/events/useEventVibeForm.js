@@ -1,10 +1,15 @@
 import { useState } from "react";
 import { createVibe } from "@/api/vibeApi";
 
-export function useEventVibeForm({ navigate, initialData = {}, mode = "create", onSave }) {
+export function useEventVibeForm({
+  navigate,
+  initialData = {},
+  mode = "create",
+  onSave,
+}) {
   const [name, setName] = useState(initialData.name || "");
   const [description, setDescription] = useState(initialData.description || "");
-  const [photoFile, setPhotoFile] = useState(initialData.photo || null);
+  const [photo, setPhoto] = useState(initialData.photo || null);
   const [contacts, setContacts] = useState(initialData.contacts || []);
   const [extraBlocks, setExtraBlocks] = useState(initialData.extraBlocks || []);
   const [showModal, setShowModal] = useState(false);
@@ -63,17 +68,17 @@ export function useEventVibeForm({ navigate, initialData = {}, mode = "create", 
       id: initialData.id,
       name,
       description,
-      type: "OTHER", 
+      type: "OTHER",
       fieldsDTO,
     };
 
     try {
       setLoading(true);
       if (mode === "edit" && onSave) {
-        await onSave(dto); 
+        await onSave(dto);
       } else {
         const token = localStorage.getItem("jwt");
-        await createVibe(dto, token); 
+        await createVibe(dto, token);
         alert("Vibe created!");
         navigate("/my-vibes");
       }
@@ -89,8 +94,8 @@ export function useEventVibeForm({ navigate, initialData = {}, mode = "create", 
     setName,
     description,
     setDescription,
-    photoFile,
-    setPhotoFile,
+    photo,
+    setPhoto,
     contacts,
     setContacts,
     showModal,

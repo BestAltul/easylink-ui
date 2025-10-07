@@ -1,4 +1,17 @@
-function Avatar({ name, photoFile }) {
+function Avatar({ name, photo }) {
+  const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8080";
+  let src = null;
+
+  if (photo instanceof File) {
+    src = URL.createObjectURL(photo);
+  } else if (typeof photo === "string") {
+    if (photo.startsWith("/uploads")) {
+      src = `${API_BASE}${photo}`;
+    } else {
+      src = photo;
+    }
+  }
+
   return (
     <div
       style={{
@@ -14,9 +27,9 @@ function Avatar({ name, photoFile }) {
         marginTop: -8,
       }}
     >
-      {photoFile ? (
+      {src ? (
         <img
-          src={URL.createObjectURL(photoFile)}
+          src={src}
           alt="avatar"
           style={{ width: "100%", height: "100%", objectFit: "cover" }}
         />
@@ -28,4 +41,5 @@ function Avatar({ name, photoFile }) {
     </div>
   );
 }
+
 export default Avatar;

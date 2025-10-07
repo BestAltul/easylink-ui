@@ -2,7 +2,6 @@
 // File: src/features/vibes/business/BusinessVibeForm/index.jsx
 // Orchestrator component: owns routing, tabs, data hooks, and modals.
 // ==============================
-console.log("[BusinessVibeForm] mounted with tabs");
 
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -15,7 +14,7 @@ import iconMap from "@/data/contactIcons";
 import useItemsByVibeId from "@/features/vibes/catalog/useItemByVibeId";
 import useGetOffersByVibeId from "@/features/vibes/offers/useGetOfferByVibeId";
 
-import { useBusinessVibeForm } from "./useBusinessVibeForm"; 
+import { useBusinessVibeForm } from "./useBusinessVibeForm";
 
 import TabNav from "./ui/TabNav.jsx";
 import MainTab from "./tabs/MainTab.jsx";
@@ -53,8 +52,8 @@ export default function BusinessVibeForm({
     setName,
     description,
     setDescription,
-    photoFile,
-    setPhotoFile,
+    photo,
+    setPhoto,
     contacts,
     setContacts,
     extraBlocks,
@@ -90,7 +89,11 @@ export default function BusinessVibeForm({
       style={{ maxWidth: 1200, margin: "0 auto" }}
     >
       <div style={{ flex: "1 1 500px", maxWidth: 540, minWidth: 320 }}>
-        <form className="bg-light p-4 rounded-4 shadow" style={{ width: "100%" }} onSubmit={handleSubmit}>
+        <form
+          className="bg-light p-4 rounded-4 shadow"
+          style={{ width: "100%" }}
+          onSubmit={handleSubmit}
+        >
           <TabNav
             active={activeTab}
             onChange={handleTabChange}
@@ -113,13 +116,13 @@ export default function BusinessVibeForm({
               contacts={contacts}
               onContactChange={handleContactChange}
               onContactRemove={removeContact}
-              onOpenContactPicker={() => setShowModal(true)}   // ← здесь
+              onOpenContactPicker={() => setShowModal(true)} // ← здесь
               extraBlocks={extraBlocks}
               onBlockChange={handleBlockChange}
               onBlockRemove={removeBlock}
               onOpenBlockPicker={() => setShowBlockModal(true)} // ← и здесь
-              photoFile={photoFile}
-              setPhotoFile={setPhotoFile}
+              photo={photo}
+              setPhoto={setPhoto}
               onCancel={onCancel}
               CONTACT_TYPES={CONTACT_TYPES}
               INFO_BLOCK_TYPES={INFO_BLOCK_TYPES}
@@ -199,22 +202,33 @@ export default function BusinessVibeForm({
             extraBlocks={extraBlocks}
             onClose={() => setShowBlockModal(false)}
             onSelect={(block) => {
-              const isHours = String(block.key).toLowerCase() === "hours" || String(block.label).toLowerCase() === "hours";
-              
-              if (isHours && extraBlocks.some(b =>
-                String(b.type).toLowerCase() === "hours" ||
-                String(b.label).toLowerCase() === "hours"
-              )) {
+              const isHours =
+                String(block.key).toLowerCase() === "hours" ||
+                String(block.label).toLowerCase() === "hours";
+
+              if (
+                isHours &&
+                extraBlocks.some(
+                  (b) =>
+                    String(b.type).toLowerCase() === "hours" ||
+                    String(b.label).toLowerCase() === "hours"
+                )
+              ) {
                 setShowBlockModal(false);
                 return;
               }
 
               const initHours = {
-                monday: "", tuesday: "", wednesday: "",
-                thursday: "", friday: "", saturday: "", sunday: ""
+                monday: "",
+                tuesday: "",
+                wednesday: "",
+                thursday: "",
+                friday: "",
+                saturday: "",
+                sunday: "",
               };
 
-              setExtraBlocks(prev => ([
+              setExtraBlocks((prev) => [
                 ...prev,
                 {
                   type: isHours ? "hours" : block.key,
@@ -222,7 +236,7 @@ export default function BusinessVibeForm({
                   value: isHours ? initHours : "",
                   placeholder: isHours ? undefined : block.placeholder,
                 },
-              ]));
+              ]);
               setShowBlockModal(false);
             }}
           />

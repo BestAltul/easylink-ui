@@ -8,7 +8,7 @@ export default function VibePreview({
   id,
   name,
   description,
-  photoFile,
+  photo,
   contacts,
   type,
   extraBlocks,
@@ -57,7 +57,6 @@ export default function VibePreview({
           <BsShareFill size={20} style={{ color: "#627bf7" }} />
         </button>
       </div>
-
       {/* Share modal */}
       <ShareModal
         show={showShare}
@@ -66,13 +65,12 @@ export default function VibePreview({
         copied={copied}
         onCopy={handleCopy}
       />
-
       {/* Main content */}
       <VibeContent
         id={id}
         name={name}
         description={description}
-        photoFile={photoFile}
+        photo={photo}
         contacts={contacts}
         type={type}
         extraBlocks={extraBlocks}

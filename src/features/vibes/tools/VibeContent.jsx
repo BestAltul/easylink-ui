@@ -10,7 +10,7 @@ export default function VibeContent({
   id,
   name,
   description,
-  photoFile,
+  photo,
   contacts,
   type,
   extraBlocks,
@@ -28,7 +28,9 @@ export default function VibeContent({
 
   // красивый лейбл типа (BUSINESS -> Business -> перевод types.business)
   const slug = (type || "").toString().toLowerCase();
-  const pretty = slug ? slug.charAt(0).toUpperCase() + slug.slice(1) : t("default_type");
+  const pretty = slug
+    ? slug.charAt(0).toUpperCase() + slug.slice(1)
+    : t("default_type");
   const typeLabel = slug ? t(`types.${slug}`, pretty) : t("default_type");
 
   const origin =
@@ -55,7 +57,7 @@ export default function VibeContent({
         </div>
       </div>
 
-      <Avatar name={name} photoFile={photoFile} />
+      <Avatar name={name} photo={photo} />
       <h3 className="mb-0" style={{ fontWeight: 700 }}>
         {name || t("your_name")}
       </h3>
@@ -80,7 +82,9 @@ export default function VibeContent({
           textAlign: "center",
         }}
       >
-        {description || <span style={{ color: "#bbb" }}>{t("default_description")}</span>}
+        {description || (
+          <span style={{ color: "#bbb" }}>{t("default_description")}</span>
+        )}
       </div>
 
       <div

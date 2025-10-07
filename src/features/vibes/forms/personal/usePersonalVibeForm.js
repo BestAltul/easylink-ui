@@ -10,7 +10,7 @@ export function usePersonalVibeForm({
 }) {
   const [name, setName] = useState(initialData.name || "");
   const [description, setDescription] = useState(initialData.description || "");
-  const [photoFile, setPhotoFile] = useState(initialData.photo || null);
+  const [photo, setPhoto] = useState(initialData.photo || null);
   const [contacts, setContacts] = useState(initialData.contacts || []);
   const [extraBlocks, setExtraBlocks] = useState(initialData.extraBlocks || []);
   const [showModal, setShowModal] = useState(false);
@@ -108,8 +108,8 @@ export function usePersonalVibeForm({
     setName,
     description,
     setDescription,
-    photoFile,
-    setPhotoFile,
+    photo,
+    setPhoto,
     contacts,
     setContacts,
     showModal,

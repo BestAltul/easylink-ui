@@ -10,7 +10,10 @@ import ExtraBlocksGeneric from "@/components/common/formBlocks/ExtraBlocksGeneri
 import PhotoUploader from "@/components/common/formBlocks/PhotoUploader";
 
 // preview
-import { VibePreviewPane, MobilePreviewModal } from "@/components/common/preview";
+import {
+  VibePreviewPane,
+  MobilePreviewModal,
+} from "@/components/common/preview";
 
 // data
 import CONTACT_TYPES from "@/data/contactTypes";
@@ -30,24 +33,45 @@ export default function EventVibeForm({
   const [showMobilePreview, setShowMobilePreview] = React.useState(false);
 
   const {
-    name, setName,
-    description, setDescription,
-    photoFile, setPhotoFile,
-    contacts, setContacts,
-    showModal, setShowModal,
-    extraBlocks, setExtraBlocks,
-    showBlockModal, setShowBlockModal,
+    name,
+    setName,
+    description,
+    setDescription,
+    photo,
+    setPhoto,
+    contacts,
+    setContacts,
+    showModal,
+    setShowModal,
+    extraBlocks,
+    setExtraBlocks,
+    showBlockModal,
+    setShowBlockModal,
     loading,
-    addContact, handleContactChange, removeContact,
-    handleBlockChange, removeBlock,
+    addContact,
+    handleContactChange,
+    removeContact,
+    handleBlockChange,
+    removeBlock,
     handleSubmit,
   } = useEventVibeForm({ navigate, initialData, mode, onSave });
 
-  const INFO_BLOCKS = React.useMemo(() => ([
-    { key: "date",      label: t("info.date"),      placeholder: t("info.date_ph") },
-    { key: "location",  label: t("info.location"),  placeholder: t("info.location_ph") },
-    { key: "organizer", label: t("info.organizer"), placeholder: t("info.organizer_ph") },
-  ]), [t]);
+  const INFO_BLOCKS = React.useMemo(
+    () => [
+      { key: "date", label: t("info.date"), placeholder: t("info.date_ph") },
+      {
+        key: "location",
+        label: t("info.location"),
+        placeholder: t("info.location_ph"),
+      },
+      {
+        key: "organizer",
+        label: t("info.organizer"),
+        placeholder: t("info.organizer_ph"),
+      },
+    ],
+    [t]
+  );
 
   return (
     <div
@@ -129,7 +153,7 @@ export default function EventVibeForm({
           {/* photo */}
           <PhotoUploader
             t={t}
-            onFileChange={setPhotoFile}
+            onFileChange={setPhoto}
             labelKey="photo_label"
             hintKey="photo_hint"
           />
@@ -152,8 +176,12 @@ export default function EventVibeForm({
               disabled={loading}
             >
               {loading
-                ? (mode === "edit" ? t("saving") : t("creating"))
-                : (mode === "edit" ? t("save_button") : t("create_button"))}
+                ? mode === "edit"
+                  ? t("saving")
+                  : t("creating")
+                : mode === "edit"
+                ? t("save_button")
+                : t("create_button")}
             </button>
           </div>
         </form>
@@ -236,7 +264,7 @@ export default function EventVibeForm({
         <VibePreviewPane
           name={name}
           description={description}
-          photoFile={photoFile}
+          photo={photo}
           contacts={contacts}
           extraBlocks={extraBlocks}
           type="OTHER"
@@ -250,7 +278,7 @@ export default function EventVibeForm({
         t={t}
         name={name}
         description={description}
-        photoFile={photoFile}
+        photo={photo}
         contacts={contacts}
         extraBlocks={extraBlocks}
         type="OTHER"
