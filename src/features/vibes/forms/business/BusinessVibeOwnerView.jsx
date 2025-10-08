@@ -118,7 +118,7 @@ export default function BusinessVibeOwnerView({
                 publicCode,
                 location: "VibePreview",
               });
-              setShowShare(true);
+              handleOpen();
             }}
           >
             <BsShareFill size={20} style={{ color: "#627bf7" }} />

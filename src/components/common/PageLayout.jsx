@@ -8,14 +8,6 @@ export default function PageLayout({ title, children, showBackButton = true }) {
   return (
     <div className="container py-5" style={{ maxWidth: 900 }}>
       <div className="d-flex align-items-center mb-4">
-        {showBackButton && (
-          <button
-            className="btn btn-outline-secondary"
-            onClick={() => navigate(-1)}
-          >
-            ← Back
-          </button>
-        )}
         <h2 className="fw-bold mx-auto mb-0" style={{ letterSpacing: ".02em" }}>
           {title}
         </h2>
