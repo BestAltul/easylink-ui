@@ -19,7 +19,7 @@ export default function AccessCTA({
         aria-label={t("subscribed")}
         title={t("subscribed")}
       >
-        <span className="access-cta__icon" aria-hidden>🔓</span>
+        <span className="access-cta__icon" aria-hidden>🚀</span>
         <span className="access-cta__label">{t("subscribed")}</span>
       </div>
     );
@@ -37,7 +37,8 @@ export default function AccessCTA({
     >
       <span className="access-cta__spark" aria-hidden>💎</span>
       <span className="access-cta__label">{t("join_now")}</span>
-      <span className="access-cta__badge">{t("lifetime_free_first100")}</span>
+      <span className="access-cta__badge">{t("lifetime_free_first100_1")}</span>
+      <span className="access-cta__badge">{t("lifetime_free_first100_2")}</span>
     </button>
   );
 }
