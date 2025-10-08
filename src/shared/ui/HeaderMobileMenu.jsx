@@ -11,7 +11,7 @@ function HeaderMobileMenu({
   handleLogout,
   trackEvent,
 }) {
-  const { t } = useTranslation("header"); // ✅ берём строки из ns "header"
+  const { t } = useTranslation("header"); 
 
   if (!isOpen) return null;
 
@@ -121,7 +121,7 @@ function HeaderMobileMenu({
         </nav>
 
         <div className="mobile-menu-footer">
-          <LanguageSwitcher />
+          <LanguageSwitcher dropUp /> 
         </div>
       </div>
     </div>

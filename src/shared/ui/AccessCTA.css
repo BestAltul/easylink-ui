@@ -1,0 +1,104 @@
+.access-cta {
+  --bg: #ff0a5c;
+  --bg-hover: #e00954; 
+  --text: #fff;
+  --shadow: 0 8px 20px rgba(255, 10, 92, 0.25); 
+
+  display: inline-flex;
+  align-items: center;
+  gap: .55rem;
+  padding: .5rem .9rem;
+  border-radius: 999px;
+  background: var(--bg);
+  color: var(--text);
+  font-weight: 600;
+  font-size: .92rem;
+  line-height: 1;
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(255,255,255,.15);
+  transition: transform .12s ease, box-shadow .12s ease, background .12s ease, opacity .2s ease;
+  cursor: pointer;
+  outline: none;
+  white-space: nowrap;
+  animation: cta-pop .35s ease-out;
+}
+
+.access-cta:hover {
+  background: var(--bg-hover);
+  transform: translateY(-1px);
+}
+
+.access-cta:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 12px rgba(255, 10, 92, 0.25);
+}
+
+.access-cta:focus-visible {
+  box-shadow: 0 0 0 3px rgba(255, 10, 92, 0.3), var(--shadow);
+}
+
+.access-cta[disabled] {
+  opacity: .7;
+  cursor: progress;
+}
+
+/* emoji */
+.access-cta__spark {
+  font-size: .95rem;
+  transform-origin: center;
+  animation: spark-pulse 1.2s ease-in-out 1;
+}
+
+/*  first100 badge */
+.access-cta__badge {
+  background: #fff;
+  color: #ff0a5c;
+  border-radius: 999px;
+  padding: .22rem .5rem;
+  font-size: .72rem;
+  font-weight: 700;
+  box-shadow: 0 2px 6px rgba(255, 10, 92, 0.25);
+}
+
+/* subscribed */
+.access-cta--subscribed {
+  --bg: #20c574;
+  --bg-hover: #17a861;
+  box-shadow: 0 8px 20px rgba(32,197,116,0.25);
+  cursor: default;
+}
+
+.access-cta--subscribed .access-cta__dot {
+  width: .55rem;
+  height: .55rem;
+  display: inline-block;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: inset 0 0 0 4px #20c574;
+}
+
+.access-cta--subscribed .access-cta__label {
+  font-weight: 700;
+}
+
+/* animations */
+@keyframes cta-pop {
+  from { transform: scale(.96); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+@keyframes spark-pulse {
+  0% { transform: rotate(0deg) scale(1); opacity: .9;}
+  40% { transform: rotate(12deg) scale(1.12); opacity: 1;}
+  100% { transform: rotate(0deg) scale(1); opacity: .95;}
+}
+
+@media (max-width: 860px) {
+  .access-cta { padding: .48rem .72rem; font-size: .86rem; }
+  .access-cta__badge { display: none; }
+}
+
+@media (max-width: 560px) {
+  .access-cta__label { font-weight: 700; }
+  .access-cta__spark { margin-right: 0; }
+}
