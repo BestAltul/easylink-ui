@@ -84,10 +84,13 @@
   font-weight: 700;
 }
 
-.access-cta--subscribed:hover {
-  background: var(--bg-hover);
-  box-shadow: var(--shadow);
+.access-cta--subscribed {
+  --bg: #20c574;
+  --bg-hover: #17a861;
+  --shadow: 0 8px 20px rgba(32,197,116,0.25);
+  --ring:   rgba(32,197,116,0.30);
 }
+
 
 /* animations */
 @keyframes cta-pop {
@@ -111,14 +114,3 @@
   .access-cta__spark { margin-right: 0; }
 }
 
-.access-cta {
-  --shadow: 0 8px 20px rgba(255, 10, 92, 0.25);
-  --ring:   rgba(255, 10, 92, 0.28);
-}
-
-.access-cta--subscribed {
-  --bg: #20c574;
-  --bg-hover: #17a861;
-  --shadow: 0 8px 20px rgba(32,197,116,0.25);
-  --ring:   rgba(32,197,116,0.30);
-}
