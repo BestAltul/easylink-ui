@@ -10,6 +10,7 @@ import Avatar from "@/features/vibes/tools/Avatar";
 import HoursBlock from "@/features/vibes/tools/HoursBlock";
 import ContactButton from "@/features/vibes/tools/ContactButton";
 import ShareModal from "@/features/vibes/tools/ShareModal";
+import useShareModal from "@/components/common/hooks/useShareModal";
 import MenuTab from "@/features/vibes/forms/business/tabs/MenuTab";
 
 import useGetOffersByVibeId from "@/features/vibes/offers/useGetOfferByVibeId";
@@ -92,16 +93,15 @@ export default function BusinessVibeOwnerView({
     }
   }, [location.search]);
 
-  // ===== Share button + modal (как в VibePreview) =====
-  const [showShare, setShowShare] = useState(false);
-  const [copied, setCopied] = useState(false);
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(shareUrl);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1500);
-    } catch {}
-  };
+  // ===== Share button + modal (just as in VibePreview) =====
+  const {
+    showShare,
+    copied,
+    handleCopy,
+    handleOpen,
+    handleClose,
+    ShareModalProps
+  } = useShareModal(shareUrl, id, "VibeContentForCustomers");
 
   return (
     <div className="d-flex flex-column align-items-center w-100">
@@ -126,7 +126,7 @@ export default function BusinessVibeOwnerView({
         </div>
       </div>
 
-      {/* Visibility + Share code (тот же подход, что в VibeContent) */}
+      {/* Visibility + Share code (same as в VibeContent) */}
       <div className="mb-3 w-100 px-3">
         <div className="d-flex align-items-center gap-3">
           <div className="d-flex align-items-center gap-2">
@@ -349,13 +349,7 @@ export default function BusinessVibeOwnerView({
         )}
       </div>
       {/* Share modal */}
-      <ShareModal
-        show={showShare}
-        onClose={() => setShowShare(false)}
-        shareUrl={shareUrl}
-        copied={copied}
-        onCopy={handleCopy}
-      />
+      <ShareModal {...ShareModalProps} />
     </div>
   );
 }
