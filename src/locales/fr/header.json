@@ -6,6 +6,7 @@
   "about": "À propos",
   "review": "Avis",
   "log_out": "Se déconnecter",
-  "early_subscribtion": "REJOIGNEZ-NOUS",
-  "lifetime_offer": "Seuls les 100 premiers utilisateurs bénéficieront d’un abonnement gratuit à vie"
+  "join_now": "Premium",
+  "lifetime_free_first100": "Accès à vie • 100 premiers utilisateurs",
+  "subscribed": "Abonné"
 }

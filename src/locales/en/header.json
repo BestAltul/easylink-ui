@@ -6,6 +6,7 @@
   "about": "About",
   "review": "Review",
   "log_out": "Log Out",
-  "early_subscribtion": "JOIN NOW",
-  "lifetime_offer": "Only first 100 users get lifetime free subscription"
+  "join_now": "Premium",
+  "lifetime_free_first100": "Lifetime Free • First 100 users",
+  "subscribed": "Subscribed"
 }

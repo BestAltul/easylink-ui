@@ -3,30 +3,20 @@ import { useTranslation } from "react-i18next";
 import ReactCountryFlag from "react-country-flag";
 
 const LANGUAGES = [
-  {
-    code: "en",
-    label: "English",
-    flag: <ReactCountryFlag countryCode="GB" svg style={{ width: "1.3em", height: "1.3em", marginRight: 6 }} />
-  },
-  {
-    code: "ru",
-    label: "Русский",
-    flag: <ReactCountryFlag countryCode="RU" svg style={{ width: "1.3em", height: "1.3em", marginRight: 6 }} />
-  },
-  {
-    code: "fr",
-    label: "Français",
-    flag: <ReactCountryFlag countryCode="FR" svg style={{ width: "1.3em", height: "1.3em", marginRight: 6 }} />
-  }
+  { code: "en", label: "English",  flag: <ReactCountryFlag countryCode="GB" svg style={{ width: "1.3em", height: "1.3em", marginRight: 6 }} /> },
+  { code: "ru", label: "Русский",  flag: <ReactCountryFlag countryCode="RU" svg style={{ width: "1.3em", height: "1.3em", marginRight: 6 }} /> },
+  { code: "fr", label: "Français", flag: <ReactCountryFlag countryCode="FR" svg style={{ width: "1.3em", height: "1.3em", marginRight: 6 }} /> },
 ];
 
-
-export default function LanguageSwitcher() {
+export default function LanguageSwitcher({ dropUp = false }) {
   const { i18n } = useTranslation();
   const [open, setOpen] = React.useState(false);
-
-  // Current Language
   const currentLang = LANGUAGES.find(l => l.code === i18n.language) || LANGUAGES[0];
+
+  // позиционирование меню: вверх или вниз
+  const menuPositionStyle = dropUp
+    ? { bottom: 40, top: "auto", marginBottom: 8 } // ⬆️ вверх от кнопки
+    : { top: 40, bottom: "auto", marginTop: 8 };   // ⬇️ вниз от кнопки
 
   return (
     <div className="dropdown" style={{ minWidth: 80, marginLeft: 12, position: "relative" }}>
@@ -45,12 +35,13 @@ export default function LanguageSwitcher() {
       >
         {currentLang.flag} {currentLang.label}
       </button>
+
       {open && (
         <div
           className="dropdown-menu show"
+          role="menu"
           style={{
             position: "absolute",
-            top: 40,
             left: 0,
             minWidth: 130,
             borderRadius: 14,
@@ -58,7 +49,8 @@ export default function LanguageSwitcher() {
             zIndex: 1000,
             padding: 0,
             background: "#fff",
-            overflow: "hidden"
+            overflow: "hidden",
+            ...menuPositionStyle
           }}
         >
           {LANGUAGES.map(lang => (
@@ -71,12 +63,15 @@ export default function LanguageSwitcher() {
                 padding: "8px 16px",
                 background: i18n.language === lang.code ? "#eef2ff" : "#fff",
                 border: "none",
-                cursor: "pointer"
+                cursor: "pointer",
+                width: "100%",
+                textAlign: "left"
               }}
               onClick={() => {
                 i18n.changeLanguage(lang.code);
                 setOpen(false);
               }}
+              role="menuitem"
             >
               {lang.flag} {lang.label}
             </button>
