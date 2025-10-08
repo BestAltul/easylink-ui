@@ -35,7 +35,7 @@ function SignUp() {
 
   return (
     <section className="container mt-5 mb-5">
-      <div className="mx-auto" style={{ maxWidth: 1500, minHeight: 700, padding: "24px 0" }}>
+      <div className="mx-auto" style={{ maxWidth: 1500, padding: "24px 0" }}>
         <div className="d-flex flex-column flex-lg-row justify-content-center align-items-start gap-5">
           <SidebarSteps
             step={form.step}

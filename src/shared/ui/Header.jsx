@@ -8,6 +8,7 @@ import { useEarlyAccessCheckable } from "@/components/common/hooks/useEarlyAcces
 import { trackEvent } from "@/services/amplitude";
 import "./Header.css";
 import HeaderMobileMenu from "./HeaderMobileMenu";
+import AccessCTA from "./AccessCTA"; 
 
 function Header() {
   const { isAuthenticated, logout } = useAuth();
@@ -55,67 +56,35 @@ function Header() {
               <span>YMK</span>
             </Link>
 
-            <div className={`early-access-bubble ${subscribed ? "subscribed-green" : ""}`}>
-              <div className="early-access-text">
-                {subscribed ? `✅ ${t("subscribed")}` : t("lifetime_offer")}
+            <AccessCTA
+              className="header__access"
+              subscribed={subscribed}
+              loading={loadingSubscribe}
+              onClick={() => (isAuthenticated ? requestEarlyAccess() : navigate("/signin"))}
+            />
+
+            <div className="header__right">
+              <nav className="nav">
+                <Link to="/" onClick={() => trackEvent("Header Home Clicked")}>{t("home")}</Link>
+                {!isAuthenticated && <Link to="/signup" onClick={() => trackEvent("Header Sign Up Clicked")}>{t("sign_up")}</Link>}
+                {!isAuthenticated && <Link to="/signin" onClick={() => trackEvent("Header Sign In Clicked")}>{t("log_in")}</Link>}
+                {isAuthenticated && <Link to="/profile" onClick={() => trackEvent("Header Profile Clicked")}>{t("profile")}</Link>}
+                <Link to="/about" onClick={() => trackEvent("Header About Clicked")}>{t("about")}</Link>
+                <Link to="/review" onClick={() => trackEvent("Header Review Clicked")}>{t("review")}</Link>
+                {isAuthenticated && (
+                  <Link
+                    to="/"
+                    onClick={(e) => { e.preventDefault(); handleLogout(); }}
+                  >
+                    {t("log_out")}
+                  </Link>
+                )}
+              </nav>
+
+              <div className="language-switcher">
+                <LanguageSwitcher />
               </div>
-
-              {!subscribed && (
-                <button
-                  onClick={() => (isAuthenticated ? requestEarlyAccess() : navigate("/signin"))}
-                  className="early-subscribe-highlighted"
-                  disabled={loadingSubscribe}
-                >
-                  {loadingSubscribe ? tc("loading") : t("early_subscribtion")}
-                </button>
-              )}
             </div>
-
-            <nav className="nav">
-              <Link to="/" onClick={() => trackEvent("Header Home Clicked")}>
-                {t("home")}
-              </Link>
-
-              {!isAuthenticated && (
-                <Link to="/signup" onClick={() => trackEvent("Header Sign Up Clicked")}>
-                  {t("sign_up")}
-                </Link>
-              )}
-
-              {!isAuthenticated && (
-                <Link to="/signin" onClick={() => trackEvent("Header Sign In Clicked")}>
-                  {t("log_in")}
-                </Link>
-              )}
-
-              {isAuthenticated && (
-                <Link to="/profile" onClick={() => trackEvent("Header Profile Clicked")}>
-                  {t("profile")}
-                </Link>
-              )}
-
-              <Link to="/about" onClick={() => trackEvent("Header About Clicked")}>
-                {t("about")}
-              </Link>
-
-              <Link to="/review" onClick={() => trackEvent("Header Review Clicked")}>
-                {t("review")}
-              </Link>
-
-              {isAuthenticated && (
-                <Link
-                  to="/"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleLogout();
-                  }}
-                >
-                  {t("log_out")}
-                </Link>
-              )}
-
-              <LanguageSwitcher />
-            </nav>
 
             <button
               className="burger-btn"
@@ -124,6 +93,7 @@ function Header() {
             >
               ☰
             </button>
+
           </div>
         </div>
       </header>
