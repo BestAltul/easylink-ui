@@ -79,7 +79,7 @@
         "personalize": "Personalize content (e.g., default language/region, recently used blocks).",
         "security": "Security, fraud prevention, and abuse detection.",
         "communicate": "Communicate with you about updates, tips, or important notices.",
-        "legal": "Comply with legal obligations and enforce our {{terms}}."
+        "legal": "Comply with legal obligations and enforce our <termsLink>{{terms}}</termsLink>."
       }
     },
     "bases": {
@@ -104,14 +104,14 @@
         "analytics": { "title": "Analytics", "text": "understand feature usage (Amplitude)." },
         "prefs": { "title": "Preferences", "text": "remember language, UI choices." }
       },
-      "controls": "You can control cookies in your browser and in the app’s {{privacy}}. If you opt out of analytics, we will stop sending event data except strictly necessary events for security and core functionality.",
+      "controls": "You can control cookies in your browser and in the app’s <privacyLink>{{privacy}}</privacyLink>. If you opt out of analytics, we will stop sending event data except strictly necessary events for security and core functionality.",
       "dnt": "We honor applicable “Do Not Track/Global Privacy Control” signals for non-essential tracking where required."
     },
     "choices": {
       "title": "6. Your choices & rights",
       "items": {
-        "manage": "Access, correct, export, or delete your data in {{account}} or by email.",
-        "optout": "Opt out of analytics and marketing emails in {{privacy}} or via links in emails.",
+         "manage": "Access, correct, export, or delete your data in <accountLink>{{account}}</accountLink> or by email.",
+        "optout": "Opt out of analytics and marketing emails in <privacyLink>{{privacy}}</privacyLink> or via links in emails.",
         "rights": "GDPR/UK: rights to access/rectify/erase/restrict/object/portability; CPRA: rights to know/delete/correct/limit use of sensitive data."
       },
       "contact": "To exercise rights, contact us at {{email}}. We may need to verify your request."
@@ -144,8 +144,8 @@
     "contact": {
       "title": "12. Contact",
       "text": "Questions or requests: {{email}}.",
-      "links": "You can also review our {{terms}} and {{ads}}."
-    }
+      "links": "You can also review our <termsLink>{{terms}}</termsLink> and <adsLink>{{ads}}</adsLink>."
+      }
   },
   "back_to_top": "↑ Back to top"
 }

@@ -20,6 +20,7 @@ export default function VibeContentForCustomers({
   type,
   extraBlocks,
   subscriberVibeId,
+  publicCode,
 }) {
   const [showModal, setShowModal] = useState(false);
   const [subscribed, setSubscribed] = useState(false);
@@ -71,9 +72,39 @@ export default function VibeContentForCustomers({
     setSubscribed(true);
     setShowModal(false);
   };
+  
+  const shareUrl = id
+    ? `${window.location.origin}/view/${id}`
+    : window.location.href;
 
+  const {
+    showShare,
+    copied,
+    handleCopy,
+    handleOpen,
+    handleClose,
+    ShareModalProps
+  } = useShareModal(shareUrl, id, "VibeContentForCustomers");
+  
   return (
-    <div className="d-flex flex-column align-items-center w-100">
+    <div className="d-flex flex-column align-items-center w-100"> 
+      <div style={{ position: "absolute", top: 16, right: 16 }}>
+        <button
+          className="btn btn-light shadow-sm"
+          style={{ borderRadius: 99 }}
+          onClick={() => {
+            trackEvent("Vibe Share Button Clicked", {
+              vibeId: id,
+              name,
+              publicCode,
+              location: "VibePreview",
+            });
+            handleOpen();
+          }}
+        >
+          <BsShareFill size={20} style={{ color: "#627bf7" }} />
+        </button>
+      </div>
       {type !== "PERSONAL" && (
         <>
           <ul className="nav nav-tabs mb-4" role="tablist">
@@ -184,7 +215,7 @@ export default function VibeContentForCustomers({
                         onClick={handleOpenModal}
                         disabled={subscribed}
                       >
-                        {subscribed ? t("Subscribed") : t("Subscribe")}
+                      {subscribed ? t("Subscribed") : t("Subscribe")}
                       </button>
                       {showModal && (
                         <SelectVibeModalWithLogic
@@ -362,6 +393,16 @@ export default function VibeContentForCustomers({
               ))}
             </div>
           )}
+          <div className="mt-4 text-center d-grid gap-2">
+            <div className="d-flex justify-content-center gap-3 flex-wrap">
+              <div>
+                <QRCodeCanvas value={shareUrl} size={60} />
+                <div style={{ fontSize: 12, color: "#aaa" }}>
+                  {t("Share QR code", { defaultValue: "Share QR code" })}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       )}
 

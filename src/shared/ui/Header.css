@@ -73,16 +73,16 @@
 }
 .header .access-cta:hover {
   border-color: rgba(255,255,255,.20) !important;
-  box-shadow: 0 8px 20px rgba(255, 10, 92, .25);
+  box-shadow: var(--shadow);
 }
 .header .access-cta:focus,
 .header .access-cta:focus-visible {
   outline: none !important;
-  border-color: #ffd1e0 !important;
-  box-shadow: 0 0 0 3px rgba(255,10,92,.28), 0 8px 20px rgba(255,10,92,.25) !important;
+  border-color: currentColor !important; 
+  box-shadow: 0 0 0 3px var(--ring), var(--shadow) !important;
 }
 .header .access-cta:active {
-  box-shadow: 0 4px 12px rgba(255,10,92,.25);
+  box-shadow: 0 4px 12px var(--shadow);
 }
 .header .access-cta,
 .header .access-cta * {
@@ -120,7 +120,6 @@
 }
 .header .nav a:hover { color: #007bff; }
 
-/* Optional logout button style if used as <button> */
 .header .logout-btn {
   background: none;
   border: none;
@@ -193,7 +192,7 @@ html[lang="fr"] .header .nav a {
     justify-self: center;
     max-width: 100%;
     overflow: hidden;
-    transform: translateX(6px); /* лёгкое смещение для визуального баланса */
+    transform: translateX(6px); 
   }
 
   .access-cta { white-space: nowrap; }

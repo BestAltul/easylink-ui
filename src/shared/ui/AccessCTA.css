@@ -26,6 +26,7 @@
 .access-cta:hover {
   background: var(--bg-hover);
   transform: translateY(-1px);
+  box-shadow: var(--shadow);
 }
 
 .access-cta:active {
@@ -64,7 +65,9 @@
 .access-cta--subscribed {
   --bg: #20c574;
   --bg-hover: #17a861;
-  box-shadow: 0 8px 20px rgba(32,197,116,0.25);
+  --shadow: 0 8px 20px rgba(32,197,116,0.25); 
+  background: var(--bg);
+  box-shadow: var(--shadow);
   cursor: default;
 }
 
@@ -79,6 +82,13 @@
 
 .access-cta--subscribed .access-cta__label {
   font-weight: 700;
+}
+
+.access-cta--subscribed {
+  --bg: #20c574;
+  --bg-hover: #17a861;
+  --shadow: 0 8px 20px rgba(32,197,116,0.25);
+  --ring:   rgba(32,197,116,0.30);
 }
 
 /* animations */
@@ -102,3 +112,4 @@
   .access-cta__label { font-weight: 700; }
   .access-cta__spark { margin-right: 0; }
 }
+

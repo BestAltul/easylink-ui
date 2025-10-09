@@ -4,9 +4,10 @@
   "log_in": "Log In",
   "profile": "Profile",
   "about": "About",
-  "review": "Review",
+  "review": "Reviews",
   "log_out": "Log Out",
-  "join_now": "Premium",
-  "lifetime_free_first100": "Lifetime Free • First 100 users",
+  "join_now": "Join Now!",
+  "lifetime_free_first100_1": "Lifetime Free Subscribtion",
+  "lifetime_free_first100_2": "Only for the first 100 users",
   "subscribed": "Subscribed"
 }
