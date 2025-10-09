@@ -5,7 +5,7 @@ import useScrollToHash from "@/components/legal/useScrollToHash";
 import Section from "@/components/legal/Section";
 import TOC from "@/components/legal/TOC";
 import ProcessorTable from "@/components/legal/ProcessorTable";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import { PRIVACY_UPDATED_AT } from "@/pages/legal/versions";
 import "./privacy.css";
 
@@ -70,9 +70,9 @@ export default function Privacy() {
 
       <header className="legal-header" role="banner">
         <h1 className="legal-h1">{t("title")}</h1>
-          <p className="legal-meta">
-            <em>{t("updated", { date: PRIVACY_UPDATED_AT })}</em>
-          </p>
+        <p className="legal-meta">
+          <em>{t("updated", { date: PRIVACY_UPDATED_AT })}</em>
+        </p>
         <p className="legal-intro">
           {t("intro", { brand: BRAND })}
         </p>
@@ -116,7 +116,12 @@ export default function Privacy() {
           <li>{t("sections.use.items.security")}</li>
           <li>{t("sections.use.items.communicate")}</li>
           <li>
-            {t("sections.use.items.legal", { terms: <Link to="/terms">{t("terms")}</Link> })}
+            <Trans
+              i18nKey="sections.use.items.legal"
+              ns="legal_privacy"
+              values={{ terms: t("terms") }}
+              components={{ termsLink: <Link to="/terms" /> }}
+            />
           </li>
         </ul>
       </Section>
@@ -144,9 +149,12 @@ export default function Privacy() {
           <li><strong>{t("sections.cookies.items.prefs.title")}</strong>: {t("sections.cookies.items.prefs.text")}</li>
         </ul>
         <p>
-          {t("sections.cookies.controls", {
-            privacy: <Link to="/settings/privacy">{t("links.privacy_settings")}</Link>
-          })}
+          <Trans
+            i18nKey="sections.cookies.controls"
+            ns="legal_privacy"
+            values={{ privacy: t("links.privacy_settings") }}
+            components={{ privacyLink: <Link to="/settings/privacy" /> }}
+          />
         </p>
         <p>{t("sections.cookies.dnt")}</p>
       </Section>
@@ -154,14 +162,20 @@ export default function Privacy() {
       <Section id="choices" title={t("sections.choices.title")} copyAnchor={copyAnchor}>
         <ul className="bulleted">
           <li>
-            {t("sections.choices.items.manage", {
-              account: <Link to="/settings/account">{t("links.account_settings")}</Link>
-            })}
+            <Trans
+              i18nKey="sections.choices.items.manage"
+              ns="legal_privacy"
+              values={{ account: t("links.account_settings") }}
+              components={{ accountLink: <Link to="/settings/account" /> }}
+            />
           </li>
           <li>
-            {t("sections.choices.items.optout", {
-              privacy: <Link to="/settings/privacy">{t("links.privacy_settings")}</Link>
-            })}
+            <Trans
+              i18nKey="sections.choices.items.optout"
+              ns="legal_privacy"
+              values={{ privacy: t("links.privacy_settings") }}
+              components={{ privacyLink: <Link to="/settings/privacy" /> }}
+            />
           </li>
           <li>{t("sections.choices.items.rights")}</li>
         </ul>
@@ -198,10 +212,15 @@ export default function Privacy() {
       <Section id="contact" title={t("sections.contact.title")} copyAnchor={copyAnchor}>
         <p>
           {t("sections.contact.text", { email: CONTACT_EMAIL })}{" "}
-          {t("sections.contact.links", {
-            terms: <Link to="/terms">{t("terms")}</Link>,
-            ads: <Link to="/ads">{t("ads")}</Link>
-          })}
+          <Trans
+            i18nKey="sections.contact.links"
+            ns="legal_privacy"
+            values={{ terms: t("terms"), ads: t("ads") }}
+            components={{
+              termsLink: <Link to="/terms" />,
+              adsLink: <Link to="/ads" />
+            }}
+          />
         </p>
       </Section>
 

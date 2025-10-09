@@ -84,7 +84,7 @@
         "personalize": "Personnaliser le contenu (langue/région par défaut, blocs récemment utilisés).",
         "security": "Sécurité, prévention de la fraude et détection des abus.",
         "communicate": "Communiquer avec vous au sujet des mises à jour, conseils ou notifications importantes.",
-        "legal": "Respecter les obligations légales et faire appliquer nos {{terms}}."
+        "legal": "Respecter les lois et nos <termsLink>{{terms}}</termsLink>."
       }
     },
     "bases": {
@@ -109,14 +109,14 @@
         "analytics": { "title": "Analyse", "text": "comprendre l’usage des fonctionnalités (Amplitude)." },
         "prefs": { "title": "Préférences", "text": "mémoriser la langue et les choix d’interface." }
       },
-      "controls": "Vous pouvez gérer les cookies dans votre navigateur et dans les {{privacy}} de l’application. Si vous refusez l’analyse, nous arrêterons l’envoi d’événements, sauf ceux strictement nécessaires à la sécurité et aux fonctionnalités de base.",
+      "controls": "Vous pouvez gérer les cookies dans votre navigateur et dans les <privacyLink>{{privacy}}</privacyLink>. Si vous refusez l’analyse, nous cesserons d’envoyer les événements non essentiels.",
       "dnt": "Nous respectons, le cas échéant, les signaux « Do Not Track/Global Privacy Control » pour le suivi non essentiel."
     },
     "choices": {
       "title": "6. Vos choix et vos droits",
       "items": {
-        "manage": "Accéder à vos données, les corriger, les exporter ou les supprimer dans {{account}} ou par email.",
-        "optout": "Refuser l’analyse et les emails marketing dans {{privacy}} ou via les liens présents dans les emails.",
+        "manage": "Accéder, corriger, exporter ou supprimer vos données dans les <accountLink>{{account}}</accountLink> ou par e-mail.",
+        "optout": "Refuser l’analyse et les e-mails marketing dans les <privacyLink>{{privacy}}</privacyLink> ou via les liens dans les e-mails.",
         "rights": "RGPD/R.-U. : droits d’accès/de rectification/d’effacement/de limitation/d’opposition/de portabilité ; CPRA : droits de savoir/supprimer/corriger/limiter l’usage des données sensibles."
       },
       "contact": "Pour exercer vos droits, contactez-nous à {{email}}. Nous pourrions devoir vérifier votre demande."
@@ -149,7 +149,7 @@
     "contact": {
       "title": "12. Contact",
       "text": "Questions ou demandes : {{email}}.",
-      "links": "Vous pouvez également consulter nos {{terms}} et {{ads}}."
+      "links": "Vous pouvez également consulter nos <termsLink>{{terms}}</termsLink> et notre <adsLink>{{ads}}</adsLink>."
     }
   },
   "back_to_top": "↑ Retour en haut"
