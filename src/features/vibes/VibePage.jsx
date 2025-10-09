@@ -61,7 +61,8 @@ export default function VibePage() {
             type="button"
             className="btn-main btn-compact d-flex align-items-center gap-2"
             onClick={() => {
-              if (vibe.type === "BUSINESS") navigate(`/vibes/${id}/interactions`);
+              if (vibe.type === "BUSINESS")
+                navigate(`/vibes/${id}/interactions`);
               else navigate(`/vibes/${id}/interactions-basic`);
             }}
           >
@@ -134,7 +135,7 @@ export default function VibePage() {
               id={vibe.id}
               name={name}
               description={description}
-              photoFile={vibe.photo}
+              photo={vibe.photo}
               contacts={contacts}
               type={vibe.type}
               extraBlocks={extraBlocks}
@@ -148,7 +149,7 @@ export default function VibePage() {
             id={vibe.id}
             name={name}
             description={description}
-            photoFile={vibe.photo}
+            photo={vibe.photo}
             contacts={contacts}
             type={vibe.type}
             extraBlocks={extraBlocks}

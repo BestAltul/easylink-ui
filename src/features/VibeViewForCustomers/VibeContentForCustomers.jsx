@@ -10,15 +10,12 @@ import useGetOffersByVibeId from "../vibes/offers/useGetOfferByVibeId";
 import OfferCard from "../vibes/offers/OfferCard";
 import { trackEvent } from "@/services/amplitude";
 import useItemsByVibeId from "../vibes/catalog/useItemByVibeId";
-import ShareModal from "@/features/vibes/tools/ShareModal";
-import useShareModal from "@/components/common/hooks/useShareModal"
-import { BsShareFill } from "react-icons/bs";
 
 export default function VibeContentForCustomers({
   id,
   name,
   description,
-  photoFile,
+  photo,
   contacts,
   type,
   extraBlocks,
@@ -28,11 +25,12 @@ export default function VibeContentForCustomers({
   const [showModal, setShowModal] = useState(false);
   const [subscribed, setSubscribed] = useState(false);
   const [activeTab, setActiveTab] = useState("main");
+  const [previewImage, setPreviewImage] = useState(null);
   const { t } = useTranslation();
   const token = localStorage.getItem("jwt");
   const navigate = useNavigate();
   const location = useLocation();
-  const offers = useGetOffersByVibeId(id, token);
+  const offers = useGetOffersByVibeId(id);
   const { items, loading: itemsLoading } = useItemsByVibeId(id, token);
 
   const resolveServerUrl = (path) => {
@@ -145,7 +143,7 @@ export default function VibeContentForCustomers({
           <div className="tab-content w-100">
             {activeTab === "main" && (
               <div className="tab-pane fade show active">
-                <Avatar name={name} photoFile={photoFile} />
+                <Avatar name={name} photo={photo} />
                 <h3 className="mb-0" style={{ fontWeight: 700 }}>
                   {name || "Your Name"}
                 </h3>
@@ -249,6 +247,7 @@ export default function VibeContentForCustomers({
                 </div>
               </div>
             )}
+
             {activeTab === "offers" && (
               <div className="tab-pane fade show active w-100">
                 {offers.filter((o) => o.active).length > 0 ? (
@@ -263,8 +262,8 @@ export default function VibeContentForCustomers({
                             trackEvent("Offer Clicked", {
                               offerId: offer.id,
                               origin: "vibe_view_offers",
-                              ownerVibeId: id,                          
-                              viewerVibeId: subscriberVibeId || null,   
+                              ownerVibeId: id,
+                              viewerVibeId: subscriberVibeId || null,
                               path: window.location.pathname,
                               ts: Date.now(),
                             });
@@ -278,7 +277,7 @@ export default function VibeContentForCustomers({
                             });
                           }}
                         />
-                    ))}
+                      ))}
                   </div>
                 ) : (
                   <div className="alert alert-info text-center">
@@ -287,6 +286,7 @@ export default function VibeContentForCustomers({
                 )}
               </div>
             )}
+
             {activeTab === "menu" && (
               <div className="tab-pane fade show active">
                 <div className="w-100">
@@ -310,12 +310,17 @@ export default function VibeContentForCustomers({
                               aria-label={it.title}
                             >
                               <div
+                                onDoubleClick={() =>
+                                  img && setPreviewImage(img)
+                                }
                                 style={{
                                   paddingTop: "100%",
                                   backgroundImage: img ? `url(${img})` : "none",
                                   backgroundSize: "cover",
                                   backgroundPosition: "center",
                                   backgroundRepeat: "no-repeat",
+                                  cursor: img ? "zoom-in" : "default",
+                                  transition: "transform 0.2s ease",
                                 }}
                               />
                               <div
@@ -346,7 +351,7 @@ export default function VibeContentForCustomers({
 
       {type === "PERSONAL" && (
         <div className="w-100">
-          <Avatar name={name} photoFile={photoFile} />
+          <Avatar name={name} photo={photo} />
           <h3 className="mb-0" style={{ fontWeight: 700 }}>
             {name || "Your Name"}
           </h3>
@@ -400,8 +405,34 @@ export default function VibeContentForCustomers({
           </div>
         </div>
       )}
-      {/* Share modal */}
-      <ShareModal {...ShareModalProps} />
+
+      {previewImage && (
+        <div
+          onClick={() => setPreviewImage(null)}
+          style={{
+            position: "fixed",
+            inset: 0,
+            backgroundColor: "rgba(0,0,0,0.8)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 9999,
+            cursor: "zoom-out",
+          }}
+        >
+          <img
+            src={previewImage}
+            alt="preview"
+            onDoubleClick={() => setPreviewImage(null)}
+            style={{
+              maxWidth: "90%",
+              maxHeight: "90%",
+              borderRadius: 12,
+              boxShadow: "0 0 20px rgba(0,0,0,0.5)",
+            }}
+          />
+        </div>
+      )}
     </div>
   );
 }

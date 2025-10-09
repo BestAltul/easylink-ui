@@ -23,7 +23,7 @@ export default function BusinessVibeOwnerView({
   id,
   name,
   description,
-  photoFile,
+  photo,
   contacts,
   type = "BUSINESS",
   extraBlocks,
@@ -38,7 +38,7 @@ export default function BusinessVibeOwnerView({
   const { items, itemsLoading } = useItemsByVibeId(id, token);
   const [activeTab, setActiveTab] = useState("main");
   const offers = useGetOffersByVibeId(id, token);
-  const itemIds = Array.isArray(items) ? items.map(i => i.id) : [];
+  const itemIds = Array.isArray(items) ? items.map((i) => i.id) : [];
 
   const [toast, setToast] = useState("");
   const showToast = (msg) => {
@@ -75,7 +75,8 @@ export default function BusinessVibeOwnerView({
     try {
       if (navigator.share) {
         await navigator.share({
-          title: name || t("My business card", { defaultValue: "My business card" }),
+          title:
+            name || t("My business card", { defaultValue: "My business card" }),
           text: description || "",
           url: shareUrl,
         });
@@ -138,7 +139,9 @@ export default function BusinessVibeOwnerView({
                 onClick={() => {
                   navigator.clipboard
                     .writeText(String(code))
-                    .then(() => showToast(t("Copied!", { defaultValue: "Copied!" })));
+                    .then(() =>
+                      showToast(t("Copied!", { defaultValue: "Copied!" }))
+                    );
                 }}
                 title={t("Click to copy", { defaultValue: "Click to copy" })}
                 role="button"
@@ -153,7 +156,6 @@ export default function BusinessVibeOwnerView({
         </div>
       </div>
 
-      
       {/* Tabs */}
       <ul className="nav nav-tabs mb-4" role="tablist">
         <li className="nav-item" role="presentation">
@@ -192,7 +194,7 @@ export default function BusinessVibeOwnerView({
         {/* MAIN */}
         {activeTab === "main" && (
           <div className="tab-pane fade show active">
-            <Avatar name={name} photoFile={photoFile} />
+            <Avatar name={name} photo={photo} />
             <h3 className="mb-0" style={{ fontWeight: 700 }}>
               {name || t("Your Name", { defaultValue: "Your Name" })}
             </h3>
@@ -215,7 +217,9 @@ export default function BusinessVibeOwnerView({
             >
               {description || (
                 <span style={{ color: "#bbb" }}>
-                  {t("Description goes here...", { defaultValue: "Description goes here..." })}
+                  {t("Description goes here...", {
+                    defaultValue: "Description goes here...",
+                  })}
                 </span>
               )}
             </div>
@@ -233,7 +237,11 @@ export default function BusinessVibeOwnerView({
             <div className="d-flex flex-wrap gap-2 justify-content-center w-100">
               {contacts?.length ? (
                 contacts.map((c, i) => (
-                  <ContactButton key={c.type + i} type={c.type} value={c.value} />
+                  <ContactButton
+                    key={c.type + i}
+                    type={c.type}
+                    value={c.value}
+                  />
                 ))
               ) : (
                 <span className="text-muted" style={{ fontSize: 15 }}>
@@ -305,7 +313,11 @@ export default function BusinessVibeOwnerView({
                 className="btn btn-outline-primary"
                 onClick={() =>
                   navigate("/offers/new", {
-                    state: { vibeId: id, returnTo: `/vibes/${id}`, tab: "offers" },
+                    state: {
+                      vibeId: id,
+                      returnTo: `/vibes/${id}`,
+                      tab: "offers",
+                    },
                   })
                 }
               >

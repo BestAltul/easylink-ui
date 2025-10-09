@@ -5,7 +5,10 @@ import { useTranslation } from "react-i18next";
 import { usePersonalVibeForm } from "./usePersonalVibeForm";
 
 // generic preview
-import { VibePreviewPane, MobilePreviewModal } from "@/components/common/preview";
+import {
+  VibePreviewPane,
+  MobilePreviewModal,
+} from "@/components/common/preview";
 
 // generic form blocks
 import ContactListGeneric from "@/components/common/formBlocks/ContactListGeneric";
@@ -20,31 +23,42 @@ import iconMap from "@/data/contactIcons";
 import ContactTypeModal from "@/features/vibes/components/Modals/ContactTypeModal";
 import PersonalInfoBlockModal from "@/features/vibes/components/Modals/PersonalInfoBlockModal";
 
-// alert 
+// alert
 import InfoAlert from "./components/InfoAlert";
 
 export default function PersonalVibeForm({
   initialData = {},
   mode = "create",
   onSave,
-  onCancel
+  onCancel,
 }) {
   const navigate = useNavigate();
-  const { t } = useTranslation("personal_form"); 
+  const { t } = useTranslation("personal_form");
   const [showMobilePreview, setShowMobilePreview] = React.useState(false);
 
   const {
-    name, setName,
-    description, setDescription,
-    photoFile, setPhotoFile,
-    contacts, setContacts,
-    showModal, setShowModal,
-    extraBlocks, setExtraBlocks,
-    showBlockModal, setShowBlockModal,
-    showInfo, setShowInfo,
+    name,
+    setName,
+    description,
+    setDescription,
+    photo,
+    setPhoto,
+    contacts,
+    setContacts,
+    showModal,
+    setShowModal,
+    extraBlocks,
+    setExtraBlocks,
+    showBlockModal,
+    setShowBlockModal,
+    showInfo,
+    setShowInfo,
     loading,
-    addContact, handleContactChange, removeContact,
-    handleBlockChange, removeBlock,
+    addContact,
+    handleContactChange,
+    removeContact,
+    handleBlockChange,
+    removeBlock,
     handleSubmit,
   } = usePersonalVibeForm({ navigate, initialData, mode, onSave, onCancel });
 
@@ -65,10 +79,12 @@ export default function PersonalVibeForm({
           </button>
         </div>
 
-        <form className="bg-light p-4 rounded-4 shadow" style={{ width: "100%" }} onSubmit={handleSubmit}>
-          {showInfo && (
-            <InfoAlert t={t} onClose={() => setShowInfo(false)} />
-          )}
+        <form
+          className="bg-light p-4 rounded-4 shadow"
+          style={{ width: "100%" }}
+          onSubmit={handleSubmit}
+        >
+          {showInfo && <InfoAlert t={t} onClose={() => setShowInfo(false)} />}
 
           {/* name */}
           <div className="mb-3">
@@ -127,7 +143,7 @@ export default function PersonalVibeForm({
 
           <PhotoUploader
             t={t}
-            onFileChange={setPhotoFile}
+            onFileChange={setPhoto}
             labelKey="photo_label"
             hintKey="photo_hint"
           />
@@ -150,8 +166,12 @@ export default function PersonalVibeForm({
               disabled={loading}
             >
               {loading
-                ? (mode === "edit" ? t("saving") : t("creating"))
-                : (mode === "edit" ? t("save_button") : t("create_button"))}
+                ? mode === "edit"
+                  ? t("saving")
+                  : t("creating")
+                : mode === "edit"
+                ? t("save_button")
+                : t("create_button")}
             </button>
           </div>
         </form>
@@ -180,8 +200,8 @@ export default function PersonalVibeForm({
                   type: block.key,
                   label: block.label,
                   value: "",
-                  placeholder: block.placeholder
-                }
+                  placeholder: block.placeholder,
+                },
               ]);
               setShowBlockModal(false);
             }}
@@ -194,7 +214,7 @@ export default function PersonalVibeForm({
         <VibePreviewPane
           name={name}
           description={description}
-          photoFile={photoFile}
+          photo={photo}
           contacts={contacts}
           extraBlocks={extraBlocks}
           type="PERSONAL"
@@ -208,7 +228,7 @@ export default function PersonalVibeForm({
         t={t}
         name={name}
         description={description}
-        photoFile={photoFile}
+        photo={photo}
         contacts={contacts}
         extraBlocks={extraBlocks}
         type="PERSONAL"

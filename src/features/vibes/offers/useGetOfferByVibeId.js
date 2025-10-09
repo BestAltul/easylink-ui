@@ -1,21 +1,27 @@
 import { useEffect, useState } from "react";
 
 export default function useGetOfferByVibeId(id, token) {
-  const [offers, setOffer] = useState([]);
+  const [offers, setOffers] = useState([]);
 
   useEffect(() => {
-    fetch(`/api/v3/offers/vibe/${id}`, {
-      // headers: {
-      //   "Content-Type": "application/json",
-      //   Authorization: `Bearer ${token}`,
-      // },
-         headers: {
-        "Content-Type": "application/json",        
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => setOffer(data))
-      .catch(() => setOffer([]));
+    if (!id) return;
+
+    const headers = { "Content-Type": "application/json" };
+
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
+    }
+
+    fetch(`/api/v3/offers/vibe/${id}`, { headers })
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .then((data) => setOffers(data))
+      .catch((err) => {
+        console.error("Failed to load offers:", err);
+        setOffers([]);
+      });
   }, [id, token]);
 
   return offers;

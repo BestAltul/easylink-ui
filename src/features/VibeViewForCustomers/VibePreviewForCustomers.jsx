@@ -6,7 +6,7 @@ export default function VibePreviewForCustomers({
   id,
   name,
   description,
-  photoFile,
+  photo,
   contacts,
   type,
   extraBlocks,
@@ -29,7 +29,7 @@ export default function VibePreviewForCustomers({
           id={id}
           name={name}
           description={description}
-          photoFile={photoFile}
+          photo={photo}
           contacts={contacts}
           type={type}
           extraBlocks={extraBlocks}
