@@ -10,6 +10,9 @@ import useGetOffersByVibeId from "../vibes/offers/useGetOfferByVibeId";
 import OfferCard from "../vibes/offers/OfferCard";
 import { trackEvent } from "@/services/amplitude";
 import useItemsByVibeId from "../vibes/catalog/useItemByVibeId";
+import ShareModal from "@/features/vibes/tools/ShareModal";
+import useShareModal from "@/components/common/hooks/useShareModal";
+import { BsShareFill } from "react-icons/bs";
 
 export default function VibeContentForCustomers({
   id,
@@ -72,7 +75,7 @@ export default function VibeContentForCustomers({
     setSubscribed(true);
     setShowModal(false);
   };
-  
+
   const shareUrl = id
     ? `${window.location.origin}/view/${id}`
     : window.location.href;
@@ -83,11 +86,11 @@ export default function VibeContentForCustomers({
     handleCopy,
     handleOpen,
     handleClose,
-    ShareModalProps
+    ShareModalProps,
   } = useShareModal(shareUrl, id, "VibeContentForCustomers");
-  
+
   return (
-    <div className="d-flex flex-column align-items-center w-100"> 
+    <div className="d-flex flex-column align-items-center w-100">
       <div style={{ position: "absolute", top: 16, right: 16 }}>
         <button
           className="btn btn-light shadow-sm"
@@ -215,7 +218,7 @@ export default function VibeContentForCustomers({
                         onClick={handleOpenModal}
                         disabled={subscribed}
                       >
-                      {subscribed ? t("Subscribed") : t("Subscribe")}
+                        {subscribed ? t("Subscribed") : t("Subscribe")}
                       </button>
                       {showModal && (
                         <SelectVibeModalWithLogic
