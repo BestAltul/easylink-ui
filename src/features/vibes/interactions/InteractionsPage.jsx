@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import FollowingTable from "./FollowingTable";
 import OffersTable from "../offers/OffersTable";
 import useGetOfferByVibeId from "../offers/useGetOfferByVibeId";
 import useFollowing from "../interactions/useFollowing";
+import VibeCircleList from "../interactions/VibeCircleList";
 
 export default function InteractionsPage() {
   const { t } = useTranslation("interactions");
@@ -20,6 +20,7 @@ export default function InteractionsPage() {
 
   return (
     <div className="container py-5" style={{ maxWidth: 900 }}>
+      {/* header */}
       <div className="d-flex align-items-center mb-4">
         <button
           className="btn btn-outline-secondary"
@@ -32,6 +33,7 @@ export default function InteractionsPage() {
         </h2>
       </div>
 
+      {/* tabs */}
       <ul className="nav nav-tabs mb-3">
         <li className="nav-item">
           <button
@@ -43,29 +45,31 @@ export default function InteractionsPage() {
         </li>
         <li className="nav-item">
           <button
-            className={`nav-link ${activeTab === "following" ? "active" : ""}`}
-            onClick={() => setActiveTab("following")}
+            className={`nav-link ${activeTab === "circle" ? "active" : ""}`}
+            onClick={() => setActiveTab("circle")}
           >
-            {t("tabs.following")}
+            {t("circle")}
           </button>
         </li>
       </ul>
 
+      {/* content */}
       <div className="card p-4 shadow" style={{ borderRadius: 18 }}>
         {activeTab === "offers" && (
           <>
             <h5 className="mb-3" style={{ color: "#476dfe" }}>
-              {t("sections.offers")}
+              {t("offers")}
             </h5>
             <OffersTable offers={offers} subscriberVibeId={id} t={t} />
           </>
         )}
-        {activeTab === "following" && (
+
+        {activeTab === "circle" && (
           <>
             <h5 className="mb-3" style={{ color: "#476dfe" }}>
-              {t("sections.following")}
+              {t("circle")}
             </h5>
-            <FollowingTable following={following} subscriberVibeId={id} t={t} />
+            <VibeCircleList vibes={following} t={t} />
           </>
         )}
       </div>

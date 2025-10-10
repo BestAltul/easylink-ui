@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import FollowingTable from "./FollowingTable";
 import useFollowingWithOffer from "../interactions/useFollowingWithOffer";
+import VibeCircleList from "../interactions/VibeCircleList";
 
 export default function InteractionsPageBasics() {
   const { t } = useTranslation("interactions");
@@ -12,10 +12,11 @@ export default function InteractionsPageBasics() {
   const token = localStorage.getItem("jwt");
   const followingWithOffer = useFollowingWithOffer(id, token);
 
-  const [activeTab, setActiveTab] = useState("following");
+  const [activeTab, setActiveTab] = useState("circle");
 
   return (
     <div className="container py-5" style={{ maxWidth: 900 }}>
+      {/* header */}
       <div className="d-flex align-items-center mb-4">
         <button
           className="btn btn-outline-secondary"
@@ -28,28 +29,26 @@ export default function InteractionsPageBasics() {
         </h2>
       </div>
 
+      {/* tabs */}
       <ul className="nav nav-tabs mb-3">
         <li className="nav-item">
           <button
-            className={`nav-link ${activeTab === "following" ? "active" : ""}`}
-            onClick={() => setActiveTab("following")}
+            className={`nav-link ${activeTab === "circle" ? "active" : ""}`}
+            onClick={() => setActiveTab("circle")}
           >
-            {t("tabs.following")}
+            {t("tabs.circle")}
           </button>
         </li>
       </ul>
 
+      {/* content */}
       <div className="card p-4 shadow" style={{ borderRadius: 18 }}>
-        {activeTab === "following" && (
+        {activeTab === "circle" && (
           <>
             <h5 className="mb-3" style={{ color: "#476dfe" }}>
-              {t("sections.following")}
+              {t("circle")}
             </h5>
-            <FollowingTable
-              following={followingWithOffer}
-              t={t}
-              subscriberVibeId={id}
-            />
+            <VibeCircleList vibes={followingWithOffer} t={t} />
           </>
         )}
       </div>
