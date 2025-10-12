@@ -27,7 +27,7 @@ export default function BusinessVibeOwnerView({
   id,
   name,
   description,
-  photo,
+  photo: initialPhoto,
   contacts,
   type = "BUSINESS",
   extraBlocks,
@@ -38,6 +38,7 @@ export default function BusinessVibeOwnerView({
   const navigate = useNavigate();
   const location = useLocation();
   const token = localStorage.getItem("jwt");
+  const [photo, setPhoto] = useState(initialPhoto || null);
 
   const { items, itemsLoading } = useItemsByVibeId(id, token);
   const [activeTab, setActiveTab] = useState("main");
@@ -197,7 +198,7 @@ export default function BusinessVibeOwnerView({
         // MAIN tab content
         renderMain={() => (
           <>
-            <Avatar name={name} photo={photo} />
+            <Avatar name={name} photo={photo} onChangePhoto={setPhoto} />
             <h3 className="mb-0" style={{ fontWeight: 700 }}>
               {name || t("Your Name", { defaultValue: "Your Name" })}
             </h3>
@@ -207,7 +208,6 @@ export default function BusinessVibeOwnerView({
             >
               {type || "Business"}
             </div>
-
             <div
               className="p-3 mb-3 w-100 text-center"
               style={{
@@ -226,7 +226,6 @@ export default function BusinessVibeOwnerView({
                 </span>
               )}
             </div>
-
             <div
               style={{
                 width: "40%",
@@ -236,7 +235,6 @@ export default function BusinessVibeOwnerView({
                 marginBottom: 16,
               }}
             />
-
             <div className="d-flex flex-wrap gap-2 justify-content-center w-100">
               {contacts?.length ? (
                 contacts.map((c, i) => (
@@ -252,7 +250,6 @@ export default function BusinessVibeOwnerView({
                 </span>
               )}
             </div>
-
             {extraBlocks?.length > 0 && (
               <div className="w-100 mt-2">
                 {extraBlocks.map((block, i) => (
@@ -260,7 +257,6 @@ export default function BusinessVibeOwnerView({
                 ))}
               </div>
             )}
-
             <div className="mt-4 text-center d-grid gap-2">
               <div className="d-flex justify-content-center gap-3 flex-wrap">
                 <div>

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-function Avatar({ name, photo }) {
+function Avatar({ name, photo, onChangePhoto }) {
   const [open, setOpen] = useState(false);
 
   const API_BASE =
@@ -18,9 +18,17 @@ function Avatar({ name, photo }) {
     }
   }
 
+  const handleFileSelect = (e) => {
+    const file = e.target.files[0];
+    if (file && onChangePhoto) {
+      onChangePhoto(file); // 👈 передаём выбранный файл наружу
+    }
+  };
+
   return (
     <>
       <div
+        onClick={() => document.getElementById("avatarInput").click()} // 👈 кликом открываем выбор файла
         onDoubleClick={() => src && setOpen(true)}
         style={{
           width: 94,
@@ -33,7 +41,7 @@ function Avatar({ name, photo }) {
           overflow: "hidden",
           marginBottom: 14,
           marginTop: -8,
-          cursor: src ? "zoom-in" : "default",
+          cursor: "pointer",
         }}
       >
         {src ? (
@@ -47,8 +55,18 @@ function Avatar({ name, photo }) {
             {name ? name[0].toUpperCase() : "?"}
           </span>
         )}
+
+        {/* 👇 скрытый input */}
+        <input
+          id="avatarInput"
+          type="file"
+          accept="image/*"
+          style={{ display: "none" }}
+          onChange={handleFileSelect}
+        />
       </div>
 
+      {/* 👇 окно предпросмотра (двойной клик) */}
       {open && (
         <div
           onClick={() => setOpen(false)}
