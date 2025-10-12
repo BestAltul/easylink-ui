@@ -21,7 +21,7 @@ export default function VibeContent({
 
   onChangeName,
   onChangeDescription,
-  onChangePhotoFile,
+  onChangePhoto,
 
   onOpenContactPicker,
   onRemoveContact,
@@ -45,9 +45,9 @@ export default function VibeContent({
       {/* Photo */}
       <AvatarPicker
         name={name}
-        photoFile={photoFile}
+        photo={photo}
         editMode={editMode}
-        onChangePhotoFile={onChangePhotoFile}
+        onChangePhoto={onChangePhoto}
       />
 
       {/* Name */}
@@ -61,11 +61,16 @@ export default function VibeContent({
           style={{ border: "none", background: "transparent" }}
         />
       ) : (
-        <h3 className="mb-0" style={{ fontWeight: 700 }}>{name || t("your_name")}</h3>
+        <h3 className="mb-0" style={{ fontWeight: 700 }}>
+          {name || t("your_name")}
+        </h3>
       )}
 
       {/* Type */}
-      <div className="text-primary mb-2" style={{ fontWeight: 600, textTransform: "uppercase" }}>
+      <div
+        className="text-primary mb-2"
+        style={{ fontWeight: 600, textTransform: "uppercase" }}
+      >
         {typeLabel}
       </div>
 
@@ -81,12 +86,22 @@ export default function VibeContent({
         />
       ) : (
         <div className="w-100" style={{ textAlign: "center" }}>
-          {description || <span style={{ color: "#bbb" }}>{t("default_description")}</span>}
+          {description || (
+            <span style={{ color: "#bbb" }}>{t("default_description")}</span>
+          )}
         </div>
       )}
 
       {/* Divider */}
-      <div style={{ width: "40%", height: 2, background: "#eee", borderRadius: 99, margin: "16px 0" }} />
+      <div
+        style={{
+          width: "40%",
+          height: 2,
+          background: "#eee",
+          borderRadius: 99,
+          margin: "16px 0",
+        }}
+      />
 
       {/* Contacts */}
       <ContactsSection

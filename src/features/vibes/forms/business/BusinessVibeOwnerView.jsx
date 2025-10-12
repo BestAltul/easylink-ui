@@ -50,7 +50,9 @@ export default function BusinessVibeOwnerView({
     setTimeout(() => setToast(""), 2000);
   };
 
-  const shareUrl = id ? `${window.location.origin}/view/${id}` : window.location.href;
+  const shareUrl = id
+    ? `${window.location.origin}/view/${id}`
+    : window.location.href;
 
   const copyToClipboard = async (text) => {
     try {
@@ -67,7 +69,11 @@ export default function BusinessVibeOwnerView({
     }
   };
 
-  const [vibeVisible, code, visibilityButton] = useVisibilityToggle(id, visible, publicCode);
+  const [vibeVisible, code, visibilityButton] = useVisibilityToggle(
+    id,
+    visible,
+    publicCode
+  );
 
   const handleShare = async () => {
     try {
@@ -151,7 +157,9 @@ export default function BusinessVibeOwnerView({
 
       {/* секция Visibility в едином стиле с VibePreview */}
       <div className="mb-3 w-100 px-3">
-        <div className="vv-label">{t("vibe_preview:sharing_section", "Visibility")}</div>
+        <div className="vv-label">
+          {t("vibe_preview:sharing_section", "Visibility")}
+        </div>
         <div className="vv-wrap visibility-compact">
           {visibilityButton}
           {vibeVisible && code && (
@@ -189,7 +197,7 @@ export default function BusinessVibeOwnerView({
         // MAIN tab content
         renderMain={() => (
           <>
-            <Avatar name={name} photoFile={photoFile} />
+            <Avatar name={name} photo={photo} />
             <h3 className="mb-0" style={{ fontWeight: 700 }}>
               {name || t("Your Name", { defaultValue: "Your Name" })}
             </h3>
@@ -284,7 +292,11 @@ export default function BusinessVibeOwnerView({
                     offer={offer}
                     onDoubleClick={() =>
                       navigate(`/offers/${offer.id}`, {
-                        state: { vibeId: id, returnTo: `/vibes/${id}`, tab: "offers" },
+                        state: {
+                          vibeId: id,
+                          returnTo: `/vibes/${id}`,
+                          tab: "offers",
+                        },
                       })
                     }
                   />

@@ -14,8 +14,15 @@ const EMPTY_HOURS = {
 
 const isHoursKey = (s) => String(s || "").toLowerCase() === "hours";
 
-export function useBusinessVibeForm({ navigate, initialData = {}, mode = "create", onSave }) {
-  const parsed = initialData.fieldsDTO ? parseFields(initialData.fieldsDTO) : {};
+export function useBusinessVibeForm({
+  navigate,
+  initialData = {},
+  mode = "create",
+  onSave,
+}) {
+  const parsed = initialData.fieldsDTO
+    ? parseFields(initialData.fieldsDTO)
+    : {};
 
   const [name, setName] = useState(initialData.name || parsed.name || "");
   const [description, setDescription] = useState(
@@ -23,8 +30,12 @@ export function useBusinessVibeForm({ navigate, initialData = {}, mode = "create
   );
   const [photo, setPhoto] = useState(initialData.photo || null);
 
-  const [contacts, setContacts] = useState(initialData.contacts || parsed.contacts || []);
-  const [extraBlocks, setExtraBlocks] = useState(initialData.extraBlocks || parsed.extraBlocks || []);
+  const [contacts, setContacts] = useState(
+    initialData.contacts || parsed.contacts || []
+  );
+  const [extraBlocks, setExtraBlocks] = useState(
+    initialData.extraBlocks || parsed.extraBlocks || []
+  );
 
   const [showModal, setShowModal] = useState(false);
   const [showBlockModal, setShowBlockModal] = useState(false);
@@ -111,7 +122,8 @@ export function useBusinessVibeForm({ navigate, initialData = {}, mode = "create
           ...(b.id ? { id: b.id } : {}),
           type: isHours ? "hours" : b.type || "custom",
           label: b.label || (isHours ? "Hours" : "Custom"),
-          value: typeof rawValue === "object" ? JSON.stringify(rawValue) : rawValue,
+          value:
+            typeof rawValue === "object" ? JSON.stringify(rawValue) : rawValue,
         };
       }),
     ];
@@ -121,11 +133,11 @@ export function useBusinessVibeForm({ navigate, initialData = {}, mode = "create
       name,
       description,
       type: "BUSINESS",
-      photo: photoUrl,
+      photo: photo,
       fieldsDTO,
       // photoFile можно обработать отдельно, если API ждёт multipart
     };
-    console.log("2 DTO before save:", dto);
+    //console.log("2 DTO before save:", dto);
 
     try {
       setLoading(true);
