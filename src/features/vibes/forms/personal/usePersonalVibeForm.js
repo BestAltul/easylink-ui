@@ -99,7 +99,7 @@ export function usePersonalVibeForm({
         navigate("/my-vibes");
       }
     } catch (err) {
-      alert("Error saving Vibe");
+      alert(err.message || "Error saving Vibe");
       console.error(err);
     } finally {
       setLoading(false);

@@ -34,7 +34,19 @@ export async function createVibe(data, token) {
     },
     body: JSON.stringify(data),
   });
-  if (!res.ok) throw new Error("Failed to create vibe");
+
+  if (!res.ok) {
+    const text = await res.text();
+    let message = text;
+    try {
+      const json = JSON.parse(text);
+      message = json.message || text;
+    } catch {
+      message = text;
+    }
+    throw new Error(message);
+  }
+
   return res.json();
 }
 

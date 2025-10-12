@@ -168,7 +168,7 @@ export function useBusinessVibeForm({
         navigate("/my-vibes");
       }
     } catch (err) {
-      alert("Error saving Vibe");
+      alert(err.message || "Error saving Vibe");
     } finally {
       setLoading(false);
     }
