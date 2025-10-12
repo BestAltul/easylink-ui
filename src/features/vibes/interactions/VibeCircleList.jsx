@@ -11,7 +11,13 @@ function normalizeVibe(item) {
 
   const name = item.name || item.targetVibe?.name || item.vibe?.name || "Vibe";
   const type = item.type || item.targetVibe?.type || item.vibe?.type || "";
-  const photo = item.photo || item.targetVibe?.photo || item.vibe?.photo || "";
+
+  let photo = item.photo || item.targetVibe?.photo || item.vibe?.photo || "";
+
+  if (photo && photo.includes("/uploads")) {
+    const idx = photo.indexOf("/uploads");
+    photo = photo.slice(idx);
+  }
 
   return { id, name, type, photo };
 }
