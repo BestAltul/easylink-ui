@@ -7,7 +7,7 @@ import { BsShareFill } from "react-icons/bs";
 import { trackEvent } from "@/services/amplitude";
 
 import Avatar from "@/features/vibes/tools/Avatar";
-import HoursBlock from "@/features/vibes/tools/HoursBlock";
+import ExtraBlock from "@/components/InfoBlocks/ExtraBlock";
 import ContactButton from "@/features/vibes/tools/ContactButton";
 import ShareModal from "@/features/vibes/tools/ShareModal";
 import useShareModal from "@/components/common/hooks/useShareModal";
@@ -18,6 +18,10 @@ import OfferCard from "@/features/vibes/offers/OfferCard";
 
 import useItemsByVibeId from "@/features/vibes/catalog/useItemByVibeId";
 import useVisibilityToggle from "@/features/vibes/useVisibilityToggle.jsx";
+import BusinessTabs from "@/features/vibes/forms/business/BusinessTabs.jsx";
+
+// подключаем те же классы vv-label/vv-code, что и в VibePreview
+import "@/features/vibes/components/VibePreview.css";
 
 export default function BusinessVibeOwnerView({
   id,
@@ -38,18 +42,15 @@ export default function BusinessVibeOwnerView({
   const { items, itemsLoading } = useItemsByVibeId(id, token);
   const [activeTab, setActiveTab] = useState("main");
   const offers = useGetOffersByVibeId(id, token);
-  const itemIds = Array.isArray(items) ? items.map(i => i.id) : [];
+  const itemIds = Array.isArray(items) ? items.map((i) => i.id) : [];
 
   const [toast, setToast] = useState("");
   const showToast = (msg) => {
     setToast(msg);
     setTimeout(() => setToast(""), 2000);
   };
-  console.debug("[OwnerView] visible:", visible, "publicCode:", publicCode);
 
-  const shareUrl = id
-    ? `${window.location.origin}/view/${id}`
-    : window.location.href;
+  const shareUrl = id ? `${window.location.origin}/view/${id}` : window.location.href;
 
   const copyToClipboard = async (text) => {
     try {
@@ -65,11 +66,8 @@ export default function BusinessVibeOwnerView({
       showToast(t("Copied!", { defaultValue: "Copied!" }));
     }
   };
-  const [vibeVisible, code, visibilityButton] = useVisibilityToggle(
-    id,
-    visible,
-    publicCode
-  );
+
+  const [vibeVisible, code, visibilityButton] = useVisibilityToggle(id, visible, publicCode);
 
   const handleShare = async () => {
     try {
@@ -93,20 +91,43 @@ export default function BusinessVibeOwnerView({
     }
   }, [location.search]);
 
-  // ===== Share button + modal (just as in VibePreview) =====
+  // Share button + modal (как в VibePreview)
   const {
     showShare,
-    copied,
+    copied: modalCopied,
     handleCopy,
     handleOpen,
     handleClose,
-    ShareModalProps
+    ShareModalProps,
   } = useShareModal(shareUrl, id, "VibeContentForCustomers");
 
-  return (
-    <div className="d-flex flex-column align-items-center w-100">
+  const [codeCopied, setCodeCopied] = useState(false);
+  const handleCopyCode = async (text) => {
+    try {
+      await navigator.clipboard.writeText(String(text));
+    } catch {
+      const ta = document.createElement("textarea");
+      ta.value = String(text);
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      document.body.removeChild(ta);
+    }
+    setCodeCopied(true);
+    setTimeout(() => setCodeCopied(false), 1500);
+  };
+
+  const setTab = (tab) => {
+    setActiveTab(tab);
+    const qp = new URLSearchParams(location.search);
+    qp.set("tab", tab);
+    navigate({ search: `?${qp.toString()}` }, { replace: true });
+  };
+
+  const topSlot = (
+    <>
+      {/* верхняя панель: только кнопка Share справа */}
       <div className="position-relative w-100" style={{ minHeight: 0 }}>
-        Share button
         <div style={{ position: "absolute", top: 16, right: 16 }}>
           <button
             className="btn btn-light shadow-sm"
@@ -116,82 +137,57 @@ export default function BusinessVibeOwnerView({
                 vibeId: id,
                 name,
                 publicCode,
-                location: "VibePreview",
+                location: "BusinessVibeOwnerView",
               });
               handleOpen();
             }}
+            title={t("vibe_preview:share", "Share")}
           >
             <BsShareFill size={20} style={{ color: "#627bf7" }} />
           </button>
         </div>
       </div>
 
-      {/* Visibility + Share code (same as в VibeContent) */}
+      {/* секция Visibility в едином стиле с VibePreview */}
       <div className="mb-3 w-100 px-3">
-        <div className="d-flex align-items-center gap-3">
-          <div className="d-flex align-items-center gap-2">
-            {visibilityButton}
-            {vibeVisible && code && (
-              <div
-                className="text-primary fw-bold d-flex align-items-center"
-                style={{ fontSize: "1.15rem" }}
-                onClick={() => {
-                  navigator.clipboard
-                    .writeText(String(code))
-                    .then(() => showToast(t("Copied!", { defaultValue: "Copied!" })));
-                }}
+        <div className="vv-label">{t("vibe_preview:sharing_section", "Visibility")}</div>
+        <div className="vv-wrap visibility-compact">
+          {visibilityButton}
+          {vibeVisible && code && (
+            <>
+              <button
+                type="button"
+                className="vv-code"
+                onClick={() => handleCopyCode(code)}
                 title={t("Click to copy", { defaultValue: "Click to copy" })}
-                role="button"
               >
-                <span style={{ marginRight: 4 }}>
+                <span className="vv-code-label">
                   {t("vibe_content:share_code_label", "Share code")}
                 </span>
-                <strong>{code}</strong>
-              </div>
-            )}
-          </div>
+                <span className="vv-code-value">{code}</span>
+              </button>
+              {codeCopied && (
+                <span className="vv-copied" role="status" aria-live="polite">
+                  {t("Copied!", { defaultValue: "Copied!" })}
+                </span>
+              )}
+            </>
+          )}
         </div>
       </div>
+    </>
+  );
 
-      
-      {/* Tabs */}
-      <ul className="nav nav-tabs mb-4" role="tablist">
-        <li className="nav-item" role="presentation">
-          <button
-            className={`nav-link ${activeTab === "main" ? "active" : ""}`}
-            onClick={() => setActiveTab("main")}
-            type="button"
-            role="tab"
-          >
-            {t("Main")}
-          </button>
-        </li>
-        <li className="nav-item" role="presentation">
-          <button
-            className={`nav-link ${activeTab === "offers" ? "active" : ""}`}
-            onClick={() => setActiveTab("offers")}
-            type="button"
-            role="tab"
-          >
-            {t("Offers")}
-          </button>
-        </li>
-        <li className="nav-item" role="presentation">
-          <button
-            className={`nav-link ${activeTab === "menu" ? "active" : ""}`}
-            onClick={() => setActiveTab("menu")}
-            type="button"
-            role="tab"
-          >
-            {t("Menu")}
-          </button>
-        </li>
-      </ul>
-
-      <div className="tab-content w-100">
-        {/* MAIN */}
-        {activeTab === "main" && (
-          <div className="tab-pane fade show active">
+  return (
+    <div className="d-flex flex-column align-items-center w-100">
+      <BusinessTabs
+        t={t}
+        activeTab={activeTab}
+        onTabChange={setTab}
+        topSlot={topSlot}
+        // MAIN tab content
+        renderMain={() => (
+          <>
             <Avatar name={name} photoFile={photoFile} />
             <h3 className="mb-0" style={{ fontWeight: 700 }}>
               {name || t("Your Name", { defaultValue: "Your Name" })}
@@ -245,12 +241,11 @@ export default function BusinessVibeOwnerView({
             {extraBlocks?.length > 0 && (
               <div className="w-100 mt-2">
                 {extraBlocks.map((block, i) => (
-                  <HoursBlock key={block.label + i} block={block} />
+                  <ExtraBlock key={block.label + i} block={block} />
                 ))}
               </div>
             )}
 
-            {/* Share / QR for owner */}
             <div className="mt-4 text-center d-grid gap-2">
               <div className="d-flex justify-content-center gap-3 flex-wrap">
                 <div>
@@ -270,12 +265,10 @@ export default function BusinessVibeOwnerView({
                 </div>
               )}
             </div>
-          </div>
+          </>
         )}
-
-        {/* OFFERS */}
-        {activeTab === "offers" && (
-          <div className="tab-pane fade show active w-100">
+        renderOffers={() => (
+          <>
             {offers?.length > 0 ? (
               <div className="d-grid gap-3">
                 {offers.map((offer) => (
@@ -284,11 +277,7 @@ export default function BusinessVibeOwnerView({
                     offer={offer}
                     onDoubleClick={() =>
                       navigate(`/offers/${offer.id}`, {
-                        state: {
-                          vibeId: id,
-                          returnTo: `/vibes/${id}`,
-                          tab: "offers",
-                        },
+                        state: { vibeId: id, returnTo: `/vibes/${id}`, tab: "offers" },
                       })
                     }
                   />
@@ -312,44 +301,37 @@ export default function BusinessVibeOwnerView({
                 + {t("Add Offer", { defaultValue: "Add Offer" })}
               </button>
             </div>
-          </div>
+          </>
         )}
+        renderMenu={() => (
+          <MenuTab
+            t={t}
+            loadingItems={itemsLoading}
+            items={items}
+            itemIds={itemIds}
+            vibeId={id}
+            onAddItem={() =>
+              navigate("/catalog/new", {
+                state: { vibeId: id, returnTo: `/vibes/${id}`, tab: "menu" },
+              })
+            }
+            onEditItem={(it) =>
+              navigate(`/catalog/${it.id}/edit`, {
+                state: {
+                  vibeId: id,
+                  returnTo: `/vibes/${id}`,
+                  tab: "menu",
+                  itemIds,
+                  currentIndex: itemIds.indexOf(it.id),
+                },
+              })
+            }
+          />
+        )}
+      />
 
-        {/* MENU */}
-        {activeTab === "menu" && (
-          <div className="tab-pane fade show active">
-            <MenuTab
-              t={t}
-              loadingItems={itemsLoading}
-              items={items}
-              itemIds={itemIds}
-              vibeId={id}
-              onAddItem={() =>
-                navigate("/catalog/new", {
-                  state: {
-                    vibeId: id,
-                    returnTo: `/vibes/${id}`,
-                    tab: "menu",
-                  },
-                })
-              }
-              onEditItem={(it) =>
-                navigate(`/catalog/${it.id}/edit`, {
-                  state: {
-                    vibeId: id,
-                    returnTo: `/vibes/${id}`,
-                    tab: "menu",
-                    itemIds,
-                    currentIndex: itemIds.indexOf(it.id),
-                  },
-                })
-              }
-            />
-          </div>
-        )}
-      </div>
       {/* Share modal */}
-      <ShareModal {...ShareModalProps} />
+      <ShareModal {...ShareModalProps} copied={modalCopied} />
     </div>
   );
 }

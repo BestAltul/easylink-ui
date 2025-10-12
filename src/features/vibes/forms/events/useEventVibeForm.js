@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createVibe } from "@/api/vibeApi";
 
 export function useEventVibeForm({ navigate, initialData = {}, mode = "create", onSave }) {
@@ -10,6 +10,19 @@ export function useEventVibeForm({ navigate, initialData = {}, mode = "create", 
   const [showModal, setShowModal] = useState(false);
   const [showBlockModal, setShowBlockModal] = useState(false);
   const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    setContacts((prev) =>
+      (prev || []).map((c) => ({
+        ...c,
+        value:
+          typeof c.value === "string"
+            ? c.value
+            : (c?.value && typeof c.value === "object" && "value" in c.value
+                ? String(c.value.value ?? "")
+                : String(c.value ?? "")),
+      }))
+    );
+  }, []);
 
   const addContact = (type) => {
     if (contacts.some((c) => c.type === type)) return setShowModal(false);
@@ -18,8 +31,15 @@ export function useEventVibeForm({ navigate, initialData = {}, mode = "create", 
   };
 
   const handleContactChange = (i, val) => {
+    const str =
+      typeof val === "string"
+        ? val
+        : (val && typeof val === "object" && "value" in val
+            ? String(val.value ?? "")
+            : String(val ?? ""));
     const updated = [...contacts];
-    updated[i].value = val;
+    if (!updated[i]) return;
+    updated[i] = { ...updated[i], value: str };
     setContacts(updated);
   };
 
@@ -31,7 +51,8 @@ export function useEventVibeForm({ navigate, initialData = {}, mode = "create", 
 
   const handleBlockChange = (i, val) => {
     const updated = [...extraBlocks];
-    updated[i].value = val;
+    if (!updated[i]) return;
+    updated[i].value = typeof val === "string" ? val : String(val ?? "");
     setExtraBlocks(updated);
   };
 
@@ -48,13 +69,13 @@ export function useEventVibeForm({ navigate, initialData = {}, mode = "create", 
       ...contacts.map((c) => ({
         ...(c.id ? { id: c.id } : {}),
         type: c.type,
-        value: c.value,
+        value: c.value,           
         label: c.type,
       })),
       ...extraBlocks.map((b) => ({
         ...(b.id ? { id: b.id } : {}),
         type: b.type,
-        value: typeof b.value === "object" ? JSON.stringify(b.value) : b.value,
+        value: b.value,          
         label: b.label || null,
       })),
     ];
@@ -63,17 +84,17 @@ export function useEventVibeForm({ navigate, initialData = {}, mode = "create", 
       id: initialData.id,
       name,
       description,
-      type: "OTHER", 
+      type: "OTHER",             
       fieldsDTO,
     };
 
     try {
       setLoading(true);
       if (mode === "edit" && onSave) {
-        await onSave(dto); 
+        await onSave(dto);
       } else {
         const token = localStorage.getItem("jwt");
-        await createVibe(dto, token); 
+        await createVibe(dto, token);
         alert("Vibe created!");
         navigate("/my-vibes");
       }
@@ -85,20 +106,13 @@ export function useEventVibeForm({ navigate, initialData = {}, mode = "create", 
   };
 
   return {
-    name,
-    setName,
-    description,
-    setDescription,
-    photoFile,
-    setPhotoFile,
-    contacts,
-    setContacts,
-    showModal,
-    setShowModal,
-    extraBlocks,
-    setExtraBlocks,
-    showBlockModal,
-    setShowBlockModal,
+    name, setName,
+    description, setDescription,
+    photoFile, setPhotoFile,
+    contacts, setContacts,
+    showModal, setShowModal,
+    extraBlocks, setExtraBlocks,
+    showBlockModal, setShowBlockModal,
     loading,
     addContact,
     handleContactChange,

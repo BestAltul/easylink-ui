@@ -1,9 +1,11 @@
-function Avatar({ name, photoFile }) {
+import React from "react";
+
+function Avatar({ name, photoUrl, size = 94 }) {
   return (
     <div
       style={{
-        width: 94,
-        height: 94,
+        width: size,
+        height: size,
         borderRadius: "50%",
         background: "linear-gradient(135deg, #e6f0fc 70%, #f6eaff 100%)",
         display: "flex",
@@ -14,9 +16,9 @@ function Avatar({ name, photoFile }) {
         marginTop: -8,
       }}
     >
-      {photoFile ? (
+      {photoUrl ? (
         <img
-          src={URL.createObjectURL(photoFile)}
+          src={photoUrl}
           alt="avatar"
           style={{ width: "100%", height: "100%", objectFit: "cover" }}
         />
@@ -28,4 +30,5 @@ function Avatar({ name, photoFile }) {
     </div>
   );
 }
+
 export default Avatar;

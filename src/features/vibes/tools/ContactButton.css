@@ -1,0 +1,4 @@
+.contact-btn.contact-btn--editing {
+  outline: 2px solid rgba(98, 123, 247, .25);
+  box-shadow: 0 0 0 4px rgba(98, 123, 247, .08);
+}

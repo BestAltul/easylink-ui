@@ -2,7 +2,6 @@ import { useState } from "react";
 import { createVibe } from "@/api/vibeApi";
 import parseFields from "@/data/parseFields";
 
-// локальные утилиты
 const EMPTY_HOURS = {
   monday: "", tuesday: "", wednesday: "",
   thursday: "", friday: "", saturday: "", sunday: ""
@@ -11,21 +10,14 @@ const EMPTY_HOURS = {
 const isHoursKey = (s) => String(s || "").toLowerCase() === "hours";
 
 export function useBusinessVibeForm({ navigate, initialData = {}, mode = "create", onSave }) {
-  // 1) берём всё из fieldsDTO, если оно есть
   const parsed = initialData.fieldsDTO ? parseFields(initialData.fieldsDTO) : {};
 
   const [name, setName] = useState(initialData.name || parsed.name || "");
   const [description, setDescription] = useState(initialData.description || parsed.description || "");
   const [photoFile, setPhotoFile] = useState(initialData.photo || null);
 
-  const [contacts, setContacts] = useState(
-    initialData.contacts || parsed.contacts || []
-  );
-
-  // важное место: extraBlocks из parseFields уже содержит hours как объект
-  const [extraBlocks, setExtraBlocks] = useState(
-    initialData.extraBlocks || parsed.extraBlocks || []
-  );
+  const [contacts, setContacts] = useState(initialData.contacts || parsed.contacts || []);
+  const [extraBlocks, setExtraBlocks] = useState(initialData.extraBlocks || parsed.extraBlocks || []);
 
   const [showModal, setShowModal] = useState(false);
   const [showBlockModal, setShowBlockModal] = useState(false);
@@ -52,18 +44,15 @@ export function useBusinessVibeForm({ navigate, initialData = {}, mode = "create
 
   // ===== Info blocks (incl. Hours) =====
   const hasHours = () =>
-    extraBlocks.some(
-      (b) => isHoursKey(b.type) || isHoursKey(b.label)
-    );
+    extraBlocks.some((b) => isHoursKey(b.type) || isHoursKey(b.label));
 
-  // универсальный добавлятель инфо-блока (вызывай его из onSelect модалки)
   const addInfoBlock = (block) => {
     const key = String(block?.key || "").toLowerCase();
     const label = block?.label || "";
 
     const wantsHours = isHoursKey(key) || isHoursKey(label);
     if (wantsHours) {
-      if (hasHours()) return; // не добавляем второй раз
+      if (hasHours()) return; // only one hours block allowed
       setExtraBlocks((prev) => [
         ...prev,
         { type: "hours", label: "Hours", value: { ...EMPTY_HOURS } },
@@ -83,7 +72,6 @@ export function useBusinessVibeForm({ navigate, initialData = {}, mode = "create
   };
 
   const handleBlockChange = (i, val) => {
-    // val может быть строкой (обычные блоки) или объектом (hours)
     setExtraBlocks((prev) => {
       const next = [...prev];
       next[i] = { ...next[i], value: val };
@@ -97,52 +85,68 @@ export function useBusinessVibeForm({ navigate, initialData = {}, mode = "create
 
   // ===== Submit =====
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    // кнопка вызывает без события → не падаем
+    if (e?.preventDefault) e.preventDefault();
 
-    // собираем fieldsDTO: контакты + инфо-блоки
     const fieldsDTO = [
-      // контакты (как раньше)
       ...contacts.map((c) => ({
         ...(c.id ? { id: c.id } : {}),
         type: c.type,
         value: c.value,
         label: c.type,
       })),
-
-      // инфо-блоки
       ...extraBlocks.map((b) => {
         const isHours = isHoursKey(b.type) || isHoursKey(b.label);
         const rawValue = isHours ? (b.value || EMPTY_HOURS) : b.value;
-
         return {
           ...(b.id ? { id: b.id } : {}),
           type: isHours ? "hours" : (b.type || "custom"),
           label: b.label || (isHours ? "Hours" : "Custom"),
-          // важное: сериализуем объект часов в строку JSON
           value: typeof rawValue === "object" ? JSON.stringify(rawValue) : rawValue,
         };
       }),
     ];
 
-    const dto = {
-      id: initialData.id,
+    // базовый DTO для edit/create
+    const base = {
       name,
       description,
       type: "BUSINESS",
       fieldsDTO,
+      // photoFile можно обработать отдельно, если API ждёт multipart
     };
 
     try {
       setLoading(true);
-      if (mode === "edit" && onSave) {
-        await onSave(dto); // UPDATE
+
+      if (mode === "edit") {
+        const dto = { ...base, id: initialData.id }; // в edit передаём id
+        if (onSave) {
+          await onSave(dto); // внешний апдейтер сам решает, что делать
+        }
+        return;
+      }
+
+      // CREATE: без id в теле
+      const token = localStorage.getItem("jwt");
+      const created = await createVibe(base, token);
+
+      // пытаемся вытащить id из ответа
+      const newId = created?.id || created?.vibeId || created?.vibe?.id;
+
+      if (onSave) {
+        onSave(created);
+      }
+
+      if (newId) {
+        // сразу ведём на страницу созданного вайба (edit/owner)
+        navigate(`/vibes/${newId}`);
       } else {
-        const token = localStorage.getItem("jwt");
-        await createVibe(dto, token); // CREATE
-        alert("Vibe created!");
+        // fallback
         navigate("/my-vibes");
       }
     } catch (err) {
+      // можно заменить на твой toast
       alert("Error saving Vibe");
     } finally {
       setLoading(false);
