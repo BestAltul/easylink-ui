@@ -9,7 +9,7 @@ export default function VibeCircleCard({ vibe }) {
     ? `${API_BASE}${vibe.photo}`
     : vibe.photo || "/default-avatar.png";
 
-  const handleOpen = () => navigate(`/vibes/${vibe.id}`);
+  const handleOpen = () => navigate(`/view/${vibe.id}`);
 
   return (
     <div
