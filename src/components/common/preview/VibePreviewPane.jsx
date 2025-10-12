@@ -1,28 +1,27 @@
 import React from "react";
 import VibePreview from "@/features/vibes/components/VibePreview";
-export default function VibePreviewPane({
-  name,
-  description,
-  photo,
-  contacts,
-  extraBlocks,
-  type = "PERSONAL",
-}) {
+
+const isUUID = (s) =>
+  typeof s === "string" &&
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(s);
+
+export default function VibePreviewPane(props) {
+  const rawId = props?.id;
+  const canUseId = isUUID(rawId);
+
+  const safeProps = {
+    ...props,
+    editMode: true,
+    id: canUseId ? rawId : undefined,
+    ownerActionsEnabled: !!canUseId,
+  };
+
   return (
     <div
-      style={{ flex: "1 1 400px", minWidth: 300, maxWidth: 460 }}
-      className="d-none d-lg-block"
+      className="w-100"
+      style={{ maxWidth: 900, margin: "0 auto", padding: "1rem 0" }}
     >
-      <div className="sticky-top" style={{ top: 90, zIndex: 1 }}>
-        <VibePreview
-          name={name}
-          description={description}
-          photo={photo}
-          contacts={contacts}
-          type={type}
-          extraBlocks={extraBlocks}
-        />
-      </div>
+      <VibePreview {...safeProps} />
     </div>
   );
 }

@@ -1,0 +1,9 @@
+.nav.tabs-narrow {
+  width: fit-content;       
+  margin: 0 auto 1rem;      
+
+}
+
+@supports not (width: fit-content) {
+  .nav.tabs-narrow { width: max-content; }
+}
