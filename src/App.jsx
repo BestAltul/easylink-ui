@@ -4,6 +4,7 @@ import "./App.css";
 import Header from "./shared/ui/Header";
 import Footer from "./shared/ui/Footer";
 import NarrowPage from "./components/common/NarrowPage";
+import InteractionsHome from "./features/vibes/interactions/InteractionsHome";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./i18n";
@@ -20,14 +21,16 @@ import UserVibes from "./features/vibes/UserVibes";
 import VibePage from "./features/vibes/VibePage";
 import VibeView from "./features/vibes/VibeView/VibeView";
 import InteractionsPage from "./features/vibes/interactions/InteractionsPage";
-import InteractionsPageBasic from "./features/vibes/interactions/InteractionsPageBasic";
+import InteractionsPageBasic from "./features/vibes/interactions/MyCircle";
 import OfferForm from "./features/vibes/offers/OfferForm";
 import ViewOfferForm from "./features/vibes/offers/ViewOfferForm";
 import OfferViewAnalytics from "@/analytics/OfferViewAnalytics";
 import OfferTableUsers from "./features/vibes/offers/OffersTableForUsers";
+import MyCircle from "./features/vibes/interactions/MyCircle";
+import MyOffers from "./features/vibes/interactions/MyOffers";
 
 import EmailVerificationSent from "@/features/auth/EmailVerificationSent";
-import EmailVerified from "@/features/auth/EmailVerified"; 
+import EmailVerified from "@/features/auth/EmailVerified";
 
 import CatalogForm from "./features/vibes/catalog/catalogForm";
 
@@ -70,7 +73,9 @@ function App() {
         <Route path="/my-vibes" element={<UserVibes />} />
         <Route path="/vibes" element={<UserVibes />} />
         <Route path="/vibes/:id" element={<VibePage />} />
-        <Route path="/vibes/:id/interactions" element={<InteractionsPage />} />
+        <Route path="/vibes/:id/interactions" element={<InteractionsHome />} />
+        <Route path="/vibes/:id/interactions/circle" element={<MyCircle />} />
+        <Route path="/vibes/:id/interactions/offers" element={<MyOffers />} />
         <Route
           path="/vibes/:id/interactions-basic"
           element={<InteractionsPageBasic />}
@@ -88,12 +93,15 @@ function App() {
             </>
           }
         />
-        <Route path="/email-verification-sent" element={<EmailVerificationSent />} />
+        <Route
+          path="/email-verification-sent"
+          element={<EmailVerificationSent />}
+        />
         <Route path="/email-verified" element={<EmailVerified />} />
 
         <Route path="/catalog/new" element={<CatalogForm />} />
         <Route path="/catalog/:id/edit" element={<CatalogForm />} />
-        
+
         <Route path="/terms" element={<Terms />} />
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/ads" element={<Ads />} />
