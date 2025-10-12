@@ -3,8 +3,13 @@ import { createVibe } from "@/api/vibeApi";
 import parseFields from "@/data/parseFields";
 
 const EMPTY_HOURS = {
-  monday: "", tuesday: "", wednesday: "",
-  thursday: "", friday: "", saturday: "", sunday: ""
+  monday: "",
+  tuesday: "",
+  wednesday: "",
+  thursday: "",
+  friday: "",
+  saturday: "",
+  sunday: "",
 };
 
 const isHoursKey = (s) => String(s || "").toLowerCase() === "hours";
@@ -13,8 +18,10 @@ export function useBusinessVibeForm({ navigate, initialData = {}, mode = "create
   const parsed = initialData.fieldsDTO ? parseFields(initialData.fieldsDTO) : {};
 
   const [name, setName] = useState(initialData.name || parsed.name || "");
-  const [description, setDescription] = useState(initialData.description || parsed.description || "");
-  const [photoFile, setPhotoFile] = useState(initialData.photo || null);
+  const [description, setDescription] = useState(
+    initialData.description || parsed.description || ""
+  );
+  const [photo, setPhoto] = useState(initialData.photo || null);
 
   const [contacts, setContacts] = useState(initialData.contacts || parsed.contacts || []);
   const [extraBlocks, setExtraBlocks] = useState(initialData.extraBlocks || parsed.extraBlocks || []);
@@ -52,7 +59,7 @@ export function useBusinessVibeForm({ navigate, initialData = {}, mode = "create
 
     const wantsHours = isHoursKey(key) || isHoursKey(label);
     if (wantsHours) {
-      if (hasHours()) return; // only one hours block allowed
+      if (hasHours()) return;
       setExtraBlocks((prev) => [
         ...prev,
         { type: "hours", label: "Hours", value: { ...EMPTY_HOURS } },
@@ -95,12 +102,14 @@ export function useBusinessVibeForm({ navigate, initialData = {}, mode = "create
         value: c.value,
         label: c.type,
       })),
+
       ...extraBlocks.map((b) => {
         const isHours = isHoursKey(b.type) || isHoursKey(b.label);
-        const rawValue = isHours ? (b.value || EMPTY_HOURS) : b.value;
+        const rawValue = isHours ? b.value || EMPTY_HOURS : b.value;
+
         return {
           ...(b.id ? { id: b.id } : {}),
-          type: isHours ? "hours" : (b.type || "custom"),
+          type: isHours ? "hours" : b.type || "custom",
           label: b.label || (isHours ? "Hours" : "Custom"),
           value: typeof rawValue === "object" ? JSON.stringify(rawValue) : rawValue,
         };
@@ -112,9 +121,11 @@ export function useBusinessVibeForm({ navigate, initialData = {}, mode = "create
       name,
       description,
       type: "BUSINESS",
+      photo: photoUrl,
       fieldsDTO,
       // photoFile можно обработать отдельно, если API ждёт multipart
     };
+    console.log("2 DTO before save:", dto);
 
     try {
       setLoading(true);
@@ -146,8 +157,7 @@ export function useBusinessVibeForm({ navigate, initialData = {}, mode = "create
         navigate("/my-vibes");
       }
     } catch (err) {
-      // можно заменить на твой toast
-      alert("Error saving Vibe");
+      alert(err.message || "Error saving Vibe");
     } finally {
       setLoading(false);
     }
@@ -155,13 +165,20 @@ export function useBusinessVibeForm({ navigate, initialData = {}, mode = "create
 
   return {
     // state
-    name, setName,
-    description, setDescription,
-    photoFile, setPhotoFile,
-    contacts, setContacts,
-    extraBlocks, setExtraBlocks,
-    showModal, setShowModal,
-    showBlockModal, setShowBlockModal,
+    name,
+    setName,
+    description,
+    setDescription,
+    photo,
+    setPhoto,
+    contacts,
+    setContacts,
+    extraBlocks,
+    setExtraBlocks,
+    showModal,
+    setShowModal,
+    showBlockModal,
+    setShowBlockModal,
     loading,
 
     // contacts api

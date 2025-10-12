@@ -11,8 +11,8 @@ export default function VibeContent({
   id,
   name,
   description,
-  photoFile,
-  contacts = [],
+  photo,
+  contacts,
   type,
   extraBlocks = [],
   visible,
@@ -35,7 +35,9 @@ export default function VibeContent({
   const { t } = useTranslation("vibe_content");
 
   const slug = (type || "").toString().toLowerCase();
-  const pretty = slug ? slug.charAt(0).toUpperCase() + slug.slice(1) : t("default_type");
+  const pretty = slug
+    ? slug.charAt(0).toUpperCase() + slug.slice(1)
+    : t("default_type");
   const typeLabel = slug ? t(`types.${slug}`, pretty) : t("default_type");
 
   return (

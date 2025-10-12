@@ -17,7 +17,7 @@ export default function VibePreview({
   id,
   name,
   description,
-  photoFile,
+  photo,
   contacts,
   type,
   extraBlocks: extraBlocksProp,

@@ -12,18 +12,23 @@ export default function useVibeSave({ token, vibe, setVibe, setEditing }) {
         alert(t("vibe.error_no_id"));
         return;
       }
-      const cleanFields = updated.fieldsDTO.map(field => {
+      const cleanFields = updated.fieldsDTO.map((field) => {
         const isNew = !field.id || field.id.startsWith("temp-");
         return isNew ? { ...field, id: undefined } : field;
       });
 
       try {
-        await updateVibe(currentId, {
-          id: currentId,
-          name: updated.name,
-          description: updated.description,
-          fieldsDTO: cleanFields,
-        }, token);
+        await updateVibe(
+          currentId,
+          {
+            id: currentId,
+            name: updated.name,
+            description: updated.description,
+            photo: updated.photo,
+            fieldsDTO: cleanFields,
+          },
+          token
+        );
 
         const fresh = await getVibe(currentId, token);
         setVibe(fresh);

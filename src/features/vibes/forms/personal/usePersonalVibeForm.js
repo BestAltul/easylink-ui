@@ -10,7 +10,7 @@ export function usePersonalVibeForm({
 }) {
   const [name, setName] = useState(initialData.name || "");
   const [description, setDescription] = useState(initialData.description || "");
-  const [photoFile, setPhotoFile] = useState(initialData.photo || null);
+  const [photo, setPhoto] = useState(initialData.photo || null);
   const [contacts, setContacts] = useState(initialData.contacts || []);
   const [extraBlocks, setExtraBlocks] = useState(initialData.extraBlocks || []);
   const [showModal, setShowModal] = useState(false);
@@ -54,9 +54,7 @@ export function usePersonalVibeForm({
   };
 
   const removeContact = (i) => {
-    const updated = [...contacts];
-    updated.splice(i, 1);
-    setContacts(updated);
+    setContacts((prev) => prev.filter((_, idx) => idx !== i));
   };
 
   // --- EXTRA BLOCKS ---
@@ -67,9 +65,7 @@ export function usePersonalVibeForm({
   };
 
   const removeBlock = (i) => {
-    const updated = [...extraBlocks];
-    updated.splice(i, 1);
-    setExtraBlocks(updated);
+    setExtraBlocks((prev) => prev.filter((_, idx) => idx !== i));
   };
 
   const onOpenBlockPicker = (indexOrNull) => {
@@ -111,11 +107,29 @@ export function usePersonalVibeForm({
       })),
     ];
 
+    let photoUrl = initialData.photo || null;
+
+    if (photo instanceof File) {
+      const token = localStorage.getItem("jwt");
+      const formData = new FormData();
+      formData.append("file", photo);
+
+      const uploadRes = await fetch("/api/v3/upload", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
+
+      if (!uploadRes.ok) throw new Error("Photo upload failed");
+      photoUrl = await uploadRes.text();
+    }
+
     const dto = {
       id: initialData.id,
       name,
       description,
       type: "PERSONAL",
+      photo: photoUrl,
       fieldsDTO,
     };
 
@@ -130,7 +144,8 @@ export function usePersonalVibeForm({
         navigate("/my-vibes");
       }
     } catch (err) {
-      alert("Error saving Vibe");
+      alert(err.message || "Error saving Vibe");
+      console.error(err);
     } finally {
       setLoading(false);
     }
@@ -141,8 +156,8 @@ export function usePersonalVibeForm({
     setName,
     description,
     setDescription,
-    photoFile,
-    setPhotoFile,
+    photo,
+    setPhoto,
     contacts,
     setContacts,
     showModal,

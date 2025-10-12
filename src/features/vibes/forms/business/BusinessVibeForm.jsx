@@ -1,5 +1,9 @@
-// src/features/vibes/forms/business/BusinessVibeForm.jsx
-import React from "react";
+// ==============================
+// File: src/features/vibes/business/BusinessVibeForm/index.jsx
+// Orchestrator component: owns routing, tabs, data hooks, and modals.
+// ==============================
+
+import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 

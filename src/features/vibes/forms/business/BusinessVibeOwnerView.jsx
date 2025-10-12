@@ -27,7 +27,7 @@ export default function BusinessVibeOwnerView({
   id,
   name,
   description,
-  photoFile,
+  photo,
   contacts,
   type = "BUSINESS",
   extraBlocks,
@@ -73,7 +73,8 @@ export default function BusinessVibeOwnerView({
     try {
       if (navigator.share) {
         await navigator.share({
-          title: name || t("My business card", { defaultValue: "My business card" }),
+          title:
+            name || t("My business card", { defaultValue: "My business card" }),
           text: description || "",
           url: shareUrl,
         });
@@ -211,7 +212,9 @@ export default function BusinessVibeOwnerView({
             >
               {description || (
                 <span style={{ color: "#bbb" }}>
-                  {t("Description goes here...", { defaultValue: "Description goes here..." })}
+                  {t("Description goes here...", {
+                    defaultValue: "Description goes here...",
+                  })}
                 </span>
               )}
             </div>
@@ -229,7 +232,11 @@ export default function BusinessVibeOwnerView({
             <div className="d-flex flex-wrap gap-2 justify-content-center w-100">
               {contacts?.length ? (
                 contacts.map((c, i) => (
-                  <ContactButton key={c.type + i} type={c.type} value={c.value} />
+                  <ContactButton
+                    key={c.type + i}
+                    type={c.type}
+                    value={c.value}
+                  />
                 ))
               ) : (
                 <span className="text-muted" style={{ fontSize: 15 }}>
@@ -294,7 +301,11 @@ export default function BusinessVibeOwnerView({
                 className="btn btn-outline-primary"
                 onClick={() =>
                   navigate("/offers/new", {
-                    state: { vibeId: id, returnTo: `/vibes/${id}`, tab: "offers" },
+                    state: {
+                      vibeId: id,
+                      returnTo: `/vibes/${id}`,
+                      tab: "offers",
+                    },
                   })
                 }
               >

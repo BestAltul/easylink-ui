@@ -1,10 +1,15 @@
 import { useEffect, useState } from "react";
 import { createVibe } from "@/api/vibeApi";
 
-export function useEventVibeForm({ navigate, initialData = {}, mode = "create", onSave }) {
+export function useEventVibeForm({
+  navigate,
+  initialData = {},
+  mode = "create",
+  onSave,
+}) {
   const [name, setName] = useState(initialData.name || "");
   const [description, setDescription] = useState(initialData.description || "");
-  const [photoFile, setPhotoFile] = useState(initialData.photo || null);
+  const [photo, setPhoto] = useState(initialData.photo || null);
   const [contacts, setContacts] = useState(initialData.contacts || []);
   const [extraBlocks, setExtraBlocks] = useState(initialData.extraBlocks || []);
   const [showModal, setShowModal] = useState(false);
@@ -99,20 +104,27 @@ export function useEventVibeForm({ navigate, initialData = {}, mode = "create", 
         navigate("/my-vibes");
       }
     } catch (err) {
-      alert("Error saving Vibe");
+      alert(err.message || "Error saving Vibe");
     } finally {
       setLoading(false);
     }
   };
 
   return {
-    name, setName,
-    description, setDescription,
-    photoFile, setPhotoFile,
-    contacts, setContacts,
-    showModal, setShowModal,
-    extraBlocks, setExtraBlocks,
-    showBlockModal, setShowBlockModal,
+    name,
+    setName,
+    description,
+    setDescription,
+    photo,
+    setPhoto,
+    contacts,
+    setContacts,
+    showModal,
+    setShowModal,
+    extraBlocks,
+    setExtraBlocks,
+    showBlockModal,
+    setShowBlockModal,
     loading,
     addContact,
     handleContactChange,

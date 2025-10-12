@@ -70,7 +70,7 @@ export default function PersonalVibeForm({
         id={mode === "edit" ? initialData?.id : undefined}   
         name={name}
         description={description}
-        photoFile={photoFile}
+        photo={photo}
         contacts={contacts}
         extraBlocks={extraBlocks}
         type="PERSONAL"

@@ -22,8 +22,8 @@ export default function VibeView() {
       //   "Content-Type": "application/json",
       //   ...(token && { Authorization: `Bearer ${token}` }),
       // },
-            headers: {
-        "Content-Type": "application/json",        
+      headers: {
+        "Content-Type": "application/json",
       },
     })
       .then((res) => (res.ok ? res.json() : Promise.reject(res)))
@@ -34,6 +34,8 @@ export default function VibeView() {
       .catch(() => setError("Vibe not found for "))
       .finally(() => setLoading(false));
   }, [id, token]);
+
+  console.log("VibeView render", { vibe, loading, error });
 
   if (loading) return <div className="text-center py-5">Loading...</div>;
   if (error)
@@ -57,7 +59,7 @@ export default function VibeView() {
             id={vibe.id}
             name={vibe.name}
             description={vibe.description || description}
-            photoFile={vibe.photoFile}
+            photo={vibe.photo}
             contacts={contacts}
             type={vibe.type}
             extraBlocks={extraBlocks}
