@@ -35,7 +35,23 @@ export default function useVibeSave({ token, vibe, setVibe, setEditing }) {
         setEditing(false);
       } catch (e) {
         console.error(e);
-        alert(t("vibe.error_save"));
+        console.error("Error while saving vibe:", e);
+
+        let message =
+          e?.response?.data?.message ||
+          e?.response?.data?.error ||
+          e?.message ||
+          t("vibe.error_save");
+
+        if (typeof message !== "string") {
+          try {
+            message = JSON.stringify(message);
+          } catch {
+            message = t("vibe.error_save");
+          }
+        }
+
+        alert(message);
       }
     },
     [token, vibe, setVibe, setEditing, t]

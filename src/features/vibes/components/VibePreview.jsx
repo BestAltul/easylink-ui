@@ -30,7 +30,7 @@ export default function VibePreview({
   cardBody = null,
   onChangeName = () => {},
   onChangeDescription = () => {},
-  onChangePhotoFile = () => {},
+  onChangePhoto = () => {},
   onOpenContactPicker = () => {},
   onRemoveContact = () => {},
   onChangeContactValue = () => {},
@@ -215,7 +215,7 @@ export default function VibePreview({
           editMode={editMode}
           onChangeName={onChangeName}
           onChangeDescription={onChangeDescription}
-          onChangePhotoFile={onChangePhotoFile}
+          onChangePhoto={onChangePhoto}
           onOpenContactPicker={onOpenContactPicker}
           onRemoveContact={onRemoveContact}
           onChangeContactValue={onChangeContactValue}

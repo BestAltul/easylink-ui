@@ -128,12 +128,28 @@ export function useBusinessVibeForm({
       }),
     ];
 
+    let photoUrl = initialData.photo || null;
+
+    if (photo instanceof File) {
+      const token = localStorage.getItem("jwt");
+      const formData = new FormData();
+      formData.append("file", photo);
+
+      const uploadRes = await fetch("/api/v3/upload", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
+
+      if (!uploadRes.ok) throw new Error("Photo upload failed");
+      photoUrl = await uploadRes.text();
+    }
     // базовый DTO для edit/create
     const base = {
       name,
       description,
       type: "BUSINESS",
-      photo: photo,
+      photo: photoUrl,
       fieldsDTO,
       // photoFile можно обработать отдельно, если API ждёт multipart
     };

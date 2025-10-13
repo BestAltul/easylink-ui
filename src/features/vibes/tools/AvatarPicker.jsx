@@ -2,9 +2,9 @@ import React from "react";
 import Avatar from "./Avatar";
 import usePhotoPreview from "./usePhotoPreview";
 
-export default function AvatarPicker({ name, photoFile, editMode, onChangePhotoFile }) {
+export default function AvatarPicker({ name, photo, editMode, onChangePhoto }) {
   const fileRef = React.useRef(null);
-  const previewUrl = usePhotoPreview(photoFile);
+  const previewUrl = usePhotoPreview(photo);
 
   const handlePickPhoto = () => {
     if (!editMode) return;
@@ -13,7 +13,7 @@ export default function AvatarPicker({ name, photoFile, editMode, onChangePhotoF
 
   const handlePhotoSelected = (e) => {
     const file = e.target.files?.[0];
-    if (file && onChangePhotoFile) onChangePhotoFile(file);
+    if (file && onChangePhoto) onChangePhoto(file);
     e.target.value = "";
   };
 
@@ -28,11 +28,14 @@ export default function AvatarPicker({ name, photoFile, editMode, onChangePhotoF
       />
 
       <div
-        style={{ position: "relative", cursor: editMode ? "pointer" : "default" }}
+        style={{
+          position: "relative",
+          cursor: editMode ? "pointer" : "default",
+        }}
         onClick={handlePickPhoto}
         aria-label={editMode ? "Change photo" : undefined}
       >
-        <Avatar name={name} photoFile={photoFile} photoUrl={previewUrl} />
+        <Avatar name={name} photo={photo} photoUrl={previewUrl} />
 
         {editMode && (
           <div

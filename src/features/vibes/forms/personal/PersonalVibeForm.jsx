@@ -82,7 +82,6 @@ export default function PersonalVibeForm({
             : t("create_button")}
         </button>
       </div>
-
       {/* editing — preview in editMode */}
       <VibePreviewPane
         id={mode === "edit" ? initialData?.id : undefined}
@@ -108,7 +107,6 @@ export default function PersonalVibeForm({
         onBlockRemove={(i) => removeBlock(i)}
         onOpenBlockPicker={() => setShowBlockModal(true)}
       />
-
       {/* contacts */}
       {showModal && (
         <ContactTypeModal
@@ -138,7 +136,6 @@ export default function PersonalVibeForm({
           }}
         />
       )}
-
       {/* extra blocks */}
       {showBlockModal && (
         <PersonalInfoBlockModal
