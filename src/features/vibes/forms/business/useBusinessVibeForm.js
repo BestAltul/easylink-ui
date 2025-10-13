@@ -33,7 +33,6 @@ export function useBusinessVibeForm({
   const [contacts, setContacts] = useState(
     initialData.contacts || parsed.contacts || []
   );
-
   const [extraBlocks, setExtraBlocks] = useState(
     initialData.extraBlocks || parsed.extraBlocks || []
   );
@@ -104,9 +103,8 @@ export function useBusinessVibeForm({
 
   // ===== Submit =====
   const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const token = localStorage.getItem("jwt");
+    // кнопка вызывает без события → не падаем
+    if (e?.preventDefault) e.preventDefault();
 
     const fieldsDTO = [
       ...contacts.map((c) => ({
@@ -124,7 +122,6 @@ export function useBusinessVibeForm({
           ...(b.id ? { id: b.id } : {}),
           type: isHours ? "hours" : b.type || "custom",
           label: b.label || (isHours ? "Hours" : "Custom"),
-
           value:
             typeof rawValue === "object" ? JSON.stringify(rawValue) : rawValue,
         };
@@ -134,6 +131,7 @@ export function useBusinessVibeForm({
     let photoUrl = initialData.photo || null;
 
     if (photo instanceof File) {
+      const token = localStorage.getItem("jwt");
       const formData = new FormData();
       formData.append("file", photo);
 
@@ -146,25 +144,44 @@ export function useBusinessVibeForm({
       if (!uploadRes.ok) throw new Error("Photo upload failed");
       photoUrl = await uploadRes.text();
     }
-
-    const dto = {
-      id: initialData.id,
+    // базовый DTO для edit/create
+    const base = {
       name,
       description,
       type: "BUSINESS",
       photo: photoUrl,
       fieldsDTO,
+      // photoFile можно обработать отдельно, если API ждёт multipart
     };
-    console.log("2 DTO before save:", dto);
+    //console.log("2 DTO before save:", dto);
 
     try {
       setLoading(true);
-      if (mode === "edit" && onSave) {
-        await onSave(dto); // UPDATE
+
+      if (mode === "edit") {
+        const dto = { ...base, id: initialData.id }; // в edit передаём id
+        if (onSave) {
+          await onSave(dto); // внешний апдейтер сам решает, что делать
+        }
+        return;
+      }
+
+      // CREATE: без id в теле
+      const token = localStorage.getItem("jwt");
+      const created = await createVibe(base, token);
+
+      // пытаемся вытащить id из ответа
+      const newId = created?.id || created?.vibeId || created?.vibe?.id;
+
+      if (onSave) {
+        onSave(created);
+      }
+
+      if (newId) {
+        // сразу ведём на страницу созданного вайба (edit/owner)
+        navigate(`/vibes/${newId}`);
       } else {
-        const token = localStorage.getItem("jwt");
-        await createVibe(dto, token); // CREATE
-        alert("Vibe created!");
+        // fallback
         navigate("/my-vibes");
       }
     } catch (err) {

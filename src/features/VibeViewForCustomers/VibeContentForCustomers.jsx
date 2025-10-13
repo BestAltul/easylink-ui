@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Avatar from "../vibes/tools/Avatar";
-import ExtraBlock from "../vibes/tools/HoursBlock";
+import ExtraBlock from "@/components/InfoBlocks/ExtraBlock";
 import ContactButton from "../vibes/tools/ContactButton";
 import { QRCodeCanvas } from "qrcode.react";
 import SelectVibeModalWithLogic from "./SelectVibeModalWithLogic";

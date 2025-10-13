@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { createVibe } from "@/api/vibeApi";
 
 export function usePersonalVibeForm({
@@ -15,18 +15,41 @@ export function usePersonalVibeForm({
   const [extraBlocks, setExtraBlocks] = useState(initialData.extraBlocks || []);
   const [showModal, setShowModal] = useState(false);
   const [showBlockModal, setShowBlockModal] = useState(false);
+  const [blockEditIndex, setBlockEditIndex] = useState(null);
   const [showInfo, setShowInfo] = useState(mode !== "edit");
   const [loading, setLoading] = useState(false);
 
+  // --- CONTACTS ---
   const addContact = (type) => {
     if (contacts.some((c) => c.type === type)) return setShowModal(false);
     setContacts([...contacts, { type, value: "" }]);
     setShowModal(false);
   };
 
+  useEffect(() => {
+    setContacts((prev) =>
+      (prev || []).map((c) => ({
+        ...c,
+        value:
+          typeof c.value === "string"
+            ? c.value
+            : (c?.value && typeof c.value === "object" && "value" in c.value
+                ? String(c.value.value ?? "")
+                : String(c.value ?? "")),
+      }))
+    );
+  }, []);
+
   const handleContactChange = (i, val) => {
+    const str =
+      typeof val === "string"
+        ? val
+        : (val && typeof val === "object" && "value" in val
+            ? String(val.value ?? "")
+            : String(val ?? ""));
     const updated = [...contacts];
-    updated[i].value = val;
+    if (!updated[i]) return;
+    updated[i] = { ...updated[i], value: str };
     setContacts(updated);
   };
 
@@ -34,6 +57,7 @@ export function usePersonalVibeForm({
     setContacts((prev) => prev.filter((_, idx) => idx !== i));
   };
 
+  // --- EXTRA BLOCKS ---
   const handleBlockChange = (i, val) => {
     const updated = [...extraBlocks];
     updated[i].value = val;
@@ -44,9 +68,30 @@ export function usePersonalVibeForm({
     setExtraBlocks((prev) => prev.filter((_, idx) => idx !== i));
   };
 
+  const onOpenBlockPicker = (indexOrNull) => {
+    setBlockEditIndex(indexOrNull ?? null);
+    setShowBlockModal(true);
+  };
+
+  const onSelectExtraBlock = (block) => {
+    setExtraBlocks((prev) => {
+      if (blockEditIndex == null) return [...prev, block];
+      const next = [...prev];
+      next[blockEditIndex] = block;
+      return next;
+    });
+    setShowBlockModal(false);
+    setBlockEditIndex(null);
+  };
+
+  const onCloseExtraBlockPicker = () => {
+    setShowBlockModal(false);
+    setBlockEditIndex(null);
+  };
+
+  // --- SUBMIT ---
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const fieldsDTO = [
       ...contacts.map((c) => ({
         ...(c.id ? { id: c.id } : {}),
@@ -91,10 +136,10 @@ export function usePersonalVibeForm({
     try {
       setLoading(true);
       if (mode === "edit" && onSave) {
-        await onSave(dto); // UPDATE
+        await onSave(dto);
       } else {
         const token = localStorage.getItem("jwt");
-        await createVibe(dto, token); // CREATE
+        await createVibe(dto, token);
         alert("Vibe created!");
         navigate("/my-vibes");
       }
@@ -121,6 +166,10 @@ export function usePersonalVibeForm({
     setExtraBlocks,
     showBlockModal,
     setShowBlockModal,
+    blockEditIndex,
+    onOpenBlockPicker,
+    onSelectExtraBlock,
+    onCloseExtraBlockPicker,
     showInfo,
     setShowInfo,
     loading,

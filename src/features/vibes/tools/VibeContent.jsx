@@ -1,10 +1,11 @@
 import React from "react";
-import Avatar from "./Avatar";
-import ExtraBlock from "./HoursBlock.jsx";
-import ContactButton from "./ContactButton";
-import { QRCodeCanvas } from "qrcode.react";
-import useVisibilityToggle from "../useVisibilityToggle.jsx";
 import { useTranslation } from "react-i18next";
+
+import AvatarPicker from "./AvatarPicker.jsx";
+import ContactsSection from "./ContactsSection.jsx";
+import QRBox from "./QRBox.jsx";
+import ExtraBlocksList from "./ExtraBlocksList.jsx";
+import ExtraBlock from "@/components/InfoBlocks/ExtraBlock";
 
 export default function VibeContent({
   id,
@@ -13,55 +14,59 @@ export default function VibeContent({
   photo,
   contacts,
   type,
-  extraBlocks,
+  extraBlocks = [],
   visible,
   publicCode,
+  editMode = false,
+
+  onChangeName,
+  onChangeDescription,
+  onChangePhoto,
+
+  onOpenContactPicker,
+  onRemoveContact,
+  onChangeContactValue,
+  resumeEditAt,
+
+  onBlockChange,
+  onBlockRemove,
+  onOpenBlockPicker,
 }) {
-  // ⬇️ фиксируем ns
   const { t } = useTranslation("vibe_content");
 
-  const [vibeVisible, code, visibilityButton] = useVisibilityToggle(
-    id,
-    visible,
-    publicCode
-  );
-
-  // красивый лейбл типа (BUSINESS -> Business -> перевод types.business)
   const slug = (type || "").toString().toLowerCase();
   const pretty = slug
     ? slug.charAt(0).toUpperCase() + slug.slice(1)
     : t("default_type");
   const typeLabel = slug ? t(`types.${slug}`, pretty) : t("default_type");
 
-  const origin =
-    typeof window !== "undefined" && window.location?.origin
-      ? window.location.origin
-      : "";
-
   return (
     <div className="d-flex flex-column align-items-center">
-      <div className="mb-3 w-100 px-3">
-        <div className="d-flex align-items-center gap-3">
-          <div className="d-flex align-items-center gap-2">
-            {visibilityButton}
-            {vibeVisible && code && (
-              <div
-                className="text-primary fw-bold d-flex align-items-center"
-                style={{ fontSize: "1.15rem" }}
-              >
-                <span style={{ marginRight: 4 }}>{t("share_code_label")}</span>
-                <strong>{code}</strong>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
+      {/* Photo */}
+      <AvatarPicker
+        name={name}
+        photo={photo}
+        editMode={editMode}
+        onChangePhoto={onChangePhoto}
+      />
 
-      <Avatar name={name} photo={photo} />
-      <h3 className="mb-0" style={{ fontWeight: 700 }}>
-        {name || t("your_name")}
-      </h3>
+      {/* Name */}
+      {editMode ? (
+        <input
+          type="text"
+          value={name}
+          placeholder={t("your_name")}
+          onChange={(e) => onChangeName?.(e.target.value)}
+          className="form-control text-center fw-bold mb-0"
+          style={{ border: "none", background: "transparent" }}
+        />
+      ) : (
+        <h3 className="mb-0" style={{ fontWeight: 700 }}>
+          {name || t("your_name")}
+        </h3>
+      )}
 
+      {/* Type */}
       <div
         className="text-primary mb-2"
         style={{ fontWeight: 600, textTransform: "uppercase" }}
@@ -69,85 +74,57 @@ export default function VibeContent({
         {typeLabel}
       </div>
 
-      <div
-        style={{
-          background: "rgba(250, 250, 255, 0.92)",
-          border: "1.5px solid #eaeaf5",
-          borderRadius: 14,
-          padding: "14px 18px",
-          marginBottom: 18,
-          width: "100%",
-          fontSize: 16,
-          color: "#4d4d61",
-          textAlign: "center",
-        }}
-      >
-        {description || (
-          <span style={{ color: "#bbb" }}>{t("default_description")}</span>
-        )}
-      </div>
+      {/* Description */}
+      {editMode ? (
+        <textarea
+          value={description}
+          placeholder={t("default_description")}
+          onChange={(e) => onChangeDescription?.(e.target.value)}
+          rows={2}
+          className="form-control"
+          style={{ borderRadius: 14, textAlign: "center" }}
+        />
+      ) : (
+        <div className="w-100" style={{ textAlign: "center" }}>
+          {description || (
+            <span style={{ color: "#bbb" }}>{t("default_description")}</span>
+          )}
+        </div>
+      )}
 
+      {/* Divider */}
       <div
         style={{
           width: "40%",
           height: 2,
-          background: "linear-gradient(90deg,#d8dffa,#f6eaff 80%)",
+          background: "#eee",
           borderRadius: 99,
-          marginBottom: 16,
+          margin: "16px 0",
         }}
       />
 
-      <div className="d-flex flex-wrap gap-2 justify-content-center w-100">
-        {contacts && contacts.length > 0 ? (
-          contacts.map((c, i) => (
-            <ContactButton key={c.type + i} type={c.type} value={c.value} />
-          ))
-        ) : (
-          <span className="text-muted" style={{ fontSize: 15 }}>
-            {t("no_contacts")}
-          </span>
-        )}
-      </div>
+      {/* Contacts */}
+      <ContactsSection
+        t={t}
+        contacts={contacts}
+        editMode={editMode}
+        onOpenContactPicker={onOpenContactPicker}
+        onRemoveContact={onRemoveContact}
+        onChangeContactValue={onChangeContactValue}
+        resumeEditAt={resumeEditAt}
+      />
 
-      {extraBlocks && extraBlocks.length > 0 && (
-        <div className="w-100 mt-2">
-          {extraBlocks.map((block, i) => (
-            <ExtraBlock key={block.label + i} block={block} />
-          ))}
-        </div>
-      )}
+      <ExtraBlocksList
+        extraBlocks={extraBlocks}
+        editMode={editMode}
+        onBlockChange={onBlockChange}
+        onBlockRemove={onBlockRemove}
+        onOpenBlockPicker={onOpenBlockPicker}
+      />
 
+      {/* QR */}
       <div className="mt-4 text-center">
-        {id ? (
-          <>
-            <QRCodeCanvas
-              value={`${origin}/vibes/${id}`}
-              size={60}
-              includeMargin={false}
-              aria-label={t("qr_aria")}
-            />
-            <div style={{ fontSize: 12, color: "#aaa" }}>{t("share_qr")}</div>
-          </>
-        ) : (
-          <div
-            className="qr-preview"
-            style={{
-              width: 60,
-              height: 60,
-              background: "#fafafa",
-              border: "1.5px dashed #ddd",
-              borderRadius: 9,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: 18,
-              color: "#aaa",
-            }}
-            title={t("qr_hint")}
-          >
-            QR
-          </div>
-        )}
+        <QRBox id={id} t={t} />
       </div>
     </div>
   );
