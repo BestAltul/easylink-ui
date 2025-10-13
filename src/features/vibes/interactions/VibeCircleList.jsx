@@ -13,7 +13,6 @@ function normalizeVibe(item) {
   const type = item.type || item.targetVibe?.type || item.vibe?.type || "";
 
   let photo = item.photo || item.targetVibe?.photo || item.vibe?.photo || "";
-
   if (photo) {
     photo = photo.replace(/uploads\/uploads/g, "uploads");
 
@@ -23,6 +22,10 @@ function normalizeVibe(item) {
 
     if (!photo.startsWith("/uploads") && photo.includes("uploads")) {
       photo = photo.slice(photo.indexOf("/uploads"));
+    }
+
+    if (!photo.startsWith("/") && !photo.startsWith("http")) {
+      photo = "/" + photo;
     }
   }
 
