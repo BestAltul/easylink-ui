@@ -13,6 +13,10 @@ function normalizeVibe(item) {
   const type = item.type || item.targetVibe?.type || item.vibe?.type || "";
 
   let photo = item.photo || item.targetVibe?.photo || item.vibe?.photo || "";
+
+  const API_BASE =
+    import.meta.env.VITE_API_URL?.replace(/\/$/, "") || window.location.origin;
+
   if (photo) {
     photo = photo.replace(/uploads\/uploads/g, "uploads");
 
@@ -24,8 +28,8 @@ function normalizeVibe(item) {
       photo = photo.slice(photo.indexOf("/uploads"));
     }
 
-    if (!photo.startsWith("/") && !photo.startsWith("http")) {
-      photo = "/" + photo;
+    if (photo.startsWith("/uploads")) {
+      photo = `${API_BASE}${photo}`;
     }
   }
 
