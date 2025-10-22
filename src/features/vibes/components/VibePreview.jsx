@@ -7,11 +7,13 @@ import { trackEvent } from "@/services/amplitude";
 import useVisibilityToggle from "@/features/vibes/useVisibilityToggle.jsx";
 import useShareModal from "@/components/common/hooks/useShareModal";
 import { useTranslation } from "react-i18next";
-import "./VibePreview.css"; 
+import "./VibePreview.css";
 
 const isUUID = (s) =>
   typeof s === "string" &&
-  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(s);
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+    s
+  );
 
 export default function VibePreview({
   id,
@@ -28,7 +30,7 @@ export default function VibePreview({
   cardBody = null,
   onChangeName = () => {},
   onChangeDescription = () => {},
-  onChangePhotoFile = () => {},
+  onChangePhoto = () => {},
   onOpenContactPicker = () => {},
   onRemoveContact = () => {},
   onChangeContactValue = () => {},
@@ -39,7 +41,9 @@ export default function VibePreview({
 }) {
   const { t } = useTranslation();
 
-  const [localExtraBlocks, setLocalExtraBlocks] = React.useState(extraBlocksProp || []);
+  const [localExtraBlocks, setLocalExtraBlocks] = React.useState(
+    extraBlocksProp || []
+  );
   React.useEffect(() => {
     setLocalExtraBlocks(Array.isArray(extraBlocksProp) ? extraBlocksProp : []);
   }, [extraBlocksProp]);
@@ -57,7 +61,7 @@ export default function VibePreview({
       enabled: hasId,
       labels: {
         visible: t("vibe_preview:public", "Visible"),
-        hidden:  t("vibe_preview:hidden", "Hidden"),
+        hidden: t("vibe_preview:hidden", "Hidden"),
       },
     }
   );
@@ -104,11 +108,11 @@ export default function VibePreview({
         parentOnBlockChange(index, valueOrPatch);
       } else {
         setLocalExtraBlocks((prev) =>
-          prev.map((b, i) => (i === index ? { ...b, value: valueOrPatch } : b)),
+          prev.map((b, i) => (i === index ? { ...b, value: valueOrPatch } : b))
         );
       }
     },
-    [editMode, parentOnBlockChange],
+    [editMode, parentOnBlockChange]
   );
 
   const handleBlockRemove = React.useCallback(
@@ -119,7 +123,7 @@ export default function VibePreview({
         setLocalExtraBlocks((prev) => prev.filter((_, i) => i !== index));
       }
     },
-    [editMode, parentOnBlockRemove],
+    [editMode, parentOnBlockRemove]
   );
 
   return (
@@ -143,7 +147,10 @@ export default function VibePreview({
             title={
               hasId
                 ? t("vibe_preview:share", "Share")
-                : t("vibe_preview:save_first_to_share", "Save first to get share link")
+                : t(
+                    "vibe_preview:save_first_to_share",
+                    "Save first to get share link"
+                  )
             }
           >
             <BsShareFill size={20} style={{ color: "#627bf7" }} />
@@ -199,7 +206,7 @@ export default function VibePreview({
           id={id}
           name={name}
           description={description}
-          photoFile={photoFile}
+          photo={photo}
           contacts={contacts}
           type={type}
           extraBlocks={editMode ? extraBlocksProp || [] : localExtraBlocks}
@@ -208,7 +215,7 @@ export default function VibePreview({
           editMode={editMode}
           onChangeName={onChangeName}
           onChangeDescription={onChangeDescription}
-          onChangePhotoFile={onChangePhotoFile}
+          onChangePhoto={onChangePhoto}
           onOpenContactPicker={onOpenContactPicker}
           onRemoveContact={onRemoveContact}
           onChangeContactValue={onChangeContactValue}

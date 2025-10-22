@@ -24,23 +24,37 @@ export default function PersonalVibeForm({
   const [showBlockModal, setShowBlockModal] = React.useState(false);
 
   const {
-    name, setName,
-    description, setDescription,
-    photoFile, setPhotoFile,
-    contacts, setContacts,
-    extraBlocks, setExtraBlocks,
+    name,
+    setName,
+    description,
+    setDescription,
+    photo,
+    setPhoto,
+    contacts,
+    setContacts,
+    extraBlocks,
+    setExtraBlocks,
     loading,
-    handleContactChange, removeContact,
-    handleBlockChange, removeBlock,
+    handleContactChange,
+    removeContact,
+    handleBlockChange,
+    removeBlock,
     handleSubmit,
   } = usePersonalVibeForm({ navigate, initialData, mode, onSave, onCancel });
   const isUUID = (s) =>
-  typeof s === "string" &&
-  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(s);
+    typeof s === "string" &&
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+      s
+    );
   return (
     <div
       className="d-flex flex-column gap-3 align-items-center justify-content-start w-100"
-      style={{ maxWidth: 1200, width: "100%", margin: "0 auto", padding: "0 20px" }}
+      style={{
+        maxWidth: 1200,
+        width: "100%",
+        margin: "0 auto",
+        padding: "0 20px",
+      }}
     >
       <div className="d-flex gap-2 w-100" style={{ maxWidth: 420 }}>
         {mode === "edit" && (
@@ -60,25 +74,28 @@ export default function PersonalVibeForm({
           disabled={loading}
         >
           {loading
-            ? (mode === "edit" ? t("saving") : t("creating"))
-            : (mode === "edit" ? t("save_button") : t("create_button"))}
+            ? mode === "edit"
+              ? t("saving")
+              : t("creating")
+            : mode === "edit"
+            ? t("save_button")
+            : t("create_button")}
         </button>
       </div>
-
       {/* editing — preview in editMode */}
       <VibePreviewPane
-        id={mode === "edit" ? initialData?.id : undefined}   
+        id={mode === "edit" ? initialData?.id : undefined}
         name={name}
         description={description}
         photo={photo}
         contacts={contacts}
         extraBlocks={extraBlocks}
         type="PERSONAL"
-        editMode={true}                   
-        ownerActionsEnabled={isUUID(initialData?.id)} 
+        editMode={true}
+        ownerActionsEnabled={isUUID(initialData?.id)}
         onChangeName={setName}
         onChangeDescription={setDescription}
-        onChangePhotoFile={setPhotoFile}
+        onChangePhoto={setPhoto}
         resumeEditAt={refocusIndex}
         onOpenContactPicker={(idx) => {
           setTypeIndex(Number.isInteger(idx) ? idx : null);
@@ -90,16 +107,18 @@ export default function PersonalVibeForm({
         onBlockRemove={(i) => removeBlock(i)}
         onOpenBlockPicker={() => setShowBlockModal(true)}
       />
-
       {/* contacts */}
       {showModal && (
         <ContactTypeModal
           contacts={contacts}
-          onClose={() => { setShowModal(false); setTypeIndex(null); }}
+          onClose={() => {
+            setShowModal(false);
+            setTypeIndex(null);
+          }}
           onSelect={(typeKey) => {
             if (typeIndex != null) {
               // contact type
-              setContacts(prev => {
+              setContacts((prev) => {
                 const updated = [...prev];
                 updated[typeIndex] = { ...updated[typeIndex], type: typeKey };
                 return updated;
@@ -108,7 +127,7 @@ export default function PersonalVibeForm({
               Promise.resolve().then(() => setRefocusIndex(null));
             } else {
               const newIndex = contacts.length;
-              setContacts(prev => [...prev, { type: typeKey, value: "" }]);
+              setContacts((prev) => [...prev, { type: typeKey, value: "" }]);
               setRefocusIndex({ index: newIndex, nonce: Date.now() });
               Promise.resolve().then(() => setRefocusIndex(null));
             }
@@ -117,16 +136,20 @@ export default function PersonalVibeForm({
           }}
         />
       )}
-
       {/* extra blocks */}
       {showBlockModal && (
         <PersonalInfoBlockModal
           extraBlocks={extraBlocks}
           onClose={() => setShowBlockModal(false)}
           onSelect={(block) => {
-            setExtraBlocks(prev => [
+            setExtraBlocks((prev) => [
               ...prev,
-              { type: block.key, label: block.label, value: "", placeholder: block.placeholder }
+              {
+                type: block.key,
+                label: block.label,
+                value: "",
+                placeholder: block.placeholder,
+              },
             ]);
             setShowBlockModal(false);
           }}
