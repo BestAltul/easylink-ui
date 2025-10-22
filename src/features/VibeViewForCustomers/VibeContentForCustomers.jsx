@@ -108,6 +108,7 @@ export default function VibeContentForCustomers({
           <BsShareFill size={20} style={{ color: "#627bf7" }} />
         </button>
       </div>
+
       {type !== "PERSONAL" && (
         <>
           <ul className="nav nav-tabs mb-4" role="tablist">
@@ -436,6 +437,8 @@ export default function VibeContentForCustomers({
           />
         </div>
       )}
+      
+      <ShareModal {...ShareModalProps} copied={copied} />
     </div>
   );
 }

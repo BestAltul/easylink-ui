@@ -22,50 +22,43 @@ export function useStartAuthForm({
 
   useEffect(() => {
     setInputAnswer(answersList[currentStep] || "");
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
+    inputRef.current?.focus();
   }, [currentStep, answersList]);
 
   const verifyEmail = async (inputEmail) => {
-    if (!inputEmail.trim()) return;
+    const normalized = (inputEmail || "").trim();
+    if (!normalized) return;
 
     try {
-      const data = await verifyEmailAPI(inputEmail);
-
+      const data = await verifyEmailAPI(normalized);
+      setEmail(normalized);
       setQuestions(data);
       setAnswersList(new Array(data.length).fill(""));
       setCurrentStep(0);
     } catch (error) {
-      const msg =
-        typeof error.message === "string"
-          ? error.message
-          : t("auth.error_verifying_email");
-
+      const msg = typeof error.message === "string" ? error.message : t("auth.error_verifying_email");
       toast.error(msg, { position: "top-right" });
     }
   };
 
   const handleNext = () => {
-    const trimmed = inputAnswer.trim();
+    const trimmed = (inputAnswer || "").trim();
     if (!trimmed) return;
 
-    const updatedAnswers = [...answersList];
-    updatedAnswers[currentStep] = trimmed;
-    setAnswersList(updatedAnswers);
+    const updated = [...answersList];
+    updated[currentStep] = trimmed;
+    setAnswersList(updated);
 
     if (currentStep < questions.length - 1) {
       setCurrentStep(currentStep + 1);
     } else {
       setInputAnswer("");
-      checkAnswers(updatedAnswers);
+      checkAnswers(updated);
     }
   };
 
   const handleBack = () => {
-    if (currentStep > 0) {
-      setCurrentStep(currentStep - 1);
-    }
+    if (currentStep > 0) setCurrentStep(currentStep - 1);
   };
 
   const handleKeyDown = (e) => {
@@ -75,11 +68,17 @@ export function useStartAuthForm({
     }
   };
 
-  const checkAnswers = async (finalAnswers) => {
+  // ---- FIXED ----
+  const checkAnswers = async (finalAnswers = []) => {
+    // console.debug("[checkAnswers] email=%s, answers=%o", email, finalAnswers);
+
+    if (!Array.isArray(finalAnswers)) {
+      console.error("[checkAnswers] invalid finalAnswers", finalAnswers);
+      return;
+    }
+
     if (finalAnswers.length !== questions.length) {
-      toast.warn(t("auth.answer_exactly", { count: questions.length }), {
-        position: "top-right",
-      });
+      toast.warn(t("auth.answer_exactly", { count: questions.length }), { position: "top-right" });
       return;
     }
 
@@ -89,45 +88,28 @@ export function useStartAuthForm({
         answer: finalAnswers[i] || "",
       }));
 
-      const timezone =
-        user?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
+      const timezone = user?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
+      const result = await checkAnswersAPI(email, answers, timezone);
+      window.__authlog?.("check result", result);
 
-      const data = await checkAnswersAPI(email, answers, timezone);
-
-      const token = data["Authentication successful"];
+      const accessToken = result.accessToken || null;
+      const cookieBased = result.cookieBased === true;
 
       toast.success(t("auth.success"), { position: "top-right" });
       setAuthResult(t("auth.success"));
-
-      //sessionStorage.setItem("jwt", token);
-      localStorage.setItem("jwt", token);
-
-      if (token) {
-        login({ username: email, token, timezone });
-
-        if (redirectTo) {
-          if (subscribe === "true") {
-            navigate(`${redirectTo}?subscribe=true`);
-          } else {
-            navigate(redirectTo);
-          }
-        } else {
-          navigate("/profile");
-        }
-      }
+      login({ email, timezone }, accessToken, { cookieBased });
+      const target = redirectTo ? (subscribe === "true" ? `${redirectTo}?subscribe=true` : redirectTo) : "/profile";
+      window.__navlog?.("navigate →", target);
+      // console.trace("navigate trace");
+      navigate(target);
     } catch (err) {
-      if (err.status === 423) {
-        toast.error(t("auth.blocked", { reason: err.message }), {
-          position: "top-right",
-        });
-      } else if (err.status === 401) {
-        toast.warn(t("auth.wrong_answers", { reason: err.message }), {
-          position: "top-right",
-        });
+      console.error("[checkAnswers] status=%s, message=%s", err?.status, err?.message, err);
+      if (err?.status === 423) {
+        toast.error(t("auth.blocked", { reason: err.message }), { position: "top-right" });
+      } else if (err?.status === 401) {
+        toast.warn(t("auth.wrong_answers", { reason: err.message }), { position: "top-right" });
       } else {
-        toast.error(t("auth.general_error", { status: err.status }), {
-          position: "top-right",
-        });
+        toast.error(t("auth.general_error", { status: err?.status }), { position: "top-right" });
       }
     }
   };
@@ -139,7 +121,7 @@ export function useStartAuthForm({
     setAuthResult("");
     setCurrentStep(0);
     setShowPassword(false);
-    setQuestions([]); 
+    setQuestions([]);
   };
 
   return {

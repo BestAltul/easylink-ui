@@ -1,41 +1,133 @@
-import { createContext, useContext, useState, useEffect } from "react";
-import React from "react";
+// src/context/AuthContext.js
+import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { useTranslation } from "react-i18next";
+
+function decodeExp(token) {
+  try {
+    return JSON.parse(atob(token.split(".")[1]))?.exp ?? null;
+  } catch {
+    return null;
+  }
+}
+
 const AuthContext = createContext({
   user: null,
+  accessToken: null,
+  cookieBased: false,
   isAuthenticated: false,
-  login: () => {},
-  logout: () => {},
+  authReady: false,
+  login: (_user, _access, _opts) => {},
+  logout: (_reason) => {},
 });
+
+const sidecar = { getAccess: () => null, forceLogout: () => {} };
+export const getAuthSidecar = () => sidecar;
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const [accessToken, setAccessToken] = useState(null);
+  const [cookieBased, setCookieBased] = useState(false);
+  const [authReady, setAuthReady] = useState(false);
+  const timer = useRef(null);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { t } = useTranslation("auth");
+  const notifiedExpired = useRef(false);
 
-  // загружаем пользователя из localStorage при старте
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
+    try {
+      const u = localStorage.getItem("user");
+      if (u) setUser(JSON.parse(u));
+      const jwt = localStorage.getItem("jwt");
+      if (jwt) {
+        setAccessToken(jwt);
+        sidecar.getAccess = () => jwt;
+        scheduleExpiryLogout(jwt);
+      }
+    } catch {}
+    setAuthReady(true);
   }, []);
 
-  const login = (userData) => {
+  function clearTimer() {
+    if (timer.current) {
+      clearTimeout(timer.current);
+      timer.current = null;
+    }
+  }
+
+  function scheduleExpiryLogout(token) {
+    const exp = decodeExp(token);
+    if (!exp) return;
+    const msLeft = exp * 1000 - Date.now();
+    clearTimer();
+    timer.current = setTimeout(() => {
+      logout("expired");
+    }, Math.max(0, msLeft));
+  }
+
+  function login(userData, token, opts) {
+    if (token) {
+      try { localStorage.setItem("jwt", token); } catch {}
+      sidecar.getAccess = () => token;
+    } else {
+      try { localStorage.removeItem("jwt"); } catch {}
+      sidecar.getAccess = () => null;
+    }
+
     setUser(userData);
-    localStorage.setItem("user", JSON.stringify(userData)); // сохраняем
-  };
+    try { localStorage.setItem("user", JSON.stringify(userData)); } catch {}
 
-  const logout = () => {
+    setAccessToken(token || null);
+    setCookieBased(!!opts?.cookieBased);
+
+    clearTimer();
+    if (token) scheduleExpiryLogout(token);
+  }
+
+  function logout(reason = "manual") {
+    clearTimer();
+    setAccessToken(null);
+    setCookieBased(false);
     setUser(null);
-    localStorage.removeItem("user"); // удаляем
-    localStorage.removeItem("jwt");
-  };
+    try {
+      localStorage.removeItem("user");
+      localStorage.removeItem("jwt");
+    } catch {}
+    sidecar.getAccess = () => null;
 
-  const value = {
-    user,
-    isAuthenticated: !!user,
-    login,
-    logout,
-  };
+    if (reason === "expired" && !notifiedExpired.current) {
+      notifiedExpired.current = true;
+      toast.info(t("session_expired"), { position: "top-right" });
+    }
+
+    const next = location.pathname + location.search;
+    if (!location.pathname.startsWith("/signin")) {
+      navigate(`/signin?next=${encodeURIComponent(next)}`, {
+        replace: true,
+        state: { reason },
+      });
+    }
+  }
+
+  useEffect(() => {
+    sidecar.getAccess = () => accessToken;
+    sidecar.forceLogout = (reason = "expired") => logout(reason);
+  }, [accessToken]);
+
+  const value = useMemo(
+    () => ({
+      user,
+      accessToken,
+      cookieBased,
+      isAuthenticated: !!user && (!!accessToken || cookieBased),
+      authReady,
+      login,
+      logout,
+    }),
+    [user, accessToken, cookieBased, authReady]
+  );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

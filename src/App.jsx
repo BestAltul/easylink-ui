@@ -34,6 +34,9 @@ import EmailVerified from "@/features/auth/EmailVerified";
 
 import CatalogForm from "./features/vibes/catalog/catalogForm";
 
+import AuthGuard from "./features/auth/AuthGuard";
+import ProfilePage from "./features/profile/Profile";
+
 import Terms from "./pages/legal/Terms";
 import Privacy from "./pages/legal/Privacy";
 import Ads from "./pages/legal/Ads";
@@ -48,7 +51,7 @@ function App() {
       <Header />
       <ToastContainer />
       <Routes>
-        <Route path="/profile" element={<Profile />} />
+        <Route path="/profile" element={<AuthGuard><ProfilePage/></AuthGuard>} />
         <Route path="/" element={<Home />} />
         <Route
           path="/signup"

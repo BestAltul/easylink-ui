@@ -1,5 +1,7 @@
+// src/components/.../useEventVibeForm.js
 import { useEffect, useState } from "react";
 import { createVibe } from "@/api/vibeApi";
+import { useAuth } from "@/context/AuthContext";
 
 export function useEventVibeForm({
   navigate,
@@ -7,14 +9,17 @@ export function useEventVibeForm({
   mode = "create",
   onSave,
 }) {
+  const { isAuthenticated } = useAuth();
+
   const [name, setName] = useState(initialData.name || "");
   const [description, setDescription] = useState(initialData.description || "");
-  const [photo, setPhoto] = useState(initialData.photo || null);
+  const [photo, setPhoto] = useState(initialData.photo || null); 
   const [contacts, setContacts] = useState(initialData.contacts || []);
   const [extraBlocks, setExtraBlocks] = useState(initialData.extraBlocks || []);
   const [showModal, setShowModal] = useState(false);
   const [showBlockModal, setShowBlockModal] = useState(false);
   const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     setContacts((prev) =>
       (prev || []).map((c) => ({
@@ -68,63 +73,89 @@ export function useEventVibeForm({
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e?.preventDefault?.();
+
+    if (!isAuthenticated) {
+      navigate("/signin?next=/my-vibes");
+      return;
+    }
 
     const fieldsDTO = [
       ...contacts.map((c) => ({
         ...(c.id ? { id: c.id } : {}),
         type: c.type,
-        value: c.value,           
+        value: c.value,
         label: c.type,
       })),
       ...extraBlocks.map((b) => ({
         ...(b.id ? { id: b.id } : {}),
         type: b.type,
-        value: b.value,          
+        value: b.value,
         label: b.label || null,
       })),
     ];
 
-    const dto = {
-      id: initialData.id,
+    let photoUrl = initialData.photo || null;
+    if (photo instanceof File) {
+      const token = localStorage.getItem("jwt");
+      const formData = new FormData();
+      formData.append("file", photo);
+
+      const uploadRes = await fetch("/api/v3/upload", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
+
+      if (!uploadRes.ok) throw new Error("Photo upload failed");
+      photoUrl = await uploadRes.text();
+    } else if (typeof photo === "string") {
+      photoUrl = photo; 
+    } else if (photo == null) {
+      photoUrl = null;
+    }
+
+    const base = {
       name,
       description,
-      type: "OTHER",             
+      type: "OTHER",
+      photo: photoUrl,
       fieldsDTO,
     };
+    const dto = mode === "edit" ? { ...base, id: initialData.id } : base;
 
     try {
       setLoading(true);
       if (mode === "edit" && onSave) {
         await onSave(dto);
       } else {
-        const token = localStorage.getItem("jwt");
-        await createVibe(dto, token);
-        alert("Vibe created!");
-        navigate("/my-vibes");
+        const created = await createVibe(dto);
+        const newId = created?.id || created?.vibeId || created?.vibe?.id;
+
+        alert("Vibe created!"); 
+
+        if (newId) {
+          navigate(`/vibes/${newId}`);
+        } else {
+          navigate("/my-vibes");
+        }
       }
     } catch (err) {
       alert(err.message || "Error saving Vibe");
+      console.error(err);
     } finally {
       setLoading(false);
     }
   };
 
   return {
-    name,
-    setName,
-    description,
-    setDescription,
-    photo,
-    setPhoto,
-    contacts,
-    setContacts,
-    showModal,
-    setShowModal,
-    extraBlocks,
-    setExtraBlocks,
-    showBlockModal,
-    setShowBlockModal,
+    name, setName,
+    description, setDescription,
+    photo, setPhoto,                 
+    contacts, setContacts,
+    extraBlocks, setExtraBlocks,
+    showModal, setShowModal,
+    showBlockModal, setShowBlockModal,
     loading,
     addContact,
     handleContactChange,

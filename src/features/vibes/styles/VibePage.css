@@ -1,9 +1,11 @@
 .vibe-container {
   max-width: 980px;
-  min-height: 420px;
+  min-height: 60vh; 
   position: relative;
 }
-
+.route-shell {
+  min-height: 60vh;   
+}
 /* ---------- HEADER ---------- */
 .vibe-header {
   display: flex;

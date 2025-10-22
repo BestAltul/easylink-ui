@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { createVibe } from "@/api/vibeApi";
 import parseFields from "@/data/parseFields";
+import { apiFetch } from "@/api/apiFetch";
+import { useAuth } from "@/context/AuthContext";
 
 const EMPTY_HOURS = {
   monday: "",
@@ -14,8 +16,16 @@ const EMPTY_HOURS = {
 
 const isHoursKey = (s) => String(s || "").toLowerCase() === "hours";
 
-export function useBusinessVibeForm({ navigate, initialData = {}, mode = "create", onSave }) {
-  const parsed = initialData.fieldsDTO ? parseFields(initialData.fieldsDTO) : {};
+export function useBusinessVibeForm({
+  navigate,
+  initialData = {},
+  mode = "create",
+  onSave,
+}) {
+  const { isAuthenticated } = useAuth();
+  const parsed = initialData.fieldsDTO
+    ? parseFields(initialData.fieldsDTO)
+    : {};
 
   const [name, setName] = useState(initialData.name || parsed.name || "");
   const [description, setDescription] = useState(
@@ -23,8 +33,12 @@ export function useBusinessVibeForm({ navigate, initialData = {}, mode = "create
   );
   const [photo, setPhoto] = useState(initialData.photo || null);
 
-  const [contacts, setContacts] = useState(initialData.contacts || parsed.contacts || []);
-  const [extraBlocks, setExtraBlocks] = useState(initialData.extraBlocks || parsed.extraBlocks || []);
+  const [contacts, setContacts] = useState(
+    initialData.contacts || parsed.contacts || []
+  );
+  const [extraBlocks, setExtraBlocks] = useState(
+    initialData.extraBlocks || parsed.extraBlocks || []
+  );
 
   const [showModal, setShowModal] = useState(false);
   const [showBlockModal, setShowBlockModal] = useState(false);
@@ -92,7 +106,6 @@ export function useBusinessVibeForm({ navigate, initialData = {}, mode = "create
 
   // ===== Submit =====
   const handleSubmit = async (e) => {
-    // кнопка вызывает без события → не падаем
     if (e?.preventDefault) e.preventDefault();
 
     const fieldsDTO = [
@@ -111,38 +124,47 @@ export function useBusinessVibeForm({ navigate, initialData = {}, mode = "create
           ...(b.id ? { id: b.id } : {}),
           type: isHours ? "hours" : b.type || "custom",
           label: b.label || (isHours ? "Hours" : "Custom"),
-          value: typeof rawValue === "object" ? JSON.stringify(rawValue) : rawValue,
+          value:
+            typeof rawValue === "object" ? JSON.stringify(rawValue) : rawValue,
         };
       }),
     ];
 
-    // базовый DTO для edit/create
+    let photoUrl = initialData.photo || null;
+
+    if (photo instanceof File) {
+      const formData = new FormData();
+      formData.append("file", photo);
+
+     const uploadRes = await apiFetch("/api/v3/upload", {
+       method: "POST",
+       body: formData, 
+     });
+
+      if (!uploadRes.ok) throw new Error("Photo upload failed");
+      photoUrl = await uploadRes.text();
+    }
     const base = {
       name,
       description,
       type: "BUSINESS",
       photo: photoUrl,
       fieldsDTO,
-      // photoFile можно обработать отдельно, если API ждёт multipart
     };
-    console.log("2 DTO before save:", dto);
 
     try {
       setLoading(true);
 
       if (mode === "edit") {
-        const dto = { ...base, id: initialData.id }; // в edit передаём id
+        const dto = { ...base, id: initialData.id }; 
         if (onSave) {
-          await onSave(dto); // внешний апдейтер сам решает, что делать
+          await onSave(dto); 
         }
         return;
       }
 
-      // CREATE: без id в теле
-      const token = localStorage.getItem("jwt");
-      const created = await createVibe(base, token);
+      const created = await createVibe(base);
 
-      // пытаемся вытащить id из ответа
       const newId = created?.id || created?.vibeId || created?.vibe?.id;
 
       if (onSave) {
@@ -150,10 +172,9 @@ export function useBusinessVibeForm({ navigate, initialData = {}, mode = "create
       }
 
       if (newId) {
-        // сразу ведём на страницу созданного вайба (edit/owner)
+        alert("Vibe created!");
         navigate(`/vibes/${newId}`);
       } else {
-        // fallback
         navigate("/my-vibes");
       }
     } catch (err) {
