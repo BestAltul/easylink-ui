@@ -30,7 +30,7 @@ export default function UserVibes() {
     setLoading(true);
     (async () => {
       try {
-        const data = await getUserVibes(); // токен приклеит apiFetch
+        const data = await getUserVibes(); 
         if (!cancelled) setVibes(Array.isArray(data) ? data : []);
       } catch (err) {
         console.error("Error loading Vibes", err);
@@ -47,7 +47,7 @@ export default function UserVibes() {
     if (!window.confirm(t("delete_confirm"))) return;
     setLoading(true);
     try {
-      await deleteVibe(vibeId); // токен приклеит apiFetch
+      await deleteVibe(vibeId); 
       setVibes((prev) => prev.filter((v) => v.id !== vibeId));
     } catch (err) {
       console.error(err);

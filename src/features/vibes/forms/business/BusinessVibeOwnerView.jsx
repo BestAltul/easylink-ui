@@ -20,14 +20,13 @@ import useItemsByVibeId from "@/features/vibes/catalog/useItemByVibeId";
 import useVisibilityToggle from "@/features/vibes/useVisibilityToggle.jsx";
 import BusinessTabs from "@/features/vibes/forms/business/BusinessTabs.jsx";
 
-// подключаем те же классы vv-label/vv-code, что и в VibePreview
 import "@/features/vibes/components/VibePreview.css";
 
 export default function BusinessVibeOwnerView({
   id,
   name,
   description,
-  photo,
+  photo: initialPhoto,
   contacts,
   type = "BUSINESS",
   extraBlocks,
@@ -38,6 +37,7 @@ export default function BusinessVibeOwnerView({
   const navigate = useNavigate();
   const location = useLocation();
   const token = localStorage.getItem("jwt");
+  const [photo, setPhoto] = useState(initialPhoto || null);
 
   const { items, itemsLoading } = useItemsByVibeId(id, token);
   const [activeTab, setActiveTab] = useState("main");
@@ -50,7 +50,9 @@ export default function BusinessVibeOwnerView({
     setTimeout(() => setToast(""), 2000);
   };
 
-  const shareUrl = id ? `${window.location.origin}/view/${id}` : window.location.href;
+  const shareUrl = id
+    ? `${window.location.origin}/view/${id}`
+    : window.location.href;
 
   const copyToClipboard = async (text) => {
     try {
@@ -67,7 +69,11 @@ export default function BusinessVibeOwnerView({
     }
   };
 
-  const [vibeVisible, code, visibilityButton] = useVisibilityToggle(id, visible, publicCode);
+  const [vibeVisible, code, visibilityButton] = useVisibilityToggle(
+    id,
+    visible,
+    publicCode
+  );
 
   const handleShare = async () => {
     try {
@@ -127,7 +133,6 @@ export default function BusinessVibeOwnerView({
 
   const topSlot = (
     <>
-      {/* верхняя панель: только кнопка Share справа */}
       <div className="position-relative w-100" style={{ minHeight: 0 }}>
         <div style={{ position: "absolute", top: 16, right: 16 }}>
           <button
@@ -151,7 +156,9 @@ export default function BusinessVibeOwnerView({
 
       {/* секция Visibility в едином стиле с VibePreview */}
       <div className="mb-3 w-100 px-3">
-        <div className="vv-label">{t("vibe_preview:sharing_section", "Visibility")}</div>
+        <div className="vv-label">
+          {t("vibe_preview:sharing_section", "Visibility")}
+        </div>
         <div className="vv-wrap visibility-compact">
           {visibilityButton}
           {vibeVisible && code && (
@@ -189,7 +196,7 @@ export default function BusinessVibeOwnerView({
         // MAIN tab content
         renderMain={() => (
           <>
-            <Avatar name={name} photoFile={photoFile} />
+            <Avatar name={name} photo={photo} onChangePhoto={setPhoto} />
             <h3 className="mb-0" style={{ fontWeight: 700 }}>
               {name || t("Your Name", { defaultValue: "Your Name" })}
             </h3>
@@ -199,7 +206,6 @@ export default function BusinessVibeOwnerView({
             >
               {type || "Business"}
             </div>
-
             <div
               className="p-3 mb-3 w-100 text-center"
               style={{
@@ -218,7 +224,6 @@ export default function BusinessVibeOwnerView({
                 </span>
               )}
             </div>
-
             <div
               style={{
                 width: "40%",
@@ -228,7 +233,6 @@ export default function BusinessVibeOwnerView({
                 marginBottom: 16,
               }}
             />
-
             <div className="d-flex flex-wrap gap-2 justify-content-center w-100">
               {contacts?.length ? (
                 contacts.map((c, i) => (
@@ -244,7 +248,6 @@ export default function BusinessVibeOwnerView({
                 </span>
               )}
             </div>
-
             {extraBlocks?.length > 0 && (
               <div className="w-100 mt-2">
                 {extraBlocks.map((block, i) => (
@@ -252,7 +255,6 @@ export default function BusinessVibeOwnerView({
                 ))}
               </div>
             )}
-
             <div className="mt-4 text-center d-grid gap-2">
               <div className="d-flex justify-content-center gap-3 flex-wrap">
                 <div>
@@ -284,7 +286,11 @@ export default function BusinessVibeOwnerView({
                     offer={offer}
                     onDoubleClick={() =>
                       navigate(`/offers/${offer.id}`, {
-                        state: { vibeId: id, returnTo: `/vibes/${id}`, tab: "offers" },
+                        state: {
+                          vibeId: id,
+                          returnTo: `/vibes/${id}`,
+                          tab: "offers",
+                        },
                       })
                     }
                   />

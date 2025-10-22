@@ -34,7 +34,7 @@ export default function VibePage() {
   return (
     <div
       className="d-flex flex-column align-items-center justify-content-center"
-      style={{ minHeight: "70vh" }} // 👈 это ключевая строка
+      style={{ minHeight: "70vh" }}
     >
       <div className="spinner-border text-primary" role="status"></div>
       <div className="mt-2">{t("loading")}</div>
