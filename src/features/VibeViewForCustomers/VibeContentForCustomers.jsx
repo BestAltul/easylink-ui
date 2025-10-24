@@ -109,7 +109,7 @@ export default function VibeContentForCustomers({
         </button>
       </div>
 
-      {type !== "PERSONAL" && (
+      {type === "BUSINESS" && (
         <>
           <ul className="nav nav-tabs mb-4" role="tablist">
             <li className="nav-item" role="presentation">
@@ -205,48 +205,29 @@ export default function VibeContentForCustomers({
                   </div>
                 )}
                 <div className="mt-4 text-center">
-                  {id ? (
-                    <>
-                      <QRCodeCanvas
-                        value={`${window.location.origin}/vibes/${id}`}
-                        size={60}
-                      />
-                      <div style={{ fontSize: 12, color: "#aaa" }}>
-                        Share QR code
+                  <div className="mt-4 text-center d-grid gap-2">
+                    <div className="d-flex justify-content-center gap-3 flex-wrap">
+                      <div>
+                        <QRCodeCanvas value={shareUrl} size={60} />
+                        <div style={{ fontSize: 12, color: "#aaa" }}>
+                          {t("Share QR code", { defaultValue: "Share QR code" })}
+                        </div>
                       </div>
-                      <button
-                        className="btn btn-primary mt-3"
-                        onClick={handleOpenModal}
-                        disabled={subscribed}
-                      >
-                        {subscribed ? t("Subscribed") : t("Subscribe")}
-                      </button>
-                      {showModal && (
-                        <SelectVibeModalWithLogic
-                          targetVibeId={id}
-                          onSubscribed={handleSubscribed}
-                          onCancel={() => setShowModal(false)}
-                        />
-                      )}
-                    </>
-                  ) : (
-                    <div
-                      className="qr-preview"
-                      style={{
-                        width: 60,
-                        height: 60,
-                        background: "#fafafa",
-                        border: "1.5px dashed #ddd",
-                        borderRadius: 9,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontSize: 18,
-                        color: "#aaa",
-                      }}
-                    >
-                      QR
                     </div>
+                  </div>
+                  <button
+                    className="btn btn-primary mt-3"
+                    onClick={handleOpenModal}
+                    disabled={subscribed}
+                  >
+                    {subscribed ? t("Subscribed") : t("Subscribe")}
+                  </button>
+                  {showModal && (
+                    <SelectVibeModalWithLogic
+                      targetVibeId={id}
+                      onSubscribed={handleSubscribed}
+                      onCancel={() => setShowModal(false)}
+                    />
                   )}
                 </div>
               </div>
@@ -364,6 +345,63 @@ export default function VibeContentForCustomers({
             style={{ fontWeight: 600, textTransform: "uppercase" }}
           >
             Personal
+          </div>
+          <div
+            className="p-3 mb-3 w-100 text-center"
+            style={{
+              background: "rgba(250, 250, 255, 0.92)",
+              border: "1.5px solid #eaeaf5",
+              borderRadius: 14,
+              fontSize: 16,
+              color: "#4d4d61",
+            }}
+          >
+            {description || (
+              <span style={{ color: "#bbb" }}>Description goes here...</span>
+            )}
+          </div>
+          <div className="d-flex flex-wrap gap-2 justify-content-center w-100">
+            {contacts?.length > 0 ? (
+              contacts.map((c, i) => (
+                <ContactButton key={c.type + i} type={c.type} value={c.value} />
+              ))
+            ) : (
+              <span className="text-muted" style={{ fontSize: 15 }}>
+                No contacts yet
+              </span>
+            )}
+          </div>
+          {extraBlocks?.length > 0 && (
+            <div className="w-100 mt-2">
+              {extraBlocks.map((block, i) => (
+                <ExtraBlock key={block.label + i} block={block} />
+              ))}
+            </div>
+          )}
+          <div className="mt-4 text-center d-grid gap-2">
+            <div className="d-flex justify-content-center gap-3 flex-wrap">
+              <div>
+                <QRCodeCanvas value={shareUrl} size={60} />
+                <div style={{ fontSize: 12, color: "#aaa" }}>
+                  {t("Share QR code", { defaultValue: "Share QR code" })}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {type === "OTHER" && (
+        <div className="w-100">
+          <Avatar name={name} photo={photo} />
+          <h3 className="mb-0" style={{ fontWeight: 700 }}>
+            {name || "Your Name"}
+          </h3>
+          <div
+            className="text-primary mb-2"
+            style={{ fontWeight: 600, textTransform: "uppercase" }}
+          >
+            OTHER
           </div>
           <div
             className="p-3 mb-3 w-100 text-center"

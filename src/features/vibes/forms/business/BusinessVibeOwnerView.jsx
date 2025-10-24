@@ -69,11 +69,7 @@ export default function BusinessVibeOwnerView({
     }
   };
 
-  const [vibeVisible, code, visibilityButton] = useVisibilityToggle(
-    id,
-    visible,
-    publicCode
-  );
+  const [vibeVisible, code, visibilityButton] = useVisibilityToggle(id, visible, publicCode);
 
   const handleShare = async () => {
     try {
@@ -98,7 +94,7 @@ export default function BusinessVibeOwnerView({
     }
   }, [location.search]);
 
-  // Share button + modal (как в VibePreview)
+  // Share button + modal 
   const {
     showShare,
     copied: modalCopied,
@@ -154,7 +150,7 @@ export default function BusinessVibeOwnerView({
         </div>
       </div>
 
-      {/* секция Visibility в едином стиле с VibePreview */}
+      {/* Visibility */}
       <div className="mb-3 w-100 px-3">
         <div className="vv-label">
           {t("vibe_preview:sharing_section", "Visibility")}

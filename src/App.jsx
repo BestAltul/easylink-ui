@@ -13,7 +13,7 @@ import "./i18n";
 import Profile from "./features/profile/Profile";
 import SignUp from "./features/auth/SignUp";
 import StartAuth from "./features/auth/StartAuth";
-import Home from "./pages/Home";
+import Home from "./pages/Home/Home";
 import About from "./pages/About";
 import Review from "./features/review/Review";
 import CreateVibe from "./features/vibes/forms/CreateVibe";

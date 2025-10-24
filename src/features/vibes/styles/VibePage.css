@@ -196,3 +196,40 @@
     font-size: 13px;
   }
 }
+.btn-white {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+
+  background-color: #fff;
+  color: #000;
+
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+
+  border: 1px solid #ddd;
+  border-radius: 24px;
+  padding: 0.6em 1.2em;
+
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-white:hover {
+  background-color: #f7f7f7;
+  border-color: #bbb;
+  transform: translateY(-3px); 
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08); 
+}
+
+
+.btn-white:focus,
+.btn-white:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+.btn-white svg {
+  stroke: #000;
+  flex-shrink: 0;
+}

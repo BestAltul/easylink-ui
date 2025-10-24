@@ -1,17 +1,25 @@
-import React, { useState } from "react";
+// VibeSearch.jsx
+import React, { useState, useEffect, useRef } from "react"; // + useEffect, useRef
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useTranslation } from "react-i18next";
 import { trackEvent } from "@/services/amplitude";
 
-export default function VibeSearch() {
+export default function VibeSearch({ autoFocus = false }) {
   const { t } = useTranslation("vibe_search");
   const navigate = useNavigate();
   const [code, setCode] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const inputRef = useRef(null);
 
   const isValid = /^\d{4,5}$/.test(code);
+
+  useEffect(() => {
+    if (autoFocus && inputRef.current) {
+      inputRef.current.focus({ preventScroll: true });
+    }
+  }, [autoFocus]);
 
   const onChange = (e) => {
     const next = e.target.value.replace(/\D/g, "").slice(0, 5);
@@ -26,7 +34,6 @@ export default function VibeSearch() {
       trackEvent("Vibe Search Failed", { reason: "invalid_format", code });
       return;
     }
-
     try {
       setLoading(true);
       trackEvent("Vibe Search Submit", { code_length: code.length });
@@ -49,12 +56,10 @@ export default function VibeSearch() {
       noValidate
       aria-label={t("label", "Vibe code search")}
     >
-      <div
-        className="d-flex justify-content-center align-items-stretch"
-        style={{ gap: 12 }}
-      >
+      <div className="d-flex justify-content-center align-items-stretch" style={{ gap: 12 }}>
         <input
           id="vibeCode"
+          ref={inputRef}                
           className="form-control"
           type="tel"
           inputMode="numeric"
@@ -65,11 +70,9 @@ export default function VibeSearch() {
           onChange={onChange}
           aria-describedby="vibeSearchHint"
           aria-invalid={!!error}
-          autoFocus
           style={{ minWidth: 0 }}
-          autoComplete="off" 
+          autoComplete="off"
         />
-
         <button
           type="submit"
           className="btn btn-primary"
@@ -79,11 +82,7 @@ export default function VibeSearch() {
         >
           {loading ? (
             <>
-              <span
-                className="spinner-border spinner-border-sm me-2"
-                role="status"
-                aria-hidden="true"
-              />
+              <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true" />
               {t("searching", "Searching…")}
             </>
           ) : (

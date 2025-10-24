@@ -91,11 +91,11 @@ export default function VibePage() {
               </svg>
               {t("interactions")}
             </button>
-            <button
-              type="button"
-              className="btn-light-outline btn-compact d-flex align-items-center gap-2"
-              onClick={() => setEditing(true)}
-            >
+              <button
+                type="button"
+                className="btn-white btn-compact d-flex align-items-center gap-2"
+                onClick={() => setEditing(true)}
+              >
               <svg
                 width="18"
                 height="18"
