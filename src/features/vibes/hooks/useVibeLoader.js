@@ -1,34 +1,110 @@
-import { useState, useEffect } from "react";
+// src/features/vibes/hooks/useVibeLoader.js
+import { useEffect, useRef, useState } from "react";
+import { useAuth } from "@/context/AuthContext";
+import { useNavigate, useLocation } from "react-router-dom";
 import { getVibe } from "@/api/vibeApi";
 import parseFields from "@/data/parseFields";
 
-export default function useVibeLoader(id, token) {
-  const [vibe, setVibe] = useState(null);
-  const [loading, setLoading] = useState(true);
+const VIBE_CACHE = new Map(); // id -> { data, ts }
 
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
+const TTL_MS = 2 * 60 * 1000;
+
+function getCached(id) {
+  const entry = VIBE_CACHE.get(id);
+  if (!entry) return null;
+  if (Date.now() - entry.ts > TTL_MS) {
+    VIBE_CACHE.delete(id);
+    return null;
+  }
+  return entry.data;
+}
+
+function setCached(id, data) {
+  VIBE_CACHE.set(id, { data, ts: Date.now() });
+}
+
+export function prefetchVibe(id, signal) {
+  return getVibe(id, { signal })
+    .then((data) => {
+      setCached(id, data);
+      return data;
+    })
+    .catch(() => {});
+}
+
+export default function useVibeLoader(id) {
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation(); 
+  const cached = id ? getCached(id) : null;
+  const [vibe, setVibe] = useState(cached || null);
+  const [loading, setLoading] = useState(!cached); 
+  const [refreshing, setRefreshing] = useState(false);
+
+  const [name, setName] = useState(cached?.name || "");
+  const [description, setDescription] = useState(cached?.description || "");
   const [contacts, setContacts] = useState([]);
   const [extraBlocks, setExtraBlocks] = useState([]);
-  const [visible, setVisible] = useState(false);
-  const [publicCode, setPublicCode] = useState("");
+  const [visible, setVisible] = useState(Boolean(cached?.visible));
+  const [publicCode, setPublicCode] = useState(cached?.publicCode || "");
+
+  const prevIdRef = useRef(id);
+
+  useEffect(() => {
+    if (!id || !isAuthenticated) {
+      setVibe(null);
+      setLoading(false);
+      setRefreshing(false);
+      return;
+    }
+    const ac = new AbortController();
+    const hasCache = Boolean(getCached(id));
+    if (hasCache) {
+      setLoading(false);
+      setRefreshing(true);
+    } else {
+      setLoading(true);   
+      setRefreshing(false);
+    }
+
+    prevIdRef.current = id;
+
+    (async () => {
+      try {
+        const data = await getVibe(id, { signal: ac.signal });
+        if (ac.signal.aborted) return;
+
+        setCached(id, data);
+        setVibe(data);
+      } catch (err) {
+        if (ac.signal.aborted) return;
+        const status = err?.status ?? err?.response?.status;
+        if (status === 401 || status === 403) {
+          const nextPath = `${location.pathname}${location.search || ""}`;
+          navigate(`/signin?next=${encodeURIComponent(nextPath)}`, {
+            replace: true,
+            state: { reason: "expired" },
+          });
+          return;
+        }
+      } finally {
+        if (!ac.signal.aborted) {
+          setLoading(false);
+          setRefreshing(false);
+        }
+      }
+    })();
+
+    return () => ac.abort();
+  }, [id, isAuthenticated, navigate]);
+
   
   useEffect(() => {
-    setLoading(true);
-    getVibe(id, token)
-      .then((data) => setVibe(data))
-      .catch(() => setVibe(null))
-      .finally(() => setLoading(false));
-  }, [id, token]);
-
-  useEffect(() => {
     if (!vibe) return;
-
     setName(vibe.name || "");
     setDescription(vibe.description || "");
-    setVisible(vibe.visible || false);
+    setVisible(Boolean(vibe.visible));
     setPublicCode(vibe.publicCode || "");
-
     const { contacts, extraBlocks } = parseFields(vibe.fieldsDTO || []);
     setContacts(contacts);
     setExtraBlocks(extraBlocks);
@@ -37,7 +113,8 @@ export default function useVibeLoader(id, token) {
   return {
     vibe,
     setVibe,
-    loading,
+    loading,     
+    refreshing,  
     name,
     description,
     contacts,

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { createVibe } from "@/api/vibeApi";
+import { apiFetch } from "@/api/apiFetch";
 
 export function usePersonalVibeForm({
   navigate,
@@ -138,10 +139,15 @@ export function usePersonalVibeForm({
       if (mode === "edit" && onSave) {
         await onSave(dto);
       } else {
-        const token = localStorage.getItem("jwt");
-        await createVibe(dto, token);
-        alert("Vibe created!");
-        navigate("/my-vibes");
+        const created = await createVibe(dto);
+        const newId =
+          created?.id || created?.vibeId || created?.vibe?.id;
+        alert("Vibe created!"); 
+        if (newId) {
+          navigate(`/vibes/${newId}`);
+        } else {
+          navigate("/my-vibes");
+        }
       }
     } catch (err) {
       alert(err.message || "Error saving Vibe");

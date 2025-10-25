@@ -10,5 +10,71 @@
   "fast_title": "Lightning Fast Access",
   "fast_text": "Login in seconds, without remembering complex passwords or codes.",
   "friendly_title": "User Friendly",
-  "friendly_text": "Designed for everyone — simple, intuitive, and beautifully easy to use."
+  "friendly_text": "Designed for everyone — simple, intuitive, and beautifully easy to use.",
+  "headline_prefix": "Your digital identity,",
+  "headline_suffix": "beautifully simple",
+  "subheadline": "Create a Vibe — a fast, shareable profile with passwordless login and built-in analytics.",
+  "explore_types": "Explore Vibe types",
+  "tab_personal": "Personal",
+  "tab_business": "Business",
+  "tab_event": "Other",
+  "cta_build": "Create this Vibe",
+  "cta_demo": "See a live demo",
+  "business": {
+    "offers_title": "Offers & analytics",
+    "offers_text": "Promote offers and see views, shares and conversions in one place.",
+    "team_title": "Team-ready",
+    "team_text": "Multiple admins, branded QR, share presets for events and campaigns."
+  },
+  "personal": {
+    "title": "Personal Vibe",
+    "text": "Share your links, contact buttons and a quick intro. QR in one tap.",
+    "privacy_title": "Privacy layers",
+    "privacy_text": "Control visibility by audience: public, friends, private."
+  },
+  "other": {
+    "mode_title": "Other mode",
+    "mode_text": "Flexible Vibe type for events, portfolios, or anything unique.",
+    "stats_title": "Live stats",
+    "stats_text": "Track visits and engagement in real time to see what resonates."
+  },
+  "demo": {
+    "business": {
+      "name": "YouMeKnow",
+      "description": "A next-gen platform for digital identities and smart Vibes — connect, share, and grow your presence effortlessly.",
+      "website": "youmeknow.com",
+      "github": "youmeknow",
+      "email": "help.youmeknow@gmail.com",
+      "mission_label": "Our Mission",
+      "mission_value": "Empowering individuals and businesses to express identity beyond platforms — through one smart link.",
+      "hq_label": "Headquarters",
+      "hq_value": "Toronto, Canada"
+    },
+    "personal": {
+      "name": "Alex Johnson",
+      "description": "Curious builder, music lover, and weekend hooper. Sharing moments, projects, and ways to connect.",
+      "telegram": "@demo.ymk",
+      "instagram": "@demo.ymk",
+      "email": "hello@example.me",
+      "city_label": "City",
+      "city_value": "New York, USA",
+      "interests_label": "Interests",
+      "interests_value": "Startups, basketball, photography",
+      "website_label": "Website",
+      "website_value": "example.me"
+    },
+    "other": {
+      "name": "YMK Launch Meetup",
+      "description": "Join us for a cozy founder meetup: short talks, live demos, and networking with creators.",
+      "website": "youmeknow.com/meetup",
+      "telegram": "@ymk_events",
+      "email": "events@youmeknow.com",
+      "date_label": "Date",
+      "date_value": "Nov 15, 2025 · 6:30–9:00 PM",
+      "venue_label": "Venue",
+      "venue_value": "Communitech Hub, Kitchener",
+      "details_label": "Details",
+      "details_value": "Talks, Q&A, snacks, and live Vibe demos."
+    }
+  }
 }

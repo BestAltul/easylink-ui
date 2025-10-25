@@ -1,4 +1,6 @@
+// src/features/vibes/UserVibes.jsx
 import React, { useEffect, useState } from "react";
+import { useAuth } from "@/context/AuthContext";
 import { getUserVibes, deleteVibe } from "@/api/vibeApi";
 import HeaderActions from "./components/HeaderActions";
 import VibesList from "./components/VibesList";
@@ -9,42 +11,47 @@ import "./styles/UserVibes.css";
 
 export default function UserVibes() {
   const { t } = useTranslation("myvibes");
+  const { isAuthenticated } = useAuth();
+
   const [vibes, setVibes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [shareVibe, setShareVibe] = useState(null);
   const [copied, setCopied] = useState(false);
-  const [token] = useState(() => localStorage.getItem("jwt") || "");
 
   useEffect(() => {
     let cancelled = false;
-    
-    if (!token) {
+
+    if (!isAuthenticated) {
       setVibes([]);
       setLoading(false);
       return;
     }
 
     setLoading(true);
-    getUserVibes(token)
-      .then((data) => !cancelled && setVibes(Array.isArray(data) ? data : []))
-      .catch((err) => {
+    (async () => {
+      try {
+        const data = await getUserVibes(); 
+        if (!cancelled) setVibes(Array.isArray(data) ? data : []);
+      } catch (err) {
         console.error("Error loading Vibes", err);
         if (!cancelled) setVibes([]);
-      })
-      .finally(() => !cancelled && setLoading(false));
-    return () => {
-      cancelled = true;
-    };
-  }, [token]);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+
+    return () => { cancelled = true; };
+  }, [isAuthenticated]);
 
   const handleDelete = async (vibeId) => {
     if (!window.confirm(t("delete_confirm"))) return;
     setLoading(true);
     try {
-      await deleteVibe(vibeId, token);
+      await deleteVibe(vibeId); 
       setVibes((prev) => prev.filter((v) => v.id !== vibeId));
     } catch (err) {
-      alert(t("toast_error") ?? "Error: " + err.message);
+      console.error(err);
+      alert(t("toast_error") ?? "Error: " + (err?.message || "unknown"));
     } finally {
       setLoading(false);
     }
@@ -92,7 +99,6 @@ export default function UserVibes() {
           <div className="small">{t("no_vibes_hint")}</div>
         </div>
       ) : (
-        // grid-wrap: 1 column for mobile devices, auto-fit - desctop/tablets
         <section className="vibes-grid" role="list" aria-label={t("list_aria", "Your vibes")}>
           <VibesList
             vibes={vibes}

@@ -9,17 +9,7 @@
 --legal-highlight: #fff7ed; /* amber-50 */
 --legal-highlight-border: #fed7aa; /* amber-200 */
 }
-@media (prefers-color-scheme: dark) {
-:root {
---legal-fg: #e5e7eb;
---legal-muted: #9ca3af;
---legal-border: #374151;
---legal-bg: #0b1020; /* subtle deep blue */
---legal-surface: #111827;
---legal-highlight: #1f2937;
---legal-highlight-border: #374151;
-}
-}
+
 html { scroll-behavior: smooth; }
 
 

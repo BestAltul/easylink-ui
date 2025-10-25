@@ -20,7 +20,6 @@ import useItemsByVibeId from "@/features/vibes/catalog/useItemByVibeId";
 import useVisibilityToggle from "@/features/vibes/useVisibilityToggle.jsx";
 import BusinessTabs from "@/features/vibes/forms/business/BusinessTabs.jsx";
 
-// подключаем те же классы vv-label/vv-code, что и в VibePreview
 import "@/features/vibes/components/VibePreview.css";
 
 export default function BusinessVibeOwnerView({
@@ -99,7 +98,7 @@ export default function BusinessVibeOwnerView({
     }
   }, [location.search]);
 
-  // Share button + modal (как в VibePreview)
+  // Share button + modal 
   const {
     showShare,
     copied: modalCopied,
@@ -134,7 +133,6 @@ export default function BusinessVibeOwnerView({
 
   const topSlot = (
     <>
-      {/* верхняя панель: только кнопка Share справа */}
       <div className="position-relative w-100" style={{ minHeight: 0 }}>
         <div style={{ position: "absolute", top: 16, right: 16 }}>
           <button
@@ -156,7 +154,7 @@ export default function BusinessVibeOwnerView({
         </div>
       </div>
 
-      {/* секция Visibility в едином стиле с VibePreview */}
+      {/* Visibility */}
       <div className="mb-3 w-100 px-3">
         <div className="vv-label">
           {t("vibe_preview:sharing_section", "Visibility")}
