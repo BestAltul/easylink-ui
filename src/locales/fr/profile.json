@@ -6,12 +6,12 @@
   "streak": "Série : {{count}}j",
   "cards": [
     {
-      "title": "❤️ Mes vibes",
+      "title": "Mes vibes",
       "text": "Voyez les vibes que vous avez déjà créés !",
       "button": "Voir mes vibes"
     },
     {
-      "title": "💙 Créer un nouveau vibe",
+      "title": "Créer un nouveau vibe",
       "text": "Ajoutez un nouveau vibe personnel, professionnel ou événementiel à votre compte.",
       "button": "Créer un vibe"
     }

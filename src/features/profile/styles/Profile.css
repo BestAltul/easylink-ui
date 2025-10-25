@@ -1,25 +1,188 @@
-@keyframes slideUp {
-  from { transform: translateY(30px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-.animate-slideUp {
-  animation: slideUp 0.4s cubic-bezier(.21,.7,.44,1.12);
+/* =======================
+   src/features/profile/styles/Profile.css
+   (scoped to .profile only — no global leaks)
+   ======================= */
+
+.profile {
+  /* tokens */
+  --accent-from: 255, 138, 181; /* #ff8ab5 */
+  --accent-to: 244, 196, 54;   /* #f4c436 */
+  --bg: #0f1222; /* used behind gradient */
+  --text: #0f1222;
+  --text-weak: #5b6280;
+  --surface: #ffffff;
+  --ring: 234 238 247; /* #eaEEF7 */
+  --blur: 14px;
+  --radius: 18px;
+  --shadow-sm: 0 6px 22px rgba(15,18,34,.08);
+  --shadow-md: 0 16px 48px rgba(15,18,34,.12);
+
+  position: relative;
+  min-height: 100svh;
+  /* min-height: auto; */
+  color: var(--text);
+  isolation: isolate;
 }
 
-.profile-card {
-  transition: background 0.22s, box-shadow 0.22s, transform 0.17s;
-  box-shadow: 0 .125rem .8rem rgba(110,110,140,0.09);
+/* ===== Background (soft gradient + subtle pattern) ===== */
+.profile .profile__bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(1200px 700px at 20% -10%, rgba(var(--accent-from), .25), transparent 55%),
+    radial-gradient(1100px 600px at 110% 20%, rgba(var(--accent-to), .22), transparent 55%),
+    linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
 }
-.profile-card:hover, .profile-card:focus-visible {
-  box-shadow: 0 8px 28px 0 rgba(60,60,60,0.11), 0 1.5px 6px 0 rgba(60,60,60,0.08);
-  transform: translateY(-6px) scale(1.018);
-}
-.profile-card:active {
-  transform: scale(0.97);
-}
-@media (max-width: 850px) {
-  .cards-row {
-    flex-direction: column !important;
-    align-items: center;
+
+@media (prefers-color-scheme: dark) {
+  .profile {
+    --text: #e7e9f5;
+    --text-weak: #aab1c6;
+    --surface: rgba(255,255,255,.06);
   }
+  .profile .profile__bg {
+    background:
+      radial-gradient(1000px 600px at 15% -10%, rgba(var(--accent-from), .18), transparent 55%),
+      radial-gradient(900px 560px at 110% 20%, rgba(var(--accent-to), .16), transparent 55%),
+      linear-gradient(180deg, #0f1222 0%, #121429 100%);
+  }
+}
+
+/* ===== Layout ===== */
+.profile .profile__container {
+  width: min(1200px, 92vw);
+  margin-inline: auto;
+  padding: clamp(20px, 3vw, 32px);
+}
+
+/* ===== Glass helpers ===== */
+.profile .glass {
+  background: rgba(255, 255, 255, 0.6);
+  -webkit-backdrop-filter: blur(var(--blur));
+  backdrop-filter: blur(var(--blur));
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  box-shadow: var(--shadow-sm);
+  border-radius: var(--radius);
+}
+
+@media (prefers-color-scheme: dark) {
+  .profile .glass {
+    background: rgba(18, 20, 41, 0.48);
+    border-color: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 10px 40px rgba(0,0,0,.45);
+  }
+}
+
+/* ===== Hero ===== */
+.profile .profile__hero {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 16px;
+  padding: clamp(20px, 4vw, 36px);
+  margin-block: clamp(16px, 3vw, 28px);
+}
+
+.profile .profile__heading {
+  margin: 0 0 6px 0;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  font-size: clamp(28px, 4.6vw, 42px);
+  line-height: 1.08;
+  background: linear-gradient(90deg, rgba(var(--accent-from), 1) 0%, rgba(var(--accent-to), 1) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.profile .profile__subheading {
+  margin: 0;
+  color: var(--text-weak);
+  font-size: clamp(14px, 2.2vw, 18px);
+}
+
+/* ===== Chip ===== */
+.profile .profile__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 9999px;
+  background: rgba(255,255,255,.64);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255,255,255,.5);
+  box-shadow: var(--shadow-sm);
+}
+.profile .profile__chip-dot {
+  inline-size: 8px;
+  block-size: 8px;
+  border-radius: 9999px;
+  background: radial-gradient(circle at 35% 35%, #38d39f 0%, #1bbd83 60%, #0da56f 100%);
+}
+.profile .profile__chip-text { font-size: 14px; color: var(--text); opacity: .9; }
+
+@media (prefers-color-scheme: dark) {
+  .profile .profile__chip { background: rgba(18,20,41,.52); border-color: rgba(255,255,255,.12); }
+}
+
+/* ===== Search block ===== */
+.profile .profile__search {
+  padding: clamp(12px, 2.6vw, 18px);
+  margin-block: clamp(12px, 2.6vw, 22px);
+}
+
+/* Make embedded inputs feel glassy without breaking component internals */
+.profile .profile__search :where(input, .form-control) {
+  background: rgba(255,255,255,.75) !important;
+  border: 1px solid rgba(255,255,255,.6) !important;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+@media (prefers-color-scheme: dark) {
+  .profile .profile__search :where(input, .form-control) {
+    background: rgba(18,20,41,.6) !important;
+    border-color: rgba(255,255,255,.12) !important;
+    color: #e7e9f5 !important;
+  }
+}
+
+/* ===== Cards ===== */
+.profile .profile__cards {
+  margin-top: clamp(10px, 2vw, 18px);
+}
+
+/* Optional: elevate children on hover if they have a card-like wrapper */
+.profile .profile__cards > * :where(.card, [data-elevate]) {
+  transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+  will-change: transform;
+}
+.profile .profile__cards > * :where(.card, [data-elevate]):hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: rgba(var(--accent-to), .28);
+}
+
+/* ===== Motion (scoped) ===== */
+@media (prefers-reduced-motion: no-preference) {
+  .profile .animate-slideUp { animation: profile-slideUp .6s ease both; }
+  .profile .animate-fadeIn { animation: profile-fadeIn .5s ease both .05s; }
+  .profile .animate-stagger > * { animation: profile-fadeInUp .5s ease both; }
+  .profile .animate-stagger > *:nth-child(1) { animation-delay: .04s; }
+  .profile .animate-stagger > *:nth-child(2) { animation-delay: .08s; }
+  .profile .animate-stagger > *:nth-child(3) { animation-delay: .12s; }
+  .profile .animate-stagger > *:nth-child(4) { animation-delay: .16s; }
+}
+
+@keyframes profile-slideUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes profile-fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes profile-fadeInUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ===== Focus ring (scoped) ===== */
+.profile :where(a, button, input, [tabindex]){ outline: none; }
+.profile :where(a, button, input, [tabindex]):focus-visible{
+  box-shadow: 0 0 0 4px rgba(var(--accent-from), .20), 0 0 0 2px rgba(var(--accent-to), .25);
+  border-radius: 12px;
 }

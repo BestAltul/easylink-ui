@@ -1,43 +1,57 @@
+// =======================
+// src/features/profile/Profile.jsx
+// Style: Glassmorphism + Modern Minimalism (Soft Gradient / Clean UI)
+// =======================
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useTranslation } from "react-i18next";
-// import Sidebar from "./components/Sidebar";
 import ProfileCards from "./components/ProfileCards";
-// import ProfileStats from "./components/ProfileStats";
 import getProfileCards from "./utils/profileCardsConfig";
 import useHasVibes from "../../components/common/hooks/useHasVibes";
 import VibeSearch from "../../components/common/VibeSearch";
 
+import "./styles/Profile.css"; // NEW
+
 export default function Profile() {
   const navigate = useNavigate();
   const { user /*, logout, isAuthenticated*/ } = useAuth();
-
   const { t } = useTranslation("profile");
-
   const profileCards = getProfileCards(t, navigate);
-  const hasVibes = useHasVibes(); 
+  const hasVibes = useHasVibes();
 
   return (
-    <>
-      {/* <Sidebar user={user} logout={logout} /> */}
-      <main className="py-5 px-4">
-        <div className="mx-auto" style={{ maxWidth: "1200px" }}>
-          <div className="text-center bg-light p-5 rounded shadow mb-5 animate-slideUp">
-            <h2 className="mb-4">
-              {t("welcome")}{" "}
-            </h2>
-            <p className="lead text-muted">{t("dashboard")}</p>
+    <main className="profile">
+      {/* Background layer */}
+      <div className="profile__bg" aria-hidden="true" />
+
+      <div className="profile__container">
+        {/* Hero */}
+        <section className="profile__hero glass animate-slideUp" role="region" aria-label={t("welcome")}>
+          <div className="profile__hero-title">
+            <h1 className="profile__heading">{t("welcome")}</h1>
+            <p className="profile__subheading">{t("dashboard")}</p>
           </div>
 
-          <div className="d-flex justify-content-center mb-4">
-            <VibeSearch />
-          </div>
+          {/* Quick user chip (optional) */}
+          {user?.email && (
+            <div className="profile__chip" title={user.email}>
+              <span className="profile__chip-dot" />
+              <span className="profile__chip-text">{user.email}</span>
+            </div>
+          )}
+        </section>
 
-          {/* <ProfileStats friendsCount={user?.friendsCount ?? 0} streak={user?.streak ?? 0} /> */}
+        {/* Search */}
+        <section className="profile__search glass animate-fadeIn" role="search">
+          <VibeSearch />
+        </section>
+
+        {/* Cards */}
+        <section className="profile__cards animate-stagger">
           <ProfileCards cards={profileCards} />
-        </div>
-      </main>
-    </>
+        </section>
+      </div>
+    </main>
   );
 }

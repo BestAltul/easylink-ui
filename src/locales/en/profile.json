@@ -6,12 +6,12 @@
   "streak": "Streak: {{count}}d",
   "cards": [
     {
-      "title": "❤️ My Vibes",
+      "title": "My Vibes",
       "text": "See the vibes you've already created!",
       "button": "View My Vibes"
     },
     {
-      "title": "💙 Create New Vibe",
+      "title": "Create New Vibe",
       "text": "Add a new personal, business, or event Vibe to your account.",
       "button": "Create Vibe"
     }

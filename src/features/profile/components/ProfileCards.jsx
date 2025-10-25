@@ -1,44 +1,67 @@
-import React, { useState } from "react";
+import React from "react";
 import "../styles/ProfileCards.css";
+import { IconBarChart, IconPlus, IconShield, IconZap } from "@/pages/home/icons/Icons";
 
-export default function ProfileCards({ cards }) {
-  const [hoveredCard, setHoveredCard] = useState(null);
+/**
+ * cards: Array<{
+ *   title: string;
+ *   text?: string;
+ *   icon?: "bar-chart" | "plus" | "shield" | "zap" | React.ReactNode;
+ *   buttonText?: string;
+ *   variant?: "red" | "blue" | "peach-gold";
+ *   onClick: () => void;
+ * }>
+ */
 
+// ключи -> компоненты иконок
+const iconMap = {
+  "bar-chart": IconBarChart,
+  "plus": IconPlus,
+  "shield": IconShield,
+  "zap": IconZap,
+};
+
+export default function ProfileCards({ cards = [] }) {
   return (
-    <div className="d-flex gap-4 justify-content-center cards-row">
-      {cards.map((card, idx) => (
-        <div
-          key={idx}
-          className="profile-card p-4 rounded shadow text-center animate-slideUp"
-          tabIndex={0}
-          style={{
-            backgroundColor: hoveredCard === idx ? card.hoverBackground : card.background,
-            minWidth: 280,
-            maxWidth: 350,
-            cursor: "pointer",
-            outline: "none",
-            marginBottom: 20,
-          }}
-          onClick={card.onClick}
-          onMouseEnter={() => setHoveredCard(idx)}
-          onMouseLeave={() => setHoveredCard(null)}
-          onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && card.onClick()}
-        >
-          <h5 className="mb-2" style={{ fontWeight: 600, fontSize: 22 }}>{card.title}</h5>
-          <p className="text-muted mb-4" style={{ minHeight: 38 }}>{card.text}</p>
-          <button
-            className={`btn btn-${card.buttonColor} px-4 py-2`}
-            style={{ fontWeight: 500, fontSize: 17 }}
-            tabIndex={-1}
-            onClick={(e) => {
-              e.stopPropagation();
-              card.onClick();
-            }}
+    <div className="profile pc-grid">
+      {cards.map((c, i) => {
+        const IconCmp = typeof c.icon === "string" ? iconMap[c.icon] : null;
+
+        return (
+          <article
+            key={i}
+            className="pc-card"
+            data-variant={c.variant || "peach-gold"}
+            tabIndex={0}
+            onClick={c.onClick}
+            onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && c.onClick()}
+            aria-label={c.title}
           >
-            {card.buttonText}
-          </button>
-        </div>
-      ))}
+            <header className="pc-head">
+              <span className="pc-icon" aria-hidden="true">
+                {IconCmp
+                  ? <IconCmp width={18} height={18} />
+                  : (React.isValidElement(c.icon) ? c.icon : <IconBarChart width={18} height={18} />)}
+              </span>
+              <h3 className="pc-title">{c.title}</h3>
+            </header>
+
+            {c.text && <p className="pc-desc">{c.text}</p>}
+
+            {c.buttonText && (
+              <button
+                type="button"
+                className="pc-btn"
+                tabIndex={-1}
+                onClick={(e) => { e.stopPropagation(); c.onClick(); }}
+              >
+                <span className="pc-btn-label">{c.buttonText}</span>
+                <span className="pc-btn-sheen" aria-hidden="true" />
+              </button>
+            )}
+          </article>
+        );
+      })}
     </div>
   );
 }
