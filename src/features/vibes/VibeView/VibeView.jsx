@@ -41,8 +41,6 @@ export default function VibeView() {
   if (error)
     return <div className="text-center py-5 text-danger">Error: {error}</div>;
   if (!vibe) return null;
-
-  // Здесь уже точно есть vibe!
   const { name, description, contacts, extraBlocks } = parseFields(
     vibe.fieldsDTO
   );

@@ -1,18 +1,20 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect } from "react";
+import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 import BusinessVibeForm from "./business/BusinessVibeForm";
 import PersonalVibeForm from "./personal/PersonalVibeForm";
 import EventVibeForm from "./events/EventVibeForm";
 import BackButton from "@/components/common/BackButton";
-import "./CreateVibe.css"
+import "./CreateVibe.css";
 
 const TYPE_COMPONENTS = {
   BUSINESS: BusinessVibeForm,
   PERSONAL: PersonalVibeForm,
   EVENT: EventVibeForm,
 };
+
+const ALLOWED_TYPES = ["BUSINESS", "PERSONAL", "EVENT"];
 
 function useIsMobile(breakpoint = 768) {
   const [isMobile, setIsMobile] = React.useState(
@@ -29,8 +31,26 @@ function useIsMobile(breakpoint = 768) {
 export default function CreateVibe() {
   const { t } = useTranslation("create_vibe");
   const navigate = useNavigate();
-  const [type, setType] = React.useState("BUSINESS");
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
   const isMobile = useIsMobile();
+
+  const queryType = (searchParams.get("type") || "").toUpperCase();
+  const stateType = (location.state?.prefillType || "").toUpperCase();
+  const initialType = ALLOWED_TYPES.includes(queryType)
+    ? queryType
+    : ALLOWED_TYPES.includes(stateType)
+    ? stateType
+    : "BUSINESS";
+
+  const [type, setType] = React.useState(initialType);
+
+  useEffect(() => {
+    const q = (searchParams.get("type") || "").toUpperCase();
+    if (ALLOWED_TYPES.includes(q) && q !== type) {
+      setType(q);
+    }
+  }, [searchParams, type]);
 
   const Form = TYPE_COMPONENTS[type] || BusinessVibeForm;
 
@@ -55,6 +75,7 @@ export default function CreateVibe() {
         <div className="cv-header__right" />
       </div>
 
+      {/* type selector */}
       <section className="cv-type">
         {isMobile ? (
           <div className="cv-segments" role="tablist" aria-label={t("type_label")}>
@@ -66,7 +87,12 @@ export default function CreateVibe() {
                   role="tab"
                   aria-selected={active}
                   className={`cv-segment ${active ? "is-active" : ""}`}
-                  onClick={() => setType(opt.value)}
+                  onClick={() => {
+                    setType(opt.value);
+                    const url = new URL(window.location.href);
+                    url.searchParams.set("type", opt.value);
+                    window.history.replaceState({}, "", url.toString());
+                  }}
                 >
                   {opt.label}
                 </button>
@@ -82,7 +108,13 @@ export default function CreateVibe() {
               id="vibe-type"
               className="form-select"
               value={type}
-              onChange={(e) => setType(e.target.value)}
+              onChange={(e) => {
+                const next = e.target.value;
+                setType(next);
+                const url = new URL(window.location.href);
+                url.searchParams.set("type", next);
+                window.history.replaceState({}, "", url.toString());
+              }}
               aria-label={t("type_label")}
             >
               {typeOptions.map((opt) => (

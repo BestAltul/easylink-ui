@@ -6,6 +6,7 @@ import { AuthProvider } from "./context/AuthContext";
 import "./index.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+// import "@/debug/authDebug"; // Uncomment for auth debugging
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>

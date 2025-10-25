@@ -1,49 +1,46 @@
-import { useState } from "react";
-import { useAuth } from "../../../context/AuthContext";
+// src/components/common/hooks/useEarlyAccess.js
+import { useState, useCallback } from "react";
+import { useAuth } from "@/context/AuthContext";
 
 export function useEarlyAccess() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [subscribed, setSubscribed] = useState(false);
 
-  const { user, isAuthenticated, logout } = useAuth();
-  const email = user?.username;
-  const token = user?.token;
+  const { user, accessToken } = useAuth();
+  const email = user?.email || ""; // в твоём контексте именно email
 
-  const requestEarlyAccess = async () => {
+  const requestEarlyAccess = useCallback(async () => {
     setLoading(true);
     setError(null);
-
-    const email = user?.username;
-    const token = user?.token;
-
     try {
-      const response = await fetch(
+      const headers = new Headers({ "Content-Type": "application/json" });
+      if (accessToken) headers.set("Authorization", `Bearer ${accessToken}`);
+
+      const res = await fetch(
         `/api/v3/interactions/early-access?email=${encodeURIComponent(email)}`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
+          headers,
+          credentials: "include",               // <— критично для cookie-сессии
           body: JSON.stringify({ source: "header" }),
         }
       );
 
-      if (!response.ok) {
-        throw new Error("Request failed");
+      if (!res.ok) {
+        const msg = (await res.text()) || "Request failed";
+        throw new Error(msg);
       }
 
       setSubscribed(true);
-      //alert("✅ You’ve requested early access!");
-    } catch (err) {
-      console.error("Early access error:", err);
-      setError(err);
-      alert("⚠️ Server error");
+    } catch (e) {
+      console.error("[useEarlyAccess] error:", e);
+      setError(e);
+      // тут лучше показать тост, а не alert
     } finally {
       setLoading(false);
     }
-  };
+  }, [email, accessToken]);
 
   return { requestEarlyAccess, loading, error, subscribed, setSubscribed };
 }

@@ -13,7 +13,7 @@ import "./i18n";
 import Profile from "./features/profile/Profile";
 import SignUp from "./features/auth/SignUp";
 import StartAuth from "./features/auth/StartAuth";
-import Home from "./pages/Home";
+import Home from "./pages/Home/Home";
 import About from "./pages/About";
 import Review from "./features/review/Review";
 import CreateVibe from "./features/vibes/forms/CreateVibe";
@@ -34,6 +34,9 @@ import EmailVerified from "@/features/auth/EmailVerified";
 
 import CatalogForm from "./features/vibes/catalog/catalogForm";
 
+import AuthGuard from "./features/auth/AuthGuard";
+import ProfilePage from "./features/profile/Profile";
+
 import Terms from "./pages/legal/Terms";
 import Privacy from "./pages/legal/Privacy";
 import Ads from "./pages/legal/Ads";
@@ -48,7 +51,7 @@ function App() {
       <Header />
       <ToastContainer />
       <Routes>
-        <Route path="/profile" element={<Profile />} />
+        <Route path="/profile" element={<AuthGuard><ProfilePage/></AuthGuard>} />
         <Route path="/" element={<Home />} />
         <Route
           path="/signup"

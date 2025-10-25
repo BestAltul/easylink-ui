@@ -71,7 +71,7 @@ export default function EventVibeForm({
   const {
     name, setName,
     description, setDescription,
-    photoFile, setPhotoFile,
+    photo, setPhoto,
     contacts, setContacts,
     extraBlocks, setExtraBlocks,
     loading,
@@ -120,7 +120,7 @@ export default function EventVibeForm({
         editMode={mode === "edit"}    
         onChangeName={setName}
         onChangeDescription={setDescription}
-        onChangePhotoFile={setPhotoFile}
+        onChangePhoto={setPhoto}
         resumeEditAt={refocusIndex}
         onOpenContactPicker={(idx) => {
           setTypeIndex(Number.isInteger(idx) ? idx : null);

@@ -1,3 +1,7 @@
+main {
+  min-height: 70vh; 
+}
+
 .myvibes, .container.myvibes {
   padding-left: max(16px, env(safe-area-inset-left));
   padding-right: max(16px, env(safe-area-inset-right));
@@ -76,7 +80,6 @@
   }
 }
 
-/* узкие экраны (iPhone SE и т.п.) */
 @media (max-width: 360px) {
   .myvibe-card {
     padding: 14px 10px 12px;
