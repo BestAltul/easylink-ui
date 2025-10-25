@@ -69,7 +69,11 @@ export default function BusinessVibeOwnerView({
     }
   };
 
-  const [vibeVisible, code, visibilityButton] = useVisibilityToggle(id, visible, publicCode);
+  const [vibeVisible, code, visibilityButton] = useVisibilityToggle(
+    id,
+    visible,
+    publicCode
+  );
 
   const handleShare = async () => {
     try {

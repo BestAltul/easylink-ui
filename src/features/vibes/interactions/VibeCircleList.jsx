@@ -14,6 +14,9 @@ function normalizeVibe(item) {
 
   let photo = item.photo || item.targetVibe?.photo || item.vibe?.photo || "";
 
+  const API_BASE =
+    import.meta.env.VITE_API_URL?.replace(/\/$/, "") || window.location.origin;
+
   if (photo) {
     photo = photo.replace(/uploads\/uploads/g, "uploads");
 
@@ -23,6 +26,10 @@ function normalizeVibe(item) {
 
     if (!photo.startsWith("/uploads") && photo.includes("uploads")) {
       photo = photo.slice(photo.indexOf("/uploads"));
+    }
+
+    if (photo.startsWith("/uploads")) {
+      photo = `${API_BASE}${photo}`;
     }
   }
 

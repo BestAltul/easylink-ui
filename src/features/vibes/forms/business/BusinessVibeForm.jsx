@@ -23,7 +23,9 @@ import BusinessTabsInCard from "./BusinessTabsInCard";
 // helper: UUID v1-5
 const isUUID = (s) =>
   typeof s === "string" &&
-  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(s);
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+    s
+  );
 
 export default function BusinessVibeForm({
   initialData = {},
@@ -43,7 +45,7 @@ export default function BusinessVibeForm({
 
   const token = localStorage.getItem("jwt");
   const vibeId = initialData?.id;
-  const safeVibeId = isUUID(vibeId) ? vibeId : undefined; 
+  const safeVibeId = isUUID(vibeId) ? vibeId : undefined;
   const ownerActionsEnabled = !!safeVibeId;
   const offers = useGetOffersByVibeId(safeVibeId, token);
   const {
@@ -54,21 +56,28 @@ export default function BusinessVibeForm({
   const itemIds = Array.isArray(items) ? items.map((x) => x.id) : [];
 
   const {
-    name, setName,
-    description, setDescription,
-    photoFile, setPhotoFile,
-    contacts, setContacts,
-    extraBlocks, setExtraBlocks,
+    name,
+    setName,
+    description,
+    setDescription,
+    photo,
+    setPhoto,
+    contacts,
+    setContacts,
+    extraBlocks,
+    setExtraBlocks,
     loading,
-    handleContactChange, removeContact,
-    handleBlockChange, removeBlock,
+    handleContactChange,
+    removeContact,
+    handleBlockChange,
+    removeBlock,
     handleSubmit,
   } = useBusinessVibeForm({ navigate, initialData, mode, onSave });
 
   const readTabFromSearch = () => {
     const qp = new URLSearchParams(location.search);
     const tab = qp.get("tab");
-    return (tab === "main" || tab === "offers" || tab === "menu") ? tab : "main";
+    return tab === "main" || tab === "offers" || tab === "menu" ? tab : "main";
   };
   const [activeTab, setActiveTab] = React.useState(readTabFromSearch());
   const setTab = (tab) => {
@@ -99,25 +108,29 @@ export default function BusinessVibeForm({
           disabled={loading}
         >
           {loading
-            ? (mode === "edit" ? t("saving") : t("creating"))
-            : (mode === "edit" ? t("save_button") : t("create_button"))}
+            ? mode === "edit"
+              ? t("saving")
+              : t("creating")
+            : mode === "edit"
+            ? t("save_button")
+            : t("create_button")}
         </button>
       </div>
 
       <form className="w-100" onSubmit={(e) => e.preventDefault()}>
         <VibePreviewPane
-          id={safeVibeId}                   
-          ownerActionsEnabled={ownerActionsEnabled}  
+          id={safeVibeId}
+          ownerActionsEnabled={ownerActionsEnabled}
           name={name}
           description={description}
-          photoFile={photoFile}
+          photo={photo}
           contacts={contacts}
           extraBlocks={extraBlocks}
           type="BUSINESS"
-          editMode={true}                   
+          editMode={true}
           onChangeName={setName}
           onChangeDescription={setDescription}
-          onChangePhotoFile={setPhotoFile}
+          onChangePhoto={setPhoto}
           resumeEditAt={refocusIndex}
           onOpenContactPicker={(idx) => {
             setTypeIndex(Number.isInteger(idx) ? idx : null);
@@ -138,21 +151,23 @@ export default function BusinessVibeForm({
                   id={safeVibeId}
                   name={name}
                   description={description}
-                  photoFile={photoFile}
+                  photo={photo}
                   contacts={contacts}
                   type="BUSINESS"
                   extraBlocks={extraBlocks}
                   editMode={true}
                   onChangeName={setName}
                   onChangeDescription={setDescription}
-                  onChangePhotoFile={setPhotoFile}
+                  onChangePhoto={setPhoto}
                   resumeEditAt={refocusIndex}
                   onOpenContactPicker={(idx) => {
                     setTypeIndex(Number.isInteger(idx) ? idx : null);
                     setShowModal(true);
                   }}
                   onRemoveContact={(idx) => removeContact(idx)}
-                  onChangeContactValue={(idx, val) => handleContactChange(idx, val)}
+                  onChangeContactValue={(idx, val) =>
+                    handleContactChange(idx, val)
+                  }
                   onBlockChange={(i, v) => handleBlockChange(i, v)}
                   onBlockRemove={(i) => removeBlock(i)}
                   onOpenBlockPicker={() => setShowBlockModal(true)}
@@ -168,7 +183,11 @@ export default function BusinessVibeForm({
                           offer={offer}
                           onDoubleClick={() =>
                             navigate(`/offers/${offer.id}`, {
-                              state: { vibeId: safeVibeId, returnTo: `/vibes/${safeVibeId}`, tab: "offers" },
+                              state: {
+                                vibeId: safeVibeId,
+                                returnTo: `/vibes/${safeVibeId}`,
+                                tab: "offers",
+                              },
                             })
                           }
                         />
@@ -186,10 +205,14 @@ export default function BusinessVibeForm({
                       className="btn btn-outline-primary"
                       onClick={() =>
                         navigate("/offers/new", {
-                          state: { vibeId: safeVibeId, returnTo: `/vibes/${safeVibeId}`, tab: "offers" },
+                          state: {
+                            vibeId: safeVibeId,
+                            returnTo: `/vibes/${safeVibeId}`,
+                            tab: "offers",
+                          },
                         })
                       }
-                      disabled={!ownerActionsEnabled} 
+                      disabled={!ownerActionsEnabled}
                     >
                       + {t("Add Offer", { defaultValue: "Add Offer" })}
                     </button>
@@ -205,7 +228,11 @@ export default function BusinessVibeForm({
                   vibeId={safeVibeId}
                   onAddItem={() =>
                     navigate("/catalog/new", {
-                      state: { vibeId: safeVibeId, returnTo: `/vibes/${safeVibeId}`, tab: "menu" },
+                      state: {
+                        vibeId: safeVibeId,
+                        returnTo: `/vibes/${safeVibeId}`,
+                        tab: "menu",
+                      },
                     })
                   }
                   onEditItem={(it) =>
@@ -230,10 +257,13 @@ export default function BusinessVibeForm({
       {showModal && (
         <ContactTypeModal
           contacts={contacts}
-          onClose={() => { setShowModal(false); setTypeIndex(null); }}
+          onClose={() => {
+            setShowModal(false);
+            setTypeIndex(null);
+          }}
           onSelect={(typeKey) => {
             if (typeIndex != null) {
-              setContacts(prev => {
+              setContacts((prev) => {
                 const updated = [...prev];
                 updated[typeIndex] = { ...updated[typeIndex], type: typeKey };
                 return updated;
@@ -242,7 +272,7 @@ export default function BusinessVibeForm({
               Promise.resolve().then(() => setRefocusIndex(null));
             } else {
               const newIndex = contacts.length;
-              setContacts(prev => [...prev, { type: typeKey, value: "" }]);
+              setContacts((prev) => [...prev, { type: typeKey, value: "" }]);
               setRefocusIndex({ index: newIndex, nonce: Date.now() });
               Promise.resolve().then(() => setRefocusIndex(null));
             }
@@ -261,20 +291,29 @@ export default function BusinessVibeForm({
               String(block.key).toLowerCase() === "hours" ||
               String(block.label).toLowerCase() === "hours";
 
-            if (isHours && extraBlocks.some(b =>
-              String(b.type).toLowerCase() === "hours" ||
-              String(b.label).toLowerCase() === "hours"
-            )) {
+            if (
+              isHours &&
+              extraBlocks.some(
+                (b) =>
+                  String(b.type).toLowerCase() === "hours" ||
+                  String(b.label).toLowerCase() === "hours"
+              )
+            ) {
               setShowBlockModal(false);
               return;
             }
 
             const initHours = {
-              monday: "", tuesday: "", wednesday: "",
-              thursday: "", friday: "", saturday: "", sunday: ""
+              monday: "",
+              tuesday: "",
+              wednesday: "",
+              thursday: "",
+              friday: "",
+              saturday: "",
+              sunday: "",
             };
 
-            setExtraBlocks(prev => ([
+            setExtraBlocks((prev) => [
               ...prev,
               {
                 type: isHours ? "hours" : block.key,
@@ -282,7 +321,7 @@ export default function BusinessVibeForm({
                 value: isHours ? initHours : "",
                 placeholder: isHours ? undefined : block.placeholder,
               },
-            ]));
+            ]);
             setShowBlockModal(false);
           }}
         />
