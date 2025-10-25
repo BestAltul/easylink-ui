@@ -1,6 +1,6 @@
 import React from "react";
 import "../styles/ProfileCards.css";
-import { IconBarChart, IconPlus, IconShield, IconZap } from "@/pages/home/icons/Icons";
+import { IconBarChart, IconPlus, IconShield, IconZap } from "@/pages/Home/icons/Icons";
 
 /**
  * cards: Array<{
