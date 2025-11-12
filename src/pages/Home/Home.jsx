@@ -14,7 +14,7 @@ import "../styles/Home.css";
 import BusinessVibeDemo from "@/features/vibes/forms/business/BusinessVibeDemo";
 import PersonalVibeDemo from "@/features/vibes/forms/personal/PersonalVibeDemo";
 import EventVibeDemo from "@/features/vibes/forms/events/EventVibeDemo";
-
+import VibeSearch from "@/components/common/VibeSearch";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 12 },
@@ -117,6 +117,9 @@ export default function Home() {
         </motion.button>
       </motion.section>
 
+      <div className="hero__search">
+        <VibeSearch autoFocus={false} />
+      </div>
       {/* Tabs section */}
       <motion.section
         className="container-xxl px-3 px-md-4"

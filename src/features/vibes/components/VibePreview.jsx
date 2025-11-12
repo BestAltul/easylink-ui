@@ -204,6 +204,7 @@ export default function VibePreview({
       ) : (
         <VibeContent
           id={id}
+          shareUrl={shareUrl}
           name={name}
           description={description}
           photo={photo}
