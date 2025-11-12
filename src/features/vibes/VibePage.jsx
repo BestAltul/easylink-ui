@@ -143,6 +143,7 @@ export default function VibePage() {
             >
               <BusinessVibeOwnerView
                 id={vibe.id}
+                shareUrl={`${window.location.origin}/view/${vibe.id}`}
                 name={name}
                 description={description}
                 photo={vibe.photo}

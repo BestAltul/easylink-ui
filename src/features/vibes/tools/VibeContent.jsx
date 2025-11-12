@@ -9,6 +9,7 @@ import ExtraBlock from "@/components/InfoBlocks/ExtraBlock";
 
 export default function VibeContent({
   id,
+  shareUrl,
   name,
   description,
   photo,
@@ -124,7 +125,7 @@ export default function VibeContent({
 
       {/* QR */}
       <div className="mt-4 text-center">
-        <QRBox id={id} t={t} />
+        <QRBox id={id} shareUrl={shareUrl} t={t} />
       </div>
     </div>
   );
